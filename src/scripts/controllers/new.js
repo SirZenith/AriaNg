@@ -281,5 +281,9 @@
         };
 
         $rootScope.loadPromise = $timeout(function () {}, 100);
+
+        if (parameters.uri) {
+            $scope.context.urls = decodeURI(parameters.uri)
+        }
     }]);
 }());

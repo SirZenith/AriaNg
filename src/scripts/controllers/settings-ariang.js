@@ -268,6 +268,16 @@
             angular.element('#import-settings-modal').modal();
         };
 
+        $scope.registerMagnetHandler = function () {
+            if (typeof navigator.registerProtocolHandler !== 'function') {
+                return
+            }
+
+            console.log(location)
+            var templateUrl = location.href.replace('/settings/ariang', '/new?uri=%s')
+            navigator.registerProtocolHandler('magnet', templateUrl)
+        };
+
         $('#import-settings-modal').on('hide.bs.modal', function (e) {
             $scope.context.importSettings = null;
         });
