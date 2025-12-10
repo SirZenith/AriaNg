@@ -15,9 +15,9 @@
     <meta name="theme-color" content="#3c4852">
     <meta name="format-detection" content="telephone=no"/>
     <title>AriaNg</title>
-    <link rel="icon" href="favicon.svg">
     <!--[if IE]><link rel="shortcut icon" href="favicon.ico"><![endif]-->
-    <link rel="apple-touch-icon" href="favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/pwa-192x192.png" />
     <!-- build:css css/bootstrap-3.4.1.min.css -->
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css"/>
     <!-- endbuild -->
@@ -47,7 +47,7 @@
     <!-- endbuild -->
 
     <!-- PWA setup -->
-    <link rel="manifest" href="manifest.webmanifest" crossorigin="use-credentials" />
+    <link rel="manifest" href="manifest.json" crossorigin="use-credentials" />
 </head>
 <body class="hold-transition skin-aria-ng sidebar-mini fixed">
 <div class="wrapper" ng-controller="MainController" ng-swipe-left="swipeActions.leftSwipe()" ng-swipe-right="swipeActions.rightSwipe()" ng-swipe-disable-mouse>
