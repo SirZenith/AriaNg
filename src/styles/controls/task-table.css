@@ -76,20 +76,25 @@
     margin-bottom: 0;
 }
 
-.task-table .task-last-time, .task-table .task-seeders, .task-table .task-last-time + .task-download-speed {
+.task-table .task-last-time, .task-table .task-seeders, .task-table .task-last-time + .task-download-speed, .task-table .task-last-time + .task-upload-speed {
     color: #888;
     font-size: 12px;
 }
 
-.task-table .task-seeders, .task-table .task-last-time + .task-download-speed {
+.task-table .task-seeders, .task-table .task-last-time + .task-download-speed, .task-table .task-last-time + .task-upload-speed {
     margin-top: 1px;
 }
 
-.task-table .task-last-time + .task-download-speed {
+.task-table .task-last-time + .task-download-speed, .task-table .task-last-time + .task-upload-speed {
     padding-left: 20px;
 }
 
-.task-table .task-download-speed, .task-table .task-peer-download-speed {
+.task-table .task-download-speed, .task-table .task-peer-download-speed, .task-table .task-upload-speed {
+    font-size: 12px;
+}
+
+.task-table .task-speed-xs {
+    margin-left: 15px;
     font-size: 12px;
 }
 
