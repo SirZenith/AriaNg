@@ -1,0 +1,63 @@
+{
+  "background_color": "#000",
+  "categories": [
+    "utilities"
+  ],
+  "description": "AriaNg, a modern web frontend making aria2 easier to use. ",
+  "display": "standalone",
+  "file_handlers": [
+    {
+      "action": ".",
+      "accept": {
+        "application/x-bittorrent": [
+          ".torrent"
+        ],
+        "text/magnet": [
+          ".magnet"
+        ]
+      }
+    }
+  ],
+  "icons": [
+    {
+      "src": "favicon.png",
+      "type": "image/png",
+      "sizes": "32x32"
+    },
+    {
+      "src": "favicon.svg",
+      "type": "image/svg",
+      "sizes": "800x800"
+    }
+  ],
+  "lang": "en",
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "name": "AriaNg",
+  "protocol_handlers": [
+    {
+      "protocol": "magnet",
+      "url": "/#!/new"
+    }
+  ],
+  "scope": "./",
+  "screenshots": [],
+  "short_name": "AriaNg",
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "url": "#!/downloading"
+    },
+    {
+      "name": "Settings",
+      "url": "#!/settings/ariang"
+    },
+    {
+      "name": "Status",
+      "url": "#!/status"
+    }
+  ],
+  "start_url": ".",
+  "theme_color": "#64CEAA"
+}
