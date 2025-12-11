@@ -56,11 +56,11 @@
                         <a ng-if="isTaskRetryable(task)" ng-click="retryTask(task)" title="{{'Retry' | translate}}" translate>Retry</a>
 
                         <b class="visible-xs-inline pull-right task-speed-xs">
-                            <span class="fa fa-arrow-circle-down"></span>
+                            <span class="icon-download fa fa-arrow-circle-down"></span>
                             <span ng-bind="(task.status === 'active' && !task.verifyIntegrityPending && !task.verifiedLength ? (!task.seeder || task.downloadSpeed > 0 ? (task.downloadSpeed | readableVolume) + '/s' : '-') : (task | taskStatus: true | translate: {errorcode: task.errorCode, verifiedPercent: task.verifiedPercent}))"></span>
                         </b>
                         <b class="visible-xs-inline pull-right task-speed-xs">
-                            <span class="fa fa-arrow-circle-up"></span>
+                            <span class="icon-upload fa fa-arrow-circle-up"></span>
                             <span ng-bind="(task.status === 'active' && !task.verifyIntegrityPending && !task.verifiedLength ? (!task.seeder || task.uploadSpeed > 0 ? (task.uploadSpeed | readableVolume) + '/s' : '-') : (task | taskStatus: true | translate: {errorcode: task.errorCode, verifiedPercent: task.verifiedPercent}))"></span>
                         </b>
                     </div>
@@ -82,12 +82,12 @@
                     </div>
                 </div>
                 <div class="col-md-2 col-sm-2 hidden-xs">
-                    <span class="fa fa-arrow-circle-down"></span>
+                    <span class="icon-download fa fa-arrow-circle-down"></span>
                     <span class="task-download-speed"
                           ng-bind="(task.status === 'active' && !task.verifyIntegrityPending && !task.verifiedLength ? (!task.seeder || task.downloadSpeed > 0 ? (task.downloadSpeed | readableVolume) + '/s' : '-') : (task | taskStatus: true | translate: {errorcode: task.errorCode, verifiedPercent: task.verifiedPercent}))"></span>
                 </div>
                 <div class="col-md-2 col-sm-2 hidden-xs">
-                    <span class="fa fa-arrow-circle-up"></span>
+                    <span class="icon-upload fa fa-arrow-circle-up"></span>
                     <span class="task-upload-speed"
                           ng-bind="(task.status === 'active' && !task.verifyIntegrityPending && !task.verifiedLength ? (!task.seeder || task.uploadSpeed > 0 ? (task.uploadSpeed | readableVolume) + '/s' : '-') : (task | taskStatus: true | translate: {errorcode: task.errorCode, verifiedPercent: task.verifiedPercent}))"></span>
                 </div>
