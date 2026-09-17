@@ -23,6 +23,7 @@
     "@dnd-kit/modifiers": "^9.0.0",
     "@dnd-kit/sortable": "^10.0.0",
     "i18next": "^26.4.2",
+    "lucide-react": "^1.47.0",
     "mitt": "^3.0.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",

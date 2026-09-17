@@ -1,3 +1,4 @@
+import { Cloud, FileText, Folder, Globe, Network, Settings2, Share2, Wrench, type LucideIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, useParams } from 'react-router-dom';
@@ -5,15 +6,15 @@ import OptionForm from '@/components/OptionForm';
 import { aria2SettingService } from '@/services/aria2SettingService';
 import { notifyInPage } from '@/services/notification';
 
-const categories = [
-    { key: 'basic', label: 'Basic Settings' },
-    { key: 'http-ftp-sftp', label: 'HTTP/FTP/SFTP Settings' },
-    { key: 'http', label: 'HTTP Settings' },
-    { key: 'ftp-sftp', label: 'FTP/SFTP Settings' },
-    { key: 'bt', label: 'BitTorrent Settings' },
-    { key: 'metalink', label: 'Metalink Settings' },
-    { key: 'rpc', label: 'RPC Settings' },
-    { key: 'advanced', label: 'Advanced Settings' }
+const categories: { key: string; label: string; icon: LucideIcon }[] = [
+    { key: 'basic', label: 'Basic Settings', icon: Settings2 },
+    { key: 'http-ftp-sftp', label: 'HTTP/FTP/SFTP Settings', icon: Globe },
+    { key: 'http', label: 'HTTP Settings', icon: Cloud },
+    { key: 'ftp-sftp', label: 'FTP/SFTP Settings', icon: Folder },
+    { key: 'bt', label: 'BitTorrent Settings', icon: Share2 },
+    { key: 'metalink', label: 'Metalink Settings', icon: FileText },
+    { key: 'rpc', label: 'RPC Settings', icon: Network },
+    { key: 'advanced', label: 'Advanced Settings', icon: Wrench }
 ];
 
 export default function Aria2SettingsPage() {
@@ -64,18 +65,23 @@ export default function Aria2SettingsPage() {
             <h2 className="mb-3 text-lg font-semibold">{t('Aria2 Settings')}</h2>
 
             <div className="mb-4 flex flex-wrap gap-2 border-b border-gray-200 pb-2 dark:border-gray-700">
-                {categories.map((category) => (
-                    <NavLink
-                        key={category.key}
-                        to={'/settings/aria2/' + category.key}
-                        className={({ isActive }) =>
-                            'rounded px-2 py-1 text-sm ' +
-                            (isActive ? 'bg-[#3c8dbc] text-white' : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300')
-                        }
-                    >
-                        {t(category.label)}
-                    </NavLink>
-                ))}
+                {categories.map((category) => {
+                    const Icon = category.icon;
+
+                    return (
+                        <NavLink
+                            key={category.key}
+                            to={'/settings/aria2/' + category.key}
+                            className={({ isActive }) =>
+                                'flex items-center gap-1 rounded px-2 py-1 text-sm ' +
+                                (isActive ? 'bg-[#3c8dbc] text-white' : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300')
+                            }
+                        >
+                            <Icon className="h-4 w-4" aria-hidden="true" />
+                            {t(category.label)}
+                        </NavLink>
+                    );
+                })}
             </div>
 
             {loading ? (

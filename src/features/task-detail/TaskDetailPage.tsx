@@ -1,3 +1,4 @@
+import { FileText, LayoutDashboard, LayoutGrid, Settings, Users, type LucideIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -63,32 +64,37 @@ export default function TaskDetailPage() {
         return <div className="p-6 text-sm text-gray-500">{t('There is no task')}</div>;
     }
 
-    const tabs = [
-        { key: 'overview', label: 'Overview' },
-        ...(showPiecesInfo ? [{ key: 'pieces', label: 'Pieces' }] : []),
-        { key: 'filelist', label: 'Files' },
-        ...(showPeers ? [{ key: 'btpeers', label: 'Peers' }] : []),
-        ...(showSettings ? [{ key: 'settings', label: 'Settings' }] : [])
+    const tabs: { key: string; label: string; icon: LucideIcon }[] = [
+        { key: 'overview', label: 'Overview', icon: LayoutDashboard },
+        ...(showPiecesInfo ? [{ key: 'pieces', label: 'Pieces', icon: LayoutGrid }] : []),
+        { key: 'filelist', label: 'Files', icon: FileText },
+        ...(showPeers ? [{ key: 'btpeers', label: 'Peers', icon: Users }] : []),
+        ...(showSettings ? [{ key: 'settings', label: 'Settings', icon: Settings }] : [])
     ];
 
     return (
         <section className="rounded bg-white p-4 shadow dark:bg-gray-800">
             <div className="mb-3 flex flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700">
-                {tabs.map((item) => (
-                    <button
-                        key={item.key}
-                        type="button"
-                        className={
-                            'px-3 py-2 text-sm ' +
-                            (currentTab === item.key
-                                ? 'border-b-2 border-[#3c8dbc] text-[#3c8dbc]'
-                                : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300')
-                        }
-                        onClick={() => setCurrentTab(item.key)}
-                    >
-                        {t(item.label)}
-                    </button>
-                ))}
+                {tabs.map((item) => {
+                    const Icon = item.icon;
+
+                    return (
+                        <button
+                            key={item.key}
+                            type="button"
+                            className={
+                                'flex items-center gap-1 px-3 py-2 text-sm ' +
+                                (currentTab === item.key
+                                    ? 'border-b-2 border-[#3c8dbc] text-[#3c8dbc]'
+                                    : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300')
+                            }
+                            onClick={() => setCurrentTab(item.key)}
+                        >
+                            <Icon className="h-4 w-4" aria-hidden="true" />
+                            {t(item.label)}
+                        </button>
+                    );
+                })}
             </div>
 
             {currentTab === 'overview' ? (
