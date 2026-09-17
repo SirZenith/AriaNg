@@ -10,8 +10,9 @@ import {
     type DragEndEvent,
     type DragStartEvent,
 } from '@dnd-kit/core';
-import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { arrayMove, rectSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { ArrowDown, ArrowUp } from 'lucide-react';
 import ContextMenu, { type ContextMenuItem } from '@/components/ContextMenu';
 import { useTaskListPolling } from '@/hooks/useAria2';
 import { aria2TaskService } from '@/services/taskService';
@@ -29,6 +30,8 @@ interface ContextMenuState {
     y: number;
     task: Aria2Task;
 }
+
+const cardGridClass = 'grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4';
 
 function buildMagnetLink(task: Aria2Task): string {
     const infoHash = task.infoHash ? String(task.infoHash) : '';
@@ -225,52 +228,55 @@ export default function TaskListPage({ location }: { location: string }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [contextMenu, selected, selectedTasks, t]);
 
-    const renderRow = (task: Aria2Task) => {
+    const renderCard = (task: Aria2Task) => {
         const completePercent = Number(task.completePercent || 0);
         const statusText = t(getTaskStatusKey(task, true), {
             errorcode: task.errorCode,
             verifiedPercent: task.verifiedPercent,
         });
         const isActive = task.status === 'active';
+        const isSelected = !!selected[task.gid];
+        const isError = task.status === 'error';
+        const showRemainTime =
+            isActive && task.remainTime !== undefined && task.remainTime >= 0 && task.remainTime < 86400;
 
         return (
             <SortableTaskRow key={task.gid} task={task} isDraggable={isDraggable}>
                 {({ handleProps }) => (
                     <div
-                        className="grid cursor-pointer grid-cols-12 items-center gap-2 border-b border-gray-200 px-2 py-2 text-sm hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+                        className={
+                            'flex h-full cursor-pointer flex-col gap-2 rounded-lg border bg-white p-3 text-sm shadow-sm transition-colors dark:bg-gray-800 ' +
+                            (isSelected
+                                ? 'border-[#3c8dbc] ring-1 ring-[#3c8dbc]/40'
+                                : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600')
+                        }
                         onClick={() => toggleSelected(task.gid)}
                         onContextMenu={(event) => {
                             event.preventDefault();
                             setContextMenu({ x: event.clientX, y: event.clientY, task });
                         }}
                     >
-                        <div className="col-span-5 flex min-w-0 items-center gap-2">
-                            {isDraggable ? (
-                                <span
-                                    className="cursor-grab select-none text-gray-400"
-                                    title={t('Change Tasks Order by Drag-and-drop')}
-                                    {...handleProps}
-                                >
-                                    &#8942;&#8942;
-                                </span>
-                            ) : null}
+                        <div className="flex items-start gap-2">
                             <input
                                 type="checkbox"
-                                checked={!!selected[task.gid]}
+                                className="mt-0.5"
+                                checked={isSelected}
                                 onClick={(event) => event.stopPropagation()}
                                 onChange={() => toggleSelected(task.gid)}
                             />
-                            <div className="min-w-0">
-                                <div className="flex items-center gap-2">
-                                    <Link
-                                        to={'/task/detail/' + task.gid}
-                                        className="truncate text-blue-600 hover:underline"
-                                        title={task.taskName}
-                                        onClick={(event) => event.stopPropagation()}
-                                    >
-                                        {task.taskName}
-                                    </Link>
-                                    {task.status === 'error' && task.errorDescription ? (
+
+                            <div className="min-w-0 flex-1">
+                                <Link
+                                    to={'/task/detail/' + task.gid}
+                                    className="line-clamp-2 font-medium text-blue-600 hover:underline"
+                                    title={task.taskName}
+                                    onClick={(event) => event.stopPropagation()}
+                                >
+                                    {task.taskName}
+                                </Link>
+                                <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                                    <span>{statusText}</span>
+                                    {isError && task.errorDescription ? (
                                         <span className="text-red-600" title={t(task.errorDescription)}>
                                             &#10005;
                                         </span>
@@ -288,41 +294,49 @@ export default function TaskListPage({ location }: { location: string }) {
                                         </button>
                                     ) : null}
                                 </div>
-                                <div className="text-xs text-gray-500 dark:text-gray-400">
-                                    {formatVolume(Number(task.totalLength))}
-                                    {task.files
-                                        ? ` (${t('format.settings.file-count', { count: task.selectedFileCount })})`
-                                        : ''}
-                                </div>
                             </div>
+
+                            {isDraggable ? (
+                                <span
+                                    className="cursor-grab touch-none select-none text-gray-400 hover:text-gray-600"
+                                    title={t('Change Tasks Order by Drag-and-drop')}
+                                    {...handleProps}
+                                >
+                                    &#8942;&#8942;
+                                </span>
+                            ) : null}
                         </div>
 
-                        <div className="col-span-3">
+                        <div>
                             <div className="h-2 w-full overflow-hidden rounded bg-gray-200 dark:bg-gray-700">
                                 <div
-                                    className={task.status === 'error' ? 'h-full bg-amber-500' : 'h-full bg-[#3c8dbc]'}
+                                    className={isError ? 'h-full bg-amber-500' : 'h-full bg-[#3c8dbc]'}
                                     style={{ width: Math.min(100, completePercent) + '%' }}
                                 />
                             </div>
-                            <div className="mt-0.5 flex justify-between text-xs">
-                                <span>{formatPercent(completePercent, 2) + '%'}</span>
-                                <span className="text-gray-500">
-                                    {isActive &&
-                                    task.remainTime !== undefined &&
-                                    task.remainTime >= 0 &&
-                                    task.remainTime < 86400
-                                        ? formatDuration(Number(task.remainTime), 'HH:mm:ss')
+                            <div className="mt-1 flex items-center justify-between text-xs">
+                                <span className="font-medium">{formatPercent(completePercent, 2) + '%'}</span>
+                                <span className="text-gray-500 dark:text-gray-400">
+                                    {formatVolume(Number(task.totalLength))}
+                                    {task.files
+                                        ? ` (${t('format.settings.file-count', { count: task.selectedFileCount })})`
                                         : ''}
                                 </span>
                             </div>
                         </div>
 
-                        <div className="col-span-2 text-xs">{statusText}</div>
-                        <div className="col-span-1 text-right text-xs">
-                            {isActive ? formatVolume(Number(task.downloadSpeed)) + '/s' : ''}
-                        </div>
-                        <div className="col-span-1 text-right text-xs">
-                            {isActive ? formatVolume(Number(task.uploadSpeed)) + '/s' : ''}
+                        <div className="mt-auto flex items-center justify-between text-xs">
+                            <span className="flex items-center gap-1 text-green-600 dark:text-green-500">
+                                <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" />
+                                {isActive ? formatVolume(Number(task.downloadSpeed)) + '/s' : '-'}
+                            </span>
+                            <span className="flex items-center gap-1 text-blue-500 dark:text-blue-400">
+                                <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" />
+                                {isActive ? formatVolume(Number(task.uploadSpeed)) + '/s' : '-'}
+                            </span>
+                            <span className="text-gray-500 dark:text-gray-400">
+                                {showRemainTime ? formatDuration(Number(task.remainTime), 'HH:mm:ss') : ''}
+                            </span>
                         </div>
                     </div>
                 )}
@@ -331,8 +345,8 @@ export default function TaskListPage({ location }: { location: string }) {
     };
 
     return (
-        <section className="rounded bg-white shadow dark:bg-gray-800">
-            <div className="flex flex-wrap items-center gap-2 border-b border-gray-200 px-3 py-2 dark:border-gray-700">
+        <section className="space-y-3">
+            <div className="flex flex-wrap items-center gap-2 rounded bg-white px-3 py-2 shadow-sm dark:bg-gray-800">
                 <span className="text-sm font-semibold">{t('Display Order')}</span>
                 <select
                     className="rounded border border-gray-300 bg-white px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800"
@@ -383,21 +397,20 @@ export default function TaskListPage({ location }: { location: string }) {
                         onDragStart={handleDragStart}
                         onDragEnd={(event) => void handleDragEnd(event)}
                     >
-                        <SortableContext
-                            items={visibleTasks.map((task) => task.gid)}
-                            strategy={verticalListSortingStrategy}
-                        >
-                            <div>{visibleTasks.map(renderRow)}</div>
+                        <SortableContext items={visibleTasks.map((task) => task.gid)} strategy={rectSortingStrategy}>
+                            <div className={cardGridClass}>{visibleTasks.map(renderCard)}</div>
                         </SortableContext>
                     </DndContext>
                 ) : (
-                    <div>{visibleTasks.map(renderRow)}</div>
+                    <div className={cardGridClass}>{visibleTasks.map(renderCard)}</div>
                 )
             ) : (
-                <div className="p-8 text-center text-sm text-gray-500 dark:text-gray-400">{t('There is no task')}</div>
+                <div className="rounded bg-white p-8 text-center text-sm text-gray-500 shadow-sm dark:bg-gray-800 dark:text-gray-400">
+                    {t('There is no task')}
+                </div>
             )}
 
-            <div className="p-2 text-center">
+            <div className="text-center">
                 <Link to="/new" className="text-sm text-blue-600 hover:underline">
                     {t('New')}
                 </Link>
@@ -434,7 +447,7 @@ function SortableTaskRow({ task, isDraggable, children }: SortableTaskRowProps) 
     };
 
     return (
-        <div ref={setNodeRef} style={style}>
+        <div ref={setNodeRef} style={style} className="h-full">
             {children({ handleProps: { ...attributes, ...listeners } })}
         </div>
     );

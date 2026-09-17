@@ -19,17 +19,27 @@ export default function NotificationContainer() {
                     className={`pointer-events-auto rounded border-l-4 p-3 shadow ${typeStyles[item.type] || typeStyles.info}`}
                 >
                     <div className="flex items-start justify-between gap-2">
-                        <div>
+                        <div className="min-w-0">
                             {item.title ? <div className="font-semibold">{item.title}</div> : null}
                             <div className="text-sm break-all">{item.content}</div>
                         </div>
-                        <button
-                            type="button"
-                            className="text-lg leading-none opacity-60 hover:opacity-100"
-                            onClick={() => removeNotification(item.id)}
-                        >
-                            &times;
-                        </button>
+                        <div className="flex shrink-0 items-center gap-1">
+                            {item.count > 1 ? (
+                                <span
+                                    className="rounded-full bg-black/10 px-1.5 text-xs font-medium dark:bg-white/15"
+                                    title={`${item.count}×`}
+                                >
+                                    ×{item.count}
+                                </span>
+                            ) : null}
+                            <button
+                                type="button"
+                                className="text-lg leading-none opacity-60 hover:opacity-100"
+                                onClick={() => removeNotification(item.id)}
+                            >
+                                &times;
+                            </button>
+                        </div>
                     </div>
                 </div>
             ))}
