@@ -33,7 +33,7 @@ export function useTaskDetail(gid: string | undefined): TaskDetailResult {
             setTask(nextTask);
             recordTaskStat(gid, {
                 downloadSpeed: Number(nextTask.downloadSpeed || 0),
-                uploadSpeed: Number(nextTask.uploadSpeed || 0)
+                uploadSpeed: Number(nextTask.uploadSpeed || 0),
             });
         };
 
@@ -71,7 +71,7 @@ export function useTaskDetail(gid: string | undefined): TaskDetailResult {
                 silent,
                 isPeerRequired(latestTask),
                 true,
-                true
+                true,
             );
 
             if (cancelled) {

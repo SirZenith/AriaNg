@@ -69,7 +69,7 @@ export default function TaskDetailPage() {
         ...(showPiecesInfo ? [{ key: 'pieces', label: 'Pieces', icon: LayoutGrid }] : []),
         { key: 'filelist', label: 'Files', icon: FileText },
         ...(showPeers ? [{ key: 'btpeers', label: 'Peers', icon: Users }] : []),
-        ...(showSettings ? [{ key: 'settings', label: 'Settings', icon: Settings }] : [])
+        ...(showSettings ? [{ key: 'settings', label: 'Settings', icon: Settings }] : []),
     ];
 
     return (

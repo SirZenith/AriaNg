@@ -1,7 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router-dom';
-import { clearDebugLogs, compareLogLevel, getDebugLogs, subscribeLogs, type LogItem, type LogLevel } from '@/services/log';
+import {
+    clearDebugLogs,
+    compareLogLevel,
+    getDebugLogs,
+    subscribeLogs,
+    type LogItem,
+    type LogLevel,
+} from '@/services/log';
 import { notifyInPage } from '@/services/notification';
 import { aria2RpcService, type RpcInvokeContext } from '@/services/rpc';
 import { isEnableDebugMode } from '@/services/settingService';
@@ -12,14 +19,14 @@ const levelLabels: Record<LogLevel, string> = {
     debug: 'DEBUG',
     info: 'INFO',
     warn: 'WARN',
-    error: 'ERROR'
+    error: 'ERROR',
 };
 
 const levelColors: Record<LogLevel, string> = {
     debug: 'text-gray-500',
     info: 'text-blue-600',
     warn: 'text-amber-600',
-    error: 'text-red-600'
+    error: 'text-red-600',
 };
 
 export default function DebugPage() {
@@ -86,10 +93,9 @@ export default function DebugPage() {
         }
 
         const context = { ...params } as RpcInvokeContext;
-        const result = await (methodFunc as (this: typeof aria2RpcService, ctx: RpcInvokeContext) => Promise<TaskResponse>).call(
-            aria2RpcService,
-            context
-        );
+        const result = await (
+            methodFunc as (this: typeof aria2RpcService, ctx: RpcInvokeContext) => Promise<TaskResponse>
+        ).call(aria2RpcService, context);
 
         setResponseText(JSON.stringify(result?.data ?? result, null, 2));
     };
@@ -167,7 +173,9 @@ export default function DebugPage() {
                                 <span className="shrink-0 text-gray-400">
                                     {new Date(item.time).toLocaleTimeString()}
                                 </span>
-                                <span className={'w-12 shrink-0 ' + levelColors[item.level]}>{levelLabels[item.level]}</span>
+                                <span className={'w-12 shrink-0 ' + levelColors[item.level]}>
+                                    {levelLabels[item.level]}
+                                </span>
                                 <span className="break-all">{item.message}</span>
                             </div>
                         ))}
@@ -178,7 +186,10 @@ export default function DebugPage() {
                     </div>
 
                     {currentLog ? (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={() => setCurrentLog(null)}>
+                        <div
+                            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+                            onClick={() => setCurrentLog(null)}
+                        >
                             <div
                                 className="max-h-[80vh] w-full max-w-2xl overflow-y-auto rounded bg-white p-4 dark:bg-gray-800"
                                 onClick={(event) => event.stopPropagation()}
@@ -186,7 +197,9 @@ export default function DebugPage() {
                                 <h3 className="mb-2 font-semibold">{t('Log Detail')}</h3>
                                 <pre className="whitespace-pre-wrap break-all text-xs">
                                     {currentLog.message}
-                                    {currentLog.detail !== undefined ? '\n\n' + JSON.stringify(currentLog.detail, null, 2) : ''}
+                                    {currentLog.detail !== undefined
+                                        ? '\n\n' + JSON.stringify(currentLog.detail, null, 2)
+                                        : ''}
                                 </pre>
                             </div>
                         </div>

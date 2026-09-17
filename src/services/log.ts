@@ -14,7 +14,7 @@ const logLevelWeight: Record<string, number> = {
     debug: 0,
     info: 1,
     warn: 2,
-    error: 3
+    error: 3,
 };
 
 const cachedLogs: LogItem[] = [];
@@ -55,7 +55,7 @@ function push(level: LogLevel, message: string, detail?: unknown): void {
         time: Date.now(),
         level,
         message,
-        detail
+        detail,
     };
 
     cachedLogs.push(item);
@@ -91,7 +91,7 @@ export const log = {
     error(message: string, detail?: unknown): void {
         console.error(message, detail);
         push('error', message, detail);
-    }
+    },
 };
 
 export function clearDebugLogs(): void {

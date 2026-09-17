@@ -55,8 +55,11 @@ export default function NewTaskPage() {
     const [submitting, setSubmitting] = useState(false);
 
     const availableOptions = useMemo(
-        () => aria2SettingService.getSpecifiedOptions(aria2SettingService.getNewTaskOptionKeys(), { disableRequired: true }),
-        []
+        () =>
+            aria2SettingService.getSpecifiedOptions(aria2SettingService.getNewTaskOptionKeys(), {
+                disableRequired: true,
+            }),
+        [],
     );
 
     const setOptionValue = (key: string, value: string) => {

@@ -14,7 +14,7 @@ const categories: { key: string; label: string; icon: LucideIcon }[] = [
     { key: 'bt', label: 'BitTorrent Settings', icon: Share2 },
     { key: 'metalink', label: 'Metalink Settings', icon: FileText },
     { key: 'rpc', label: 'RPC Settings', icon: Network },
-    { key: 'advanced', label: 'Advanced Settings', icon: Wrench }
+    { key: 'advanced', label: 'Advanced Settings', icon: Wrench },
 ];
 
 export default function Aria2SettingsPage() {
@@ -74,7 +74,9 @@ export default function Aria2SettingsPage() {
                             to={'/settings/aria2/' + category.key}
                             className={({ isActive }) =>
                                 'flex items-center gap-1 rounded px-2 py-1 text-sm ' +
-                                (isActive ? 'bg-[#3c8dbc] text-white' : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300')
+                                (isActive
+                                    ? 'bg-[#3c8dbc] text-white'
+                                    : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300')
                             }
                         >
                             <Icon className="h-4 w-4" aria-hidden="true" />
@@ -87,7 +89,11 @@ export default function Aria2SettingsPage() {
             {loading ? (
                 <div className="p-6 text-center text-sm text-gray-500">{t('Loading')}</div>
             ) : (
-                <OptionForm options={optionItems} values={globalOptions} onChange={(key, value) => void changeOption(key, value)} />
+                <OptionForm
+                    options={optionItems}
+                    values={globalOptions}
+                    onChange={(key, value) => void changeOption(key, value)}
+                />
             )}
         </section>
     );

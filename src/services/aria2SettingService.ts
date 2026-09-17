@@ -1,7 +1,17 @@
 import { aria2AllOptions } from '@/config/aria2Options';
-import { aria2GlobalAvailableOptions, aria2QuickSettingsAvailableOptions, aria2TaskAvailableOptions, type Aria2TaskOptionKey } from '@/config/aria2OptionGroups';
+import {
+    aria2GlobalAvailableOptions,
+    aria2QuickSettingsAvailableOptions,
+    aria2TaskAvailableOptions,
+    type Aria2TaskOptionKey,
+} from '@/config/aria2OptionGroups';
 import type { Aria2OptionType } from '@/types/aria2';
-import { addSettingHistory, clearSettingHistories, getSettingHistory, isCurrentRpcUseWebSocket } from './settingService';
+import {
+    addSettingHistory,
+    clearSettingHistories,
+    getSettingHistory,
+    isCurrentRpcUseWebSocket,
+} from './settingService';
 import { log } from './log';
 import { aria2RpcService, type RpcInvokeContext } from './rpc';
 import type { TaskResponse } from '@/types/aria2';
@@ -112,7 +122,7 @@ export const aria2SettingService = {
             const optionKey: Aria2TaskOptionKey = {
                 key: option.key,
                 category: option.category,
-                showHistory: option.showHistory
+                showHistory: option.showHistory,
             };
 
             if (option.canShow && option.canShow.indexOf('new') < 0) {
@@ -128,7 +138,10 @@ export const aria2SettingService = {
 
         return availableOptions;
     },
-    getSpecifiedOptions(keys: (string | Aria2TaskOptionKey)[], extendSettings?: { disableRequired?: boolean }): Aria2OptionItem[] {
+    getSpecifiedOptions(
+        keys: (string | Aria2TaskOptionKey)[],
+        extendSettings?: { disableRequired?: boolean },
+    ): Aria2OptionItem[] {
         const options: Aria2OptionItem[] = [];
 
         if (!keys) {
@@ -162,18 +175,18 @@ export const aria2SettingService = {
                 nameKey: 'options.' + key + '.name',
                 descriptionKey: 'options.' + key + '.description',
                 category,
-                options: undefined
+                options: undefined,
             };
 
             if (option.type === 'boolean') {
                 option.options = [
                     { name: 'option.true', value: 'true' },
-                    { name: 'option.false', value: 'false' }
+                    { name: 'option.false', value: 'false' },
                 ];
             } else if (Array.isArray(rawOption.options) && rawOption.options.length > 0) {
                 option.options = (rawOption.options as string[]).map((value) => ({
                     name: 'option.' + value,
-                    value
+                    value,
                 }));
             }
 
@@ -206,7 +219,7 @@ export const aria2SettingService = {
     getGlobalOption(callback?: (response: TaskResponse) => void, silent?: boolean) {
         return aria2RpcService.getGlobalOption({
             silent: !!silent,
-            callback
+            callback,
         });
     },
     setGlobalOption(key: string, value: string, callback?: (response: TaskResponse) => void, silent?: boolean) {
@@ -216,13 +229,13 @@ export const aria2SettingService = {
         return aria2RpcService.changeGlobalOption({
             options,
             silent: !!silent,
-            callback
+            callback,
         });
     },
     getAria2Status(callback?: (response: TaskResponse) => void, silent?: boolean) {
         return aria2RpcService.getVersion({
             silent: !!silent,
-            callback
+            callback,
         });
     },
     getGlobalStat(callback?: (response: TaskResponse) => void, silent?: boolean) {
@@ -239,7 +252,7 @@ export const aria2SettingService = {
                 }
 
                 callback(response);
-            }
+            },
         });
     },
     canReconnect(): boolean {
@@ -251,19 +264,19 @@ export const aria2SettingService = {
     saveSession(callback?: (response: TaskResponse) => void, silent?: boolean) {
         return aria2RpcService.saveSession({
             silent: !!silent,
-            callback
+            callback,
         });
     },
     shutdown(callback?: (response: TaskResponse) => void, silent?: boolean) {
         return aria2RpcService.shutdown({
             silent: !!silent,
-            callback
+            callback,
         });
     },
     forceShutdown(callback?: (response: TaskResponse) => void, silent?: boolean) {
         return aria2RpcService.forceShutdown({
             silent: !!silent,
-            callback
+            callback,
         });
-    }
+    },
 };

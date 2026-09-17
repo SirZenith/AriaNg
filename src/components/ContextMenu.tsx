@@ -32,7 +32,10 @@ export default function ContextMenu({ x, y, items, onClose }: ContextMenuProps) 
     return (
         <div
             className="fixed z-50 min-w-48 rounded border border-gray-200 bg-white py-1 text-sm shadow-lg dark:border-gray-600 dark:bg-gray-800"
-            style={{ left: Math.min(x, window.innerWidth - 200), top: Math.min(y, window.innerHeight - items.length * 30 - 10) }}
+            style={{
+                left: Math.min(x, window.innerWidth - 200),
+                top: Math.min(y, window.innerHeight - items.length * 30 - 10),
+            }}
             onClick={(event) => event.stopPropagation()}
         >
             {items.map((item, index) =>
@@ -51,7 +54,7 @@ export default function ContextMenu({ x, y, items, onClose }: ContextMenuProps) 
                     >
                         {item.label}
                     </button>
-                )
+                ),
             )}
         </div>
     );

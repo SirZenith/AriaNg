@@ -147,6 +147,6 @@ export function createWebSocketTransport(): RpcTransport {
             }
 
             eventCallbacks[eventName].push(callback);
-        }
+        },
     };
 }

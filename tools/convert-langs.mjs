@@ -13,7 +13,7 @@ function getKeyValuePair(line) {
         if (i > 0 && line.charAt(i - 1) !== '\\' && line.charAt(i) === '=') {
             return {
                 key: line.substring(0, i).replace('\\=', '='),
-                value: line.substring(i + 1, line.length).replace('\\=', '=')
+                value: line.substring(i + 1, line.length).replace('\\=', '='),
             };
         }
     }

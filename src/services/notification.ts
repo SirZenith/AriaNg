@@ -42,7 +42,7 @@ export function notifyInPage(title: string, content: string, options?: Notificat
         title,
         content: (options?.contentPrefix || '') + content,
         type: options?.type || 'info',
-        delay: options?.delay === undefined ? 2000 : options.delay
+        delay: options?.delay === undefined ? 2000 : options.delay,
     };
 
     items = [...items, item];

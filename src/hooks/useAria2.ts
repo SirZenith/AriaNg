@@ -5,7 +5,7 @@ import {
     getGlobalStatRefreshInterval,
     getKeyboardShortcuts,
     getTitle,
-    isBrowserSupportDarkMode
+    isBrowserSupportDarkMode,
 } from '@/services/settingService';
 import { aria2SettingService } from '@/services/aria2SettingService';
 import { notifyBtTaskComplete, notifyTaskComplete, notifyTaskError } from '@/services/browserNotification';
@@ -113,7 +113,7 @@ export function useGlobalStatPolling(): void {
                 uploadSpeed: parseInt(data.uploadSpeed || '0'),
                 numActive: parseInt(data.numActive || '0'),
                 numWaiting: parseInt(data.numWaiting || '0'),
-                numStopped: parseInt(data.numStopped || '0')
+                numStopped: parseInt(data.numStopped || '0'),
             };
 
             setGlobalStat(stat);

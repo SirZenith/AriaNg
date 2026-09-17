@@ -8,7 +8,7 @@ import {
     getFileExtension,
     parseOrderType,
     parseUrlsFromOriginInput,
-    orderByArray
+    orderByArray,
 } from './common';
 
 describe('base64', () => {
@@ -31,7 +31,7 @@ describe('parseUrlsFromOriginInput', () => {
         expect(parseUrlsFromOriginInput(input)).toEqual([
             'http://example.org/a',
             'magnet:?xt=urn:btih:abc',
-            'https://example.org/b'
+            'https://example.org/b',
         ]);
     });
 });
@@ -60,7 +60,7 @@ describe('orderByArray', () => {
     const items = [
         { name: 'b', size: 2 },
         { name: 'a', size: 3 },
-        { name: 'c', size: 1 }
+        { name: 'c', size: 1 },
     ];
 
     it('sorts ascending by key', () => {

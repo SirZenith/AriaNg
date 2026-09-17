@@ -1,80 +1,74 @@
 {
-    "background_color": "#ffffff",
-    "categories": [
-        "utilities"
-    ],
-    "description": "AriaNg, a modern web frontend making aria2 easier to use.",
-    "display": "standalone",
-    "file_handlers": [
-        {
-            "action": "./",
-            "accept": {
-                "application/x-bittorrent": [
-                    ".torrent"
-                ],
-                "text/magnet": [
-                    ".magnet"
-                ]
-            }
-        }
-    ],
-    "icons": [
-        {
-            "src": "pwa-144x144.png",
-            "sizes": "144x144",
-            "type": "image/png",
-            "purpose": "any"
-        },
-        {
-            "src": "pwa-192x192.png",
-            "sizes": "192x192",
-            "type": "image/png",
-            "purpose": "any"
-        },
-        {
-            "src": "pwa-512x512.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "any"
-        },
-        {
-            "src": "pwa-512x512.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "maskable"
-        }
-    ],
-    "lang": "en",
-    "launch_handler": {
-        "client_mode": "focus-existing"
+  "background_color": "#ffffff",
+  "categories": ["utilities"],
+  "description": "AriaNg, a modern web frontend making aria2 easier to use.",
+  "display": "standalone",
+  "file_handlers": [
+    {
+      "action": "./",
+      "accept": {
+        "application/x-bittorrent": [".torrent"],
+        "text/magnet": [".magnet"]
+      }
+    }
+  ],
+  "icons": [
+    {
+      "src": "pwa-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
     },
-    "name": "AriaNg",
-    "protocol_handlers": [
-        {
-            "protocol": "magnet",
-            "url": "./#/new?uri=%s"
-        }
-    ],
-    "scope": "./",
-    "short_name": "AriaNg",
-    "shortcuts": [
-        {
-            "name": "Dashboard",
-            "url": "#/downloading"
-        },
-        {
-            "name": "New Task",
-            "url": "#/new"
-        },
-        {
-            "name": "Settings",
-            "url": "#/settings/ariang"
-        },
-        {
-            "name": "Status",
-            "url": "#/status"
-        }
-    ],
-    "start_url": "./",
-    "theme_color": "#3c4852"
+    {
+      "src": "pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "lang": "en",
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "name": "AriaNg",
+  "protocol_handlers": [
+    {
+      "protocol": "magnet",
+      "url": "./#/new?uri=%s"
+    }
+  ],
+  "scope": "./",
+  "short_name": "AriaNg",
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "url": "#/downloading"
+    },
+    {
+      "name": "New Task",
+      "url": "#/new"
+    },
+    {
+      "name": "Settings",
+      "url": "#/settings/ariang"
+    },
+    {
+      "name": "Status",
+      "url": "#/status"
+    }
+  ],
+  "start_url": "./",
+  "theme_color": "#3c4852"
 }

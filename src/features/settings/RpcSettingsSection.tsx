@@ -7,7 +7,7 @@ import {
     getAllRpcSettings,
     removeRpcSetting,
     setDefaultRpcSetting,
-    updateRpcSetting
+    updateRpcSetting,
 } from '@/services/settingService';
 
 const inputClass =
@@ -28,8 +28,8 @@ export default function RpcSettingsSection() {
     const [currentIndex, setCurrentIndex] = useState(() =>
         Math.max(
             0,
-            getAllRpcSettings().findIndex((item) => item.isDefault)
-        )
+            getAllRpcSettings().findIndex((item) => item.isDefault),
+        ),
     );
     const [needRefresh, setNeedRefresh] = useState(false);
     const [exportOptions, setExportOptions] = useState<ExportCommandData | null>(null);
@@ -96,7 +96,11 @@ export default function RpcSettingsSection() {
                         {setting.isDefault ? ' *' : ''}
                     </button>
                 ))}
-                <button type="button" className="rounded bg-green-600 px-2 py-1 text-sm text-white" onClick={addSetting}>
+                <button
+                    type="button"
+                    className="rounded bg-green-600 px-2 py-1 text-sm text-white"
+                    onClick={addSetting}
+                >
                     +
                 </button>
             </div>
@@ -104,10 +108,18 @@ export default function RpcSettingsSection() {
             {current ? (
                 <div className="flex flex-col gap-3">
                     <Field label={t('Aria2 RPC Alias')}>
-                        <input className={inputClass} value={current.rpcAlias} onChange={(event) => updateField('rpcAlias', event.target.value)} />
+                        <input
+                            className={inputClass}
+                            value={current.rpcAlias}
+                            onChange={(event) => updateField('rpcAlias', event.target.value)}
+                        />
                     </Field>
                     <Field label={t('Aria2 RPC Protocol')}>
-                        <select className={inputClass} value={current.protocol} onChange={(event) => updateField('protocol', event.target.value)}>
+                        <select
+                            className={inputClass}
+                            value={current.protocol}
+                            onChange={(event) => updateField('protocol', event.target.value)}
+                        >
                             <option value="http">http</option>
                             <option value="https">https</option>
                             <option value="ws">ws</option>
@@ -115,10 +127,18 @@ export default function RpcSettingsSection() {
                         </select>
                     </Field>
                     <Field label={t('Aria2 RPC Address')}>
-                        <input className={inputClass} value={current.rpcHost} onChange={(event) => updateField('rpcHost', event.target.value)} />
+                        <input
+                            className={inputClass}
+                            value={current.rpcHost}
+                            onChange={(event) => updateField('rpcHost', event.target.value)}
+                        />
                     </Field>
                     <Field label={t('Aria2 RPC Port')}>
-                        <input className={inputClass} value={current.rpcPort} onChange={(event) => updateField('rpcPort', event.target.value)} />
+                        <input
+                            className={inputClass}
+                            value={current.rpcPort}
+                            onChange={(event) => updateField('rpcPort', event.target.value)}
+                        />
                     </Field>
                     <Field label={t('Aria2 RPC Interface')}>
                         <input
@@ -128,10 +148,18 @@ export default function RpcSettingsSection() {
                         />
                     </Field>
                     <Field label={t('Aria2 RPC Secret Token')}>
-                        <input className={inputClass} value={current.secret} onChange={(event) => updateField('secret', event.target.value)} />
+                        <input
+                            className={inputClass}
+                            value={current.secret}
+                            onChange={(event) => updateField('secret', event.target.value)}
+                        />
                     </Field>
                     <Field label={t('Aria2 RPC Http Request Method')}>
-                        <select className={inputClass} value={current.httpMethod} onChange={(event) => updateField('httpMethod', event.target.value)}>
+                        <select
+                            className={inputClass}
+                            value={current.httpMethod}
+                            onChange={(event) => updateField('httpMethod', event.target.value)}
+                        >
                             <option value="POST">POST</option>
                             <option value="GET">GET</option>
                         </select>
@@ -173,12 +201,16 @@ export default function RpcSettingsSection() {
                     </div>
 
                     {needRefresh && !current.isDefault ? (
-                        <p className="text-xs text-amber-600">{t('Changes to the settings take effect after refreshing page.')}</p>
+                        <p className="text-xs text-amber-600">
+                            {t('Changes to the settings take effect after refreshing page.')}
+                        </p>
                     ) : null}
                 </div>
             ) : null}
 
-            {exportOptions ? <ExportCommandApiDialog options={exportOptions} onClose={() => setExportOptions(null)} /> : null}
+            {exportOptions ? (
+                <ExportCommandApiDialog options={exportOptions} onClose={() => setExportOptions(null)} />
+            ) : null}
         </div>
     );
 }

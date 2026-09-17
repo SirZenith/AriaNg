@@ -17,9 +17,9 @@ export default function TaskOptionSettings({ task }: TaskOptionSettingsProps) {
         () =>
             aria2SettingService.getSpecifiedOptions(
                 aria2SettingService.getAvailableTaskOptionKeys(task.status, !!task.bittorrent),
-                { disableRequired: true }
+                { disableRequired: true },
             ),
-        [task.status, task.bittorrent]
+        [task.status, task.bittorrent],
     );
 
     useEffect(() => {

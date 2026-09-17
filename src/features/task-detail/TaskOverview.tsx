@@ -31,7 +31,9 @@ export default function TaskOverview({ task, healthPercent, showPiecesInfo }: Ta
         <div>
             <dl className="rounded border border-gray-200 px-3 dark:border-gray-700">
                 <Row label={t('Task Name')}>{task.taskName}</Row>
-                <Row label={t('Status')}>{t(getTaskStatusKey(task), { errorcode: task.errorCode, verifiedPercent: task.verifiedPercent })}</Row>
+                <Row label={t('Status')}>
+                    {t(getTaskStatusKey(task), { errorcode: task.errorCode, verifiedPercent: task.verifiedPercent })}
+                </Row>
                 {task.errorDescription ? (
                     <Row label={t('Error')}>
                         <span className="text-red-600">
@@ -42,11 +44,18 @@ export default function TaskOverview({ task, healthPercent, showPiecesInfo }: Ta
                 ) : null}
                 <Row label={t('File Size')}>{formatVolume(Number(task.totalLength))}</Row>
                 <Row label={t('Completed Length')}>
-                    {formatVolume(Number(task.completedLength))} ({formatPercent(Number(task.completePercent || 0), 2)}%)
+                    {formatVolume(Number(task.completedLength))} ({formatPercent(Number(task.completePercent || 0), 2)}
+                    %)
                 </Row>
-                {task.uploadLength ? <Row label={t('Upload Length')}>{formatVolume(Number(task.uploadLength))}</Row> : null}
-                {task.shareRatio !== undefined ? <Row label={t('Share Ratio')}>{Number(task.shareRatio).toFixed(3)}</Row> : null}
-                <Row label={t('Download Speed')}>{isActive ? formatVolume(Number(task.downloadSpeed)) + '/s' : '-'}</Row>
+                {task.uploadLength ? (
+                    <Row label={t('Upload Length')}>{formatVolume(Number(task.uploadLength))}</Row>
+                ) : null}
+                {task.shareRatio !== undefined ? (
+                    <Row label={t('Share Ratio')}>{Number(task.shareRatio).toFixed(3)}</Row>
+                ) : null}
+                <Row label={t('Download Speed')}>
+                    {isActive ? formatVolume(Number(task.downloadSpeed)) + '/s' : '-'}
+                </Row>
                 <Row label={t('Upload Speed')}>{isActive ? formatVolume(Number(task.uploadSpeed)) + '/s' : '-'}</Row>
                 {isActive ? (
                     <Row label={t('Remaining')}>
@@ -65,7 +74,9 @@ export default function TaskOverview({ task, healthPercent, showPiecesInfo }: Ta
                     </Row>
                 ) : null}
                 {task.bittorrent ? <Row label={t('Health')}>{formatPercent(healthPercent, 2) + '%'}</Row> : null}
-                {task.bittorrent?.info?.name ? <Row label={t('BitTorrent Name')}>{task.bittorrent.info.name}</Row> : null}
+                {task.bittorrent?.info?.name ? (
+                    <Row label={t('BitTorrent Name')}>{task.bittorrent.info.name}</Row>
+                ) : null}
                 {task.bittorrent?.comment ? <Row label={t('Comment')}>{task.bittorrent.comment}</Row> : null}
                 {task.bittorrent?.creationDate ? (
                     <Row label={t('Creation Date')}>

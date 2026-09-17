@@ -57,7 +57,7 @@ const aria2Events = [
     'onDownloadStop',
     'onDownloadComplete',
     'onDownloadError',
-    'onBtDownloadComplete'
+    'onBtDownloadComplete',
 ];
 
 for (const eventName of aria2Events) {
@@ -84,7 +84,10 @@ function processError(error: RpcErrorPayload | Aria2RpcError): boolean {
     return true;
 }
 
-function buildRequestOptions(originalOptions: Record<string, string>, context?: RpcInvokeContext): Record<string, unknown> {
+function buildRequestOptions(
+    originalOptions: Record<string, string>,
+    context?: RpcInvokeContext,
+): Record<string, unknown> {
     const options: Record<string, unknown> = { ...originalOptions };
 
     for (const optionName of Object.keys(options)) {
@@ -112,7 +115,11 @@ function buildRequestOptions(originalOptions: Record<string, string>, context?: 
     return options;
 }
 
-function invoke<T = unknown>(methodName: string, context: RpcInvokeContext, ...params: unknown[]): Promise<TaskResponse<T>> {
+function invoke<T = unknown>(
+    methodName: string,
+    context: RpcInvokeContext,
+    ...params: unknown[]
+): Promise<TaskResponse<T>> {
     const isSystemMethod = methodName.indexOf(aria2RpcConstants.rpcSystemServiceName + '.') === 0;
     const fullMethodName = isSystemMethod ? methodName : aria2RpcConstants.rpcServiceName + '.' + methodName;
     const uniqueId = generateUniqueId();
@@ -132,14 +139,14 @@ function invoke<T = unknown>(methodName: string, context: RpcInvokeContext, ...p
         jsonrpc: aria2RpcConstants.rpcServiceVersion,
         method: fullMethodName,
         id: uniqueId,
-        params: finalParams.length > 0 ? finalParams : undefined
+        params: finalParams.length > 0 ? finalParams : undefined,
     };
 
     const callbacks: RpcConnectionCallbacks = {
         onConnectionSuccess: () => fireEvent('connectionSuccess', {}),
         onConnectionFailed: () => fireEvent('connectionFailed', {}),
         onConnectionReconnecting: () => fireEvent('connectionReconnecting', {}),
-        onConnectionWaitingToReconnect: () => fireEvent('connectionWaitingToReconnect', {})
+        onConnectionWaitingToReconnect: () => fireEvent('connectionWaitingToReconnect', {}),
     };
 
     return transport.request(requestBody, callbacks).then((payload) => {
@@ -154,7 +161,7 @@ function invoke<T = unknown>(methodName: string, context: RpcInvokeContext, ...p
                 id: payload.id,
                 success: false,
                 data: payload.error as unknown as T,
-                context
+                context,
             };
 
             context.callback?.(response as TaskResponse);
@@ -173,7 +180,7 @@ function invoke<T = unknown>(methodName: string, context: RpcInvokeContext, ...p
             id: payload.id,
             success: true,
             data: payload.result as T,
-            context
+            context,
         };
 
         context.callback?.(response as TaskResponse);
@@ -184,7 +191,7 @@ function invoke<T = unknown>(methodName: string, context: RpcInvokeContext, ...p
 
 async function invokeMulti<T>(
     method: (context: RpcInvokeContext) => Promise<TaskResponse<T>>,
-    contexts: RpcInvokeContext[]
+    contexts: RpcInvokeContext[],
 ): Promise<{ hasSuccess: boolean; hasError: boolean; results: TaskResponse<T>[] }> {
     const results: TaskResponse<T>[] = [];
     let hasSuccess = false;
@@ -196,7 +203,7 @@ async function invokeMulti<T>(
             results.push(response);
             hasSuccess = hasSuccess || response.success;
             hasError = hasError || !response.success;
-        })
+        }),
     );
 
     return { hasSuccess, hasError, results };
@@ -216,7 +223,7 @@ export const aria2RpcService = {
             'status',
             'errorCode',
             'verifiedLength',
-            'verifyIntegrityPending'
+            'verifyIntegrityPending',
         ];
     },
     getFullTaskParams(): string[] {
@@ -238,7 +245,7 @@ export const aria2RpcService = {
 
         return {
             methodName: isSystemMethod ? methodName : aria2RpcConstants.rpcServiceName + '.' + methodName,
-            params: finalParams
+            params: finalParams,
         };
     },
     canReconnect(): boolean {
@@ -250,7 +257,7 @@ export const aria2RpcService = {
             onConnectionSuccess: () => fireEvent('connectionSuccess', {}),
             onConnectionFailed: () => fireEvent('connectionFailed', {}),
             onConnectionReconnecting: () => fireEvent('connectionReconnecting', {}),
-            onConnectionWaitingToReconnect: () => fireEvent('connectionWaitingToReconnect', {})
+            onConnectionWaitingToReconnect: () => fireEvent('connectionWaitingToReconnect', {}),
         });
 
         if (context && context.callback) {
@@ -263,12 +270,14 @@ export const aria2RpcService = {
 
         return invoke<string>('addUri', context, urls, options);
     },
-    async addUriMulti(context: RpcInvokeContext): Promise<{ hasSuccess: boolean; hasError: boolean; results: TaskResponse<string>[] }> {
+    async addUriMulti(
+        context: RpcInvokeContext,
+    ): Promise<{ hasSuccess: boolean; hasError: boolean; results: TaskResponse<string>[] }> {
         const tasks = (context.tasks as { urls?: string[]; options?: Record<string, string> }[]) || [];
         const contexts: RpcInvokeContext[] = tasks.map((task) => ({
             silent: !!context.silent,
             task,
-            pauseOnAdded: context.pauseOnAdded
+            pauseOnAdded: context.pauseOnAdded,
         }));
 
         const result = await invokeMulti<string>((ctx) => this.addUri(ctx), contexts);
@@ -294,7 +303,9 @@ export const aria2RpcService = {
     forceRemove(context: RpcInvokeContext): Promise<TaskResponse> {
         return invoke('forceRemove', context, context.gid);
     },
-    async forceRemoveMulti(context: RpcInvokeContext): Promise<{ hasSuccess: boolean; hasError: boolean; results: TaskResponse[] }> {
+    async forceRemoveMulti(
+        context: RpcInvokeContext,
+    ): Promise<{ hasSuccess: boolean; hasError: boolean; results: TaskResponse[] }> {
         const gids = (context.gids as string[]) || [];
         const contexts: RpcInvokeContext[] = gids.map((gid) => ({ silent: !!context.silent, gid }));
 
@@ -309,7 +320,9 @@ export const aria2RpcService = {
     forcePause(context: RpcInvokeContext): Promise<TaskResponse> {
         return invoke('forcePause', context, context.gid);
     },
-    async forcePauseMulti(context: RpcInvokeContext): Promise<{ hasSuccess: boolean; hasError: boolean; results: TaskResponse[] }> {
+    async forcePauseMulti(
+        context: RpcInvokeContext,
+    ): Promise<{ hasSuccess: boolean; hasError: boolean; results: TaskResponse[] }> {
         const gids = (context.gids as string[]) || [];
         const contexts: RpcInvokeContext[] = gids.map((gid) => ({ silent: !!context.silent, gid }));
 
@@ -324,7 +337,9 @@ export const aria2RpcService = {
     unpause(context: RpcInvokeContext): Promise<TaskResponse> {
         return invoke('unpause', context, context.gid);
     },
-    async unpauseMulti(context: RpcInvokeContext): Promise<{ hasSuccess: boolean; hasError: boolean; results: TaskResponse[] }> {
+    async unpauseMulti(
+        context: RpcInvokeContext,
+    ): Promise<{ hasSuccess: boolean; hasError: boolean; results: TaskResponse[] }> {
         const gids = (context.gids as string[]) || [];
         const contexts: RpcInvokeContext[] = gids.map((gid) => ({ silent: !!context.silent, gid }));
 
@@ -360,7 +375,7 @@ export const aria2RpcService = {
             context,
             context.offset !== undefined ? context.offset : 0,
             context.num !== undefined ? context.num : 1000,
-            context.requestParams ?? null
+            context.requestParams ?? null,
         );
     },
     tellStopped(context: RpcInvokeContext): Promise<TaskResponse> {
@@ -369,7 +384,7 @@ export const aria2RpcService = {
             context,
             context.offset !== undefined ? context.offset : -1,
             context.num !== undefined ? context.num : 1000,
-            context.requestParams ?? null
+            context.requestParams ?? null,
         );
     },
     changePosition(context: RpcInvokeContext): Promise<TaskResponse> {
@@ -400,7 +415,9 @@ export const aria2RpcService = {
     removeDownloadResult(context: RpcInvokeContext): Promise<TaskResponse> {
         return invoke('removeDownloadResult', context, context.gid);
     },
-    async removeDownloadResultMulti(context: RpcInvokeContext): Promise<{ hasSuccess: boolean; hasError: boolean; results: TaskResponse[] }> {
+    async removeDownloadResultMulti(
+        context: RpcInvokeContext,
+    ): Promise<{ hasSuccess: boolean; hasError: boolean; results: TaskResponse[] }> {
         const gids = (context.gids as string[]) || [];
         const contexts: RpcInvokeContext[] = gids.map((gid) => ({ silent: !!context.silent, gid }));
 
@@ -471,5 +488,5 @@ export const aria2RpcService = {
     },
     onBtDownloadComplete(context: { callback: EventCallback }): void {
         addEventListener('onBtDownloadComplete', context.callback);
-    }
+    },
 };

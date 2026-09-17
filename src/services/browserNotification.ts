@@ -1,7 +1,11 @@
 import i18n from '@/i18n';
 import { ariaNgConstants } from '@/config/constants';
 import { log } from '@/services/log';
-import { getBrowserNotification, getBrowserNotificationFrequency, getBrowserNotificationSound } from '@/services/settingService';
+import {
+    getBrowserNotification,
+    getBrowserNotificationFrequency,
+    getBrowserNotificationSound,
+} from '@/services/settingService';
 import { storageGet, storageSet } from '@/services/storage';
 import type { Aria2Task } from '@/types/aria2';
 
@@ -94,7 +98,7 @@ export function notifyViaBrowser(title: string, content: string): void {
         const notification = new window.Notification(title, {
             body: content,
             icon: '/tileicon.png',
-            silent: !getBrowserNotificationSound()
+            silent: !getBrowserNotificationSound(),
         });
 
         notification.onclick = () => {

@@ -45,7 +45,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         uploadSpeed: 0,
         numActive: 0,
         numWaiting: 0,
-        numStopped: 0
+        numStopped: 0,
     },
     pollingPaused: false,
     setPollingPaused: (value) => set({ pollingPaused: value }),
@@ -53,16 +53,16 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     setTasks: (tasks) =>
         set({
             tasks,
-            enableSelectAll: tasks.length > 0
+            enableSelectAll: tasks.length > 0,
         }),
     setSearchKeyword: (keyword) => set({ searchKeyword: keyword }),
     toggleSelected: (gid) =>
         set((state) => ({
-            selected: { ...state.selected, [gid]: !state.selected[gid] }
+            selected: { ...state.selected, [gid]: !state.selected[gid] },
         })),
     setSelected: (gid, value) =>
         set((state) => ({
-            selected: { ...state.selected, [gid]: value }
+            selected: { ...state.selected, [gid]: value },
         })),
     clearSelected: () => set({ selected: {} }),
     selectAll: () => {
@@ -97,5 +97,5 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         const { tasks, selected } = get();
 
         return tasks.filter((task) => selected[task.gid]).map((task) => task.gid);
-    }
+    },
 }));

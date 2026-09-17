@@ -87,7 +87,8 @@ export function getTaskErrorDescription(task: Aria2Task): string {
     return errorInfo.descriptionKey;
 }
 
-export function getPieceStatus(bitField: string | undefined, pieceCount: number): boolean[] {    const pieces: boolean[] = [];
+export function getPieceStatus(bitField: string | undefined, pieceCount: number): boolean[] {
+    const pieces: boolean[] = [];
 
     for (let i = 0; i < pieceCount; i++) {
         pieces.push(false);
@@ -154,7 +155,11 @@ function getRelativePath(task: Aria2Task, file: Aria2File): string {
     return relativePath;
 }
 
-function getDirectoryNode(path: string, allDirectories: Aria2File[], allDirectoryMap: Record<string, Aria2File>): Aria2File {
+function getDirectoryNode(
+    path: string,
+    allDirectories: Aria2File[],
+    allDirectoryMap: Record<string, Aria2File>,
+): Aria2File {
     const existing = allDirectoryMap[path];
 
     if (existing) {
@@ -189,7 +194,7 @@ function getDirectoryNode(path: string, allDirectories: Aria2File[], allDirector
         level: parentNode ? Number(parentNode.level || 0) + 1 : 0,
         partialSelected: false,
         files: [],
-        subDirs: []
+        subDirs: [],
     };
 
     allDirectories.push(node);
@@ -202,7 +207,11 @@ function getDirectoryNode(path: string, allDirectories: Aria2File[], allDirector
     return node;
 }
 
-function pushFileToDirectoryNode(file: Aria2File, allDirectories: Aria2File[], allDirectoryMap: Record<string, Aria2File>): Aria2File {
+function pushFileToDirectoryNode(
+    file: Aria2File,
+    allDirectories: Aria2File[],
+    allDirectoryMap: Record<string, Aria2File>,
+): Aria2File {
     const directoryNode = getDirectoryNode(file.relativePath || '', allDirectories, allDirectoryMap);
 
     directoryNode.files?.push(file);
@@ -238,7 +247,8 @@ function fillAllNodes(node: Aria2File, allNodes: Aria2File[]): void {
     node.length = allSubNodesLength;
     node.selected = selectedSubNodesCount > 0 && selectedSubNodesCount === subDirs.length + files.length;
     node.partialSelected =
-        (selectedSubNodesCount > 0 && selectedSubNodesCount < subDirs.length + files.length) || partialSelectedSubNodesCount > 0;
+        (selectedSubNodesCount > 0 && selectedSubNodesCount < subDirs.length + files.length) ||
+        partialSelectedSubNodesCount > 0;
 }
 
 export function processDownloadTask(task: Aria2Task, addVirtualFileNode?: boolean): Aria2Task {
@@ -250,7 +260,8 @@ export function processDownloadTask(task: Aria2Task, addVirtualFileNode?: boolea
 
     task.totalLength = toInt(task.totalLength);
     task.completedLength = toInt(task.completedLength);
-    task.completePercent = Number(task.totalLength) > 0 ? (Number(task.completedLength) / Number(task.totalLength)) * 100 : 0;
+    task.completePercent =
+        Number(task.totalLength) > 0 ? (Number(task.completedLength) / Number(task.totalLength)) * 100 : 0;
     task.remainLength = Number(task.totalLength) - Number(task.completedLength);
     task.remainPercent = 100 - Number(task.completePercent);
     const uploadLength = task.uploadLength ? toInt(task.uploadLength) : 0;
@@ -288,7 +299,8 @@ export function processDownloadTask(task: Aria2Task, addVirtualFileNode?: boolea
             file.length = toInt(file.length);
             file.selected = file.selected === true || file.selected === 'true';
             file.completedLength = toInt(file.completedLength);
-            file.completePercent = Number(file.length) > 0 ? (Number(file.completedLength) / Number(file.length)) * 100 : 0;
+            file.completePercent =
+                Number(file.length) > 0 ? (Number(file.completedLength) / Number(file.length)) * 100 : 0;
 
             if (useVirtualFileNode) {
                 file.relativePath = getRelativePath(task, file);
@@ -465,7 +477,7 @@ export function processBtPeers(peers: Aria2Peer[], task: Aria2Task, includeLocal
             completePercent: localTaskCompletedPercent,
             downloadSpeed: Number(task.downloadSpeed || 0),
             uploadSpeed: Number(task.uploadSpeed || 0),
-            seeder: task.seeder
+            seeder: task.seeder,
         });
     }
 
@@ -496,7 +508,10 @@ export function estimateHealthPercentFromPeers(task: Aria2Task, peers: Aria2Peer
         if (completedPieceCount > maxCompletedPieceCount) {
             maxCompletedPieceCount = completedPieceCount;
             maxCompletedPercent = Number(peer.completePercent || 0);
-        } else if (completedPieceCount === maxCompletedPieceCount && Number(peer.completePercent || 0) > maxCompletedPercent) {
+        } else if (
+            completedPieceCount === maxCompletedPieceCount &&
+            Number(peer.completePercent || 0) > maxCompletedPercent
+        ) {
             maxCompletedPercent = Number(peer.completePercent || 0);
         }
     }

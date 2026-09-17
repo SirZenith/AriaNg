@@ -10,7 +10,9 @@ const packageJson = JSON.parse(readFileSync(new URL('./package.json', import.met
 let buildCommit = 'Local';
 
 try {
-    buildCommit = execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+    buildCommit = execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] })
+        .toString()
+        .trim();
 } catch {
     // ignore when git is not available
 }
@@ -18,16 +20,16 @@ try {
 export default defineConfig({
     define: {
         __APP_VERSION__: JSON.stringify(packageJson.version),
-        __APP_COMMIT__: JSON.stringify(buildCommit)
+        __APP_COMMIT__: JSON.stringify(buildCommit),
     },
     plugins: [react(), tailwindcss()],
     resolve: {
         alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url))
-        }
+            '@': fileURLToPath(new URL('./src', import.meta.url)),
+        },
     },
     server: {
-        port: 9000
+        port: 9000,
     },
     build: {
         chunkSizeWarningLimit: 1024,
@@ -44,13 +46,13 @@ export default defineConfig({
                     }
 
                     return undefined;
-                }
-            }
-        }
+                },
+            },
+        },
     },
     test: {
         environment: 'jsdom',
         globals: true,
-        include: ['src/**/*.{test,spec}.{ts,tsx}']
-    }
+        include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    },
 });

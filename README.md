@@ -6,12 +6,12 @@ AriaNg 是一个让 [aria2](https://github.com/aria2/aria2) 更易用的现代 W
 
 ## 目录结构
 
-| 路径 | 说明 |
-| --- | --- |
-| 根目录 | 新版前端（Vite + React 19 + TypeScript + Tailwind CSS + Zustand + i18next） |
-| `legacy/` | 原 AngularJS 版本，归档并保持可独立构建 |
-| `PLAN.md` | 重写计划与阶段划分（阶段 0–5 已完成） |
-| `tools/convert-langs.mjs` | 由 legacy 翻译文件生成新版 i18n 资源 |
+| 路径                      | 说明                                                                        |
+| ------------------------- | --------------------------------------------------------------------------- |
+| 根目录                    | 新版前端（Vite + React 19 + TypeScript + Tailwind CSS + Zustand + i18next） |
+| `legacy/`                 | 原 AngularJS 版本，归档并保持可独立构建                                     |
+| `PLAN.md`                 | 重写计划与阶段划分（阶段 0–5 已完成）                                       |
+| `tools/convert-langs.mjs` | 由 legacy 翻译文件生成新版 i18n 资源                                        |
 
 ## 环境要求
 
@@ -27,9 +27,22 @@ npm run build        # 类型检查并构建到 dist/
 npm run preview      # 预览构建产物
 npm run typecheck    # 仅类型检查
 npm run lint         # ESLint
+npm run format       # Prettier 格式化
+npm run format:check # 校验格式（不写入）
 npm run test         # Vitest 单元测试
 npm run convert-langs # 由 legacy 语言文件重新生成 src/locales/*/translation.json
 ```
+
+### 代码格式化
+
+格式化由 Prettier 负责，配置见 [`prettier.config.mjs`](./prettier.config.mjs)，忽略规则见 [`.prettierignore`](./.prettierignore)：
+
+- 覆盖：`src/**`（不含 `src/locales`）、`vite.config.ts`、`eslint.config.js`、`tools/**`、根 `*.md` / `*.json`、`index.html`、`public/manifest.json`
+- 忽略：`legacy/**`（归档代码）、`dist/**`、`node_modules/**`、`src/locales/**`（由 `convert-langs` 生成）、`package-lock.json`
+- 风格：4 空格缩进（JSON / Markdown / YAML 为 2）、单引号、保留分号、`printWidth` 120、`trailingComma: all`
+- ESLint 通过 `eslint-config-prettier` 关闭与 Prettier 冲突的规则
+
+CI 的 `build-web` 任务会执行 `npm run format:check`。
 
 ### 版本信息
 

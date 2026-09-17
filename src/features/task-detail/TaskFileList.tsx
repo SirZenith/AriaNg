@@ -159,7 +159,7 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
         }
 
         const targets = files.filter(
-            (file) => !file.isDir && extensions.indexOf(getFileExtension(file.fileName || '').toLowerCase()) >= 0
+            (file) => !file.isDir && extensions.indexOf(getFileExtension(file.fileName || '').toLowerCase()) >= 0,
         );
 
         if (targets.length < 1) {
@@ -180,7 +180,9 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
         setSaving(true);
 
         try {
-            const indexes = files.filter((file) => !file.isDir && selected[String(file.index)]).map((file) => file.index);
+            const indexes = files
+                .filter((file) => !file.isDir && selected[String(file.index)])
+                .map((file) => file.index);
             await aria2TaskService.selectTaskFile(task.gid, indexes);
             setChoosing(false);
             onChanged();
@@ -227,17 +229,29 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
                 ) : null}
 
                 {canChoose && !choosing ? (
-                    <button type="button" className="ml-auto text-sm text-blue-600 hover:underline" onClick={startChoosing}>
+                    <button
+                        type="button"
+                        className="ml-auto text-sm text-blue-600 hover:underline"
+                        onClick={startChoosing}
+                    >
                         {t('(Choose Files)')}
                     </button>
                 ) : null}
 
                 {choosing ? (
                     <div className="ml-auto flex flex-wrap items-center gap-2">
-                        <button type="button" className="text-sm text-blue-600 hover:underline" onClick={() => selectAll(true)}>
+                        <button
+                            type="button"
+                            className="text-sm text-blue-600 hover:underline"
+                            onClick={() => selectAll(true)}
+                        >
                             {t('Select All')}
                         </button>
-                        <button type="button" className="text-sm text-blue-600 hover:underline" onClick={() => selectAll(false)}>
+                        <button
+                            type="button"
+                            className="text-sm text-blue-600 hover:underline"
+                            onClick={() => selectAll(false)}
+                        >
                             {t('Select None')}
                         </button>
                         <select
@@ -259,7 +273,11 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
                             value={customExtensions}
                             onChange={(event) => setCustomExtensions(event.target.value)}
                         />
-                        <button type="button" className="rounded bg-gray-500 px-2 py-1 text-sm text-white" onClick={applyCustomExtensions}>
+                        <button
+                            type="button"
+                            className="rounded bg-gray-500 px-2 py-1 text-sm text-white"
+                            onClick={applyCustomExtensions}
+                        >
                             {t('Apply')}
                         </button>
                         <button
@@ -270,7 +288,11 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
                         >
                             {t('Save')}
                         </button>
-                        <button type="button" className="rounded bg-gray-400 px-3 py-1 text-sm text-white" onClick={cancelChoosing}>
+                        <button
+                            type="button"
+                            className="rounded bg-gray-400 px-3 py-1 text-sm text-white"
+                            onClick={cancelChoosing}
+                        >
                             {t('Cancel')}
                         </button>
                     </div>
@@ -298,13 +320,19 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
                             key={(file.isDir ? 'dir-' : 'file-') + String(file.nodePath || '') + String(file.index)}
                             className="grid grid-cols-12 items-center gap-2 border-b border-gray-100 px-2 py-1.5 text-sm last:border-0 dark:border-gray-700"
                         >
-                            <div className="col-span-12 flex min-w-0 items-center gap-2 sm:col-span-6" style={{ paddingLeft: indent }}>
+                            <div
+                                className="col-span-12 flex min-w-0 items-center gap-2 sm:col-span-6"
+                                style={{ paddingLeft: indent }}
+                            >
                                 {choosing && !file.isDir ? (
                                     <input
                                         type="checkbox"
                                         checked={isSelected}
                                         onChange={(event) =>
-                                            setSelected((current) => ({ ...current, [String(file.index)]: event.target.checked }))
+                                            setSelected((current) => ({
+                                                ...current,
+                                                [String(file.index)]: event.target.checked,
+                                            }))
                                         }
                                     />
                                 ) : choosing && file.isDir ? (
@@ -339,7 +367,10 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
                                 {!file.isDir ? (
                                     <>
                                         <div className="h-2 w-full overflow-hidden rounded bg-gray-200 dark:bg-gray-700">
-                                            <div className="h-full bg-[#3c8dbc]" style={{ width: Math.min(100, percent) + '%' }} />
+                                            <div
+                                                className="h-full bg-[#3c8dbc]"
+                                                style={{ width: Math.min(100, percent) + '%' }}
+                                            />
                                         </div>
                                         <span className="text-xs">{formatPercent(percent, 2) + '%'}</span>
                                     </>
@@ -358,7 +389,9 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
             </div>
 
             {task.status === 'active' ? (
-                <div className="mt-2 text-xs text-gray-500">{formatDuration(Number(task.remainTime || 0), 'HH:mm:ss')}</div>
+                <div className="mt-2 text-xs text-gray-500">
+                    {formatDuration(Number(task.remainTime || 0), 'HH:mm:ss')}
+                </div>
             ) : null}
         </div>
     );

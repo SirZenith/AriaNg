@@ -24,7 +24,7 @@ export const useSettingStore = create<SettingState>((set) => ({
     reset: () => {
         resetOptions();
         set({ options: getOptions() });
-    }
+    },
 }));
 
 export { ariaNgConstants };

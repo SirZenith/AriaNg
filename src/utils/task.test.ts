@@ -8,7 +8,7 @@ import {
     isTaskRetryable,
     orderTasks,
     processBtPeers,
-    processDownloadTask
+    processDownloadTask,
 } from './task';
 
 function createTask(overrides: Partial<Aria2Task> = {}): Aria2Task {
@@ -21,7 +21,7 @@ function createTask(overrides: Partial<Aria2Task> = {}): Aria2Task {
         uploadSpeed: '0',
         bitfield: 'f0000000',
         numPieces: '4',
-        ...overrides
+        ...overrides,
     } as Aria2Task;
 }
 
@@ -54,10 +54,10 @@ describe('processDownloadTask', () => {
                         path: '/tmp/downloads/example.mp4',
                         length: '1000',
                         completedLength: '250',
-                        selected: 'true'
-                    }
-                ]
-            })
+                        selected: 'true',
+                    },
+                ],
+            }),
         );
 
         expect(task.taskName).toBe('example.mp4');
@@ -78,7 +78,9 @@ describe('getTaskStatusKey', () => {
 describe('isTaskRetryable', () => {
     it('is only true for http errors with description', () => {
         expect(isTaskRetryable(createTask({ status: 'error', errorDescription: 'error.unknown' }))).toBe(true);
-        expect(isTaskRetryable(createTask({ status: 'error', errorDescription: 'error.unknown', bittorrent: {} }))).toBe(false);
+        expect(
+            isTaskRetryable(createTask({ status: 'error', errorDescription: 'error.unknown', bittorrent: {} })),
+        ).toBe(false);
         expect(isTaskRetryable(createTask({ status: 'complete' }))).toBe(false);
     });
 });
@@ -106,12 +108,13 @@ describe('getCombinedPieces', () => {
             { isCompleted: false, count: 1 },
             { isCompleted: true, count: 1 },
             { isCompleted: false, count: 1 },
-            { isCompleted: true, count: 1 }
+            { isCompleted: true, count: 1 },
         ]);
     });
 });
 
-describe('processBtPeers', () => {    it('swaps speeds and computes progress', () => {
+describe('processBtPeers', () => {
+    it('swaps speeds and computes progress', () => {
         const task = createTask({ numPieces: '4', bitfield: '0', completePercent: 0 });
         const peers: Aria2Peer[] = [
             {
@@ -119,8 +122,8 @@ describe('processBtPeers', () => {    it('swaps speeds and computes progress', (
                 port: '6881',
                 bitfield: 'f',
                 downloadSpeed: '10',
-                uploadSpeed: '20'
-            }
+                uploadSpeed: '20',
+            },
         ];
 
         processBtPeers(peers, task);
@@ -140,9 +143,7 @@ describe('estimateHealthPercentFromPeers', () => {
 
     it('estimates health from peer bitfields', () => {
         const task = createTask({ numPieces: '4', bitfield: '0', completePercent: 0 });
-        const peers: Aria2Peer[] = [
-            { ip: '1.1.1.1', port: '1', bitfield: 'f', downloadSpeed: '0', uploadSpeed: '0' }
-        ];
+        const peers: Aria2Peer[] = [{ ip: '1.1.1.1', port: '1', bitfield: 'f', downloadSpeed: '0', uploadSpeed: '0' }];
 
         processBtPeers(peers, task);
 
@@ -157,11 +158,23 @@ describe('processDownloadTask virtual file nodes', () => {
                 dir: '/downloads',
                 bittorrent: { mode: 'multi', info: { name: 'MyTorrent' } },
                 files: [
-                    { index: '1', path: '/downloads/MyTorrent/a/1.txt', length: '10', completedLength: '0', selected: 'true' },
-                    { index: '2', path: '/downloads/MyTorrent/b/2.txt', length: '20', completedLength: '0', selected: 'true' }
-                ]
+                    {
+                        index: '1',
+                        path: '/downloads/MyTorrent/a/1.txt',
+                        length: '10',
+                        completedLength: '0',
+                        selected: 'true',
+                    },
+                    {
+                        index: '2',
+                        path: '/downloads/MyTorrent/b/2.txt',
+                        length: '20',
+                        completedLength: '0',
+                        selected: 'true',
+                    },
+                ],
             }),
-            true
+            true,
         );
 
         expect(task.multiDir).toBe(true);

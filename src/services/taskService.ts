@@ -7,7 +7,12 @@ import { processBtPeers, processDownloadTask } from '@/utils/task';
 type TaskCallback = (response: TaskResponse) => void;
 
 export const aria2TaskService = {
-    getTaskList(type: string, full: boolean, callback?: TaskCallback, silent?: boolean): Promise<TaskResponse> | undefined {
+    getTaskList(
+        type: string,
+        full: boolean,
+        callback?: TaskCallback,
+        silent?: boolean,
+    ): Promise<TaskResponse> | undefined {
         let invokeMethod: ((context: RpcInvokeContext) => Promise<TaskResponse>) | null = null;
 
         if (type === 'downloading') {
@@ -24,10 +29,15 @@ export const aria2TaskService = {
             requestWholeInfo: full,
             requestParams: full ? aria2RpcService.getFullTaskParams() : aria2RpcService.getBasicTaskParams(),
             silent: !!silent,
-            callback
+            callback,
         });
     },
-    getTaskStatus(gid: string, callback?: TaskCallback, silent?: boolean, addVirtualFileNode?: boolean): Promise<TaskResponse> {
+    getTaskStatus(
+        gid: string,
+        callback?: TaskCallback,
+        silent?: boolean,
+        addVirtualFileNode?: boolean,
+    ): Promise<TaskResponse> {
         return aria2RpcService.tellStatus({
             gid,
             silent: !!silent,
@@ -37,17 +47,23 @@ export const aria2TaskService = {
                 }
 
                 callback?.(response);
-            }
+            },
         });
     },
     getTaskOptions(gid: string, callback?: TaskCallback, silent?: boolean) {
         return aria2RpcService.getOption({
             gid,
             silent: !!silent,
-            callback
+            callback,
         });
     },
-    setTaskOption(gid: string, key: string, value: string, callback?: (response: TaskResponse) => void, silent?: boolean) {
+    setTaskOption(
+        gid: string,
+        key: string,
+        value: string,
+        callback?: (response: TaskResponse) => void,
+        silent?: boolean,
+    ) {
         const options: Record<string, string> = {};
         options[key] = value;
 
@@ -55,14 +71,14 @@ export const aria2TaskService = {
             gid,
             options,
             silent: !!silent,
-            callback
+            callback,
         });
     },
     selectTaskFile(
         gid: string,
         selectedFileIndexArr: (string | number)[],
         callback?: (response: TaskResponse) => void,
-        silent?: boolean
+        silent?: boolean,
     ) {
         return this.setTaskOption(gid, 'select-file', selectedFileIndexArr.join(','), callback, silent);
     },
@@ -72,7 +88,7 @@ export const aria2TaskService = {
         silent?: boolean,
         requirePeers?: boolean,
         includeLocalPeer?: boolean,
-        addVirtualFileNode?: boolean
+        addVirtualFileNode?: boolean,
     ) {
         const methods = [aria2RpcService.buildMethodCall('tellStatus', gid)];
 
@@ -93,14 +109,20 @@ export const aria2TaskService = {
                     result.task = task;
                 }
 
-                if (response.success && result.task && result.task.bittorrent && data.length > 1 && data[1].length > 0) {
+                if (
+                    response.success &&
+                    result.task &&
+                    result.task.bittorrent &&
+                    data.length > 1 &&
+                    data[1].length > 0
+                ) {
                     const peers = data[1][0] as Aria2Peer[];
                     processBtPeers(peers, result.task, includeLocalPeer);
                     result.peers = peers;
                 }
 
                 callback?.(result);
-            }
+            },
         }) as Promise<TaskResponse & { task?: Aria2Task; peers?: Aria2Peer[] }>;
     },
     getBtTaskPeers(task: Aria2Task, callback?: TaskCallback, silent?: boolean, includeLocalPeer?: boolean) {
@@ -113,67 +135,82 @@ export const aria2TaskService = {
                 }
 
                 callback?.(response);
-            }
+            },
         });
     },
-    newUriTask(task: { urls: string[]; options: Record<string, string> }, pauseOnAdded: boolean, callback?: (response: TaskResponse) => void, silent?: boolean) {
+    newUriTask(
+        task: { urls: string[]; options: Record<string, string> },
+        pauseOnAdded: boolean,
+        callback?: (response: TaskResponse) => void,
+        silent?: boolean,
+    ) {
         return aria2RpcService.addUri({
             task,
             pauseOnAdded: !!pauseOnAdded,
             silent: !!silent,
-            callback
+            callback,
         });
     },
     newUriTasks(
         tasks: { urls: string[]; options: Record<string, string> }[],
         pauseOnAdded: boolean,
         callback?: (response: TaskResponse) => void,
-        silent?: boolean
+        silent?: boolean,
     ) {
         return aria2RpcService.addUriMulti({
             tasks,
             pauseOnAdded: !!pauseOnAdded,
             silent: !!silent,
-            callback
+            callback,
         });
     },
-    newTorrentTask(task: { content: string; options: Record<string, string> }, pauseOnAdded: boolean, callback?: (response: TaskResponse) => void, silent?: boolean) {
+    newTorrentTask(
+        task: { content: string; options: Record<string, string> },
+        pauseOnAdded: boolean,
+        callback?: (response: TaskResponse) => void,
+        silent?: boolean,
+    ) {
         return aria2RpcService.addTorrent({
             task,
             pauseOnAdded: !!pauseOnAdded,
             silent: !!silent,
-            callback
+            callback,
         });
     },
-    newMetalinkTask(task: { content: string; options: Record<string, string> }, pauseOnAdded: boolean, callback?: (response: TaskResponse) => void, silent?: boolean) {
+    newMetalinkTask(
+        task: { content: string; options: Record<string, string> },
+        pauseOnAdded: boolean,
+        callback?: (response: TaskResponse) => void,
+        silent?: boolean,
+    ) {
         return aria2RpcService.addMetalink({
             task,
             pauseOnAdded: !!pauseOnAdded,
             silent: !!silent,
-            callback
+            callback,
         });
     },
     startTasks(gids: string[], callback?: (response: TaskResponse) => void, silent?: boolean) {
         return aria2RpcService.unpauseMulti({
             gids,
             silent: !!silent,
-            callback
+            callback,
         });
     },
     pauseTasks(gids: string[], callback?: (response: TaskResponse) => void, silent?: boolean) {
         return aria2RpcService.forcePauseMulti({
             gids,
             silent: !!silent,
-            callback
+            callback,
         });
     },
     async retryTask(gid: string, callback?: (response: TaskResponse) => void, silent?: boolean): Promise<TaskResponse> {
         const response = (await aria2RpcService.multicall({
             methods: [
                 aria2RpcService.buildMethodCall('tellStatus', gid),
-                aria2RpcService.buildMethodCall('getOption', gid)
+                aria2RpcService.buildMethodCall('getOption', gid),
             ],
-            silent: !!silent
+            silent: !!silent,
         })) as TaskResponse<unknown[][]>;
 
         if (!response.success || !response.data) {
@@ -203,7 +240,7 @@ export const aria2TaskService = {
         const addResponse = await aria2RpcService.addUri({
             task: { urls, options },
             pauseOnAdded: false,
-            silent: !!silent
+            silent: !!silent,
         });
 
         if (!addResponse.success) {
@@ -219,7 +256,11 @@ export const aria2TaskService = {
 
         return addResponse;
     },
-    async retryTasks(tasks: Aria2Task[], callback?: (response: TaskResponse) => void, silent?: boolean): Promise<TaskResponse> {
+    async retryTasks(
+        tasks: Aria2Task[],
+        callback?: (response: TaskResponse) => void,
+        silent?: boolean,
+    ): Promise<TaskResponse> {
         let successCount = 0;
         let failedCount = 0;
 
@@ -238,14 +279,18 @@ export const aria2TaskService = {
             successCount,
             failedCount,
             hasSuccess: successCount > 0,
-            hasError: failedCount > 0
+            hasError: failedCount > 0,
         };
 
         callback?.(finalResponse);
 
         return finalResponse;
     },
-    async removeTasks(tasks: Aria2Task[], callback?: (response: TaskResponse) => void, silent?: boolean): Promise<TaskResponse> {
+    async removeTasks(
+        tasks: Aria2Task[],
+        callback?: (response: TaskResponse) => void,
+        silent?: boolean,
+    ): Promise<TaskResponse> {
         const runningTaskGids: string[] = [];
         const stoppedTaskGids: string[] = [];
 
@@ -269,7 +314,10 @@ export const aria2TaskService = {
         }
 
         if (stoppedTaskGids.length > 0) {
-            const response = await aria2RpcService.removeDownloadResultMulti({ gids: stoppedTaskGids, silent: !!silent });
+            const response = await aria2RpcService.removeDownloadResultMulti({
+                gids: stoppedTaskGids,
+                silent: !!silent,
+            });
             results.push(...response.results);
             hasSuccess = hasSuccess || response.hasSuccess;
             hasError = hasError || response.hasError;
@@ -286,13 +334,13 @@ export const aria2TaskService = {
             pos: position,
             how: 'POS_SET',
             silent: !!silent,
-            callback
+            callback,
         });
     },
     clearStoppedTasks(callback?: (response: TaskResponse) => void, silent?: boolean) {
         return aria2RpcService.purgeDownloadResult({
             silent: !!silent,
-            callback
+            callback,
         });
     },
     onConnectionSuccess(callback: (context: unknown) => void): void {
@@ -326,10 +374,14 @@ export const aria2TaskService = {
                     return;
                 }
 
-                void this.getTaskStatus(gid, (response) => {
-                    callback({ type: 'completed', task: response.success ? response.data : null });
-                }, true);
-            }
+                void this.getTaskStatus(
+                    gid,
+                    (response) => {
+                        callback({ type: 'completed', task: response.success ? response.data : null });
+                    },
+                    true,
+                );
+            },
         });
     },
     onBtTaskCompleted(callback: (context: unknown) => void): void {
@@ -342,10 +394,14 @@ export const aria2TaskService = {
                     return;
                 }
 
-                void this.getTaskStatus(gid, (response) => {
-                    callback({ type: 'btcompleted', task: response.success ? response.data : null });
-                }, true);
-            }
+                void this.getTaskStatus(
+                    gid,
+                    (response) => {
+                        callback({ type: 'btcompleted', task: response.success ? response.data : null });
+                    },
+                    true,
+                );
+            },
         });
     },
     onTaskErrorOccur(callback: (context: unknown) => void): void {
@@ -358,10 +414,14 @@ export const aria2TaskService = {
                     return;
                 }
 
-                void this.getTaskStatus(gid, (response) => {
-                    callback({ type: 'error', task: response.success ? response.data : null });
-                }, true);
-            }
+                void this.getTaskStatus(
+                    gid,
+                    (response) => {
+                        callback({ type: 'error', task: response.success ? response.data : null });
+                    },
+                    true,
+                );
+            },
         });
-    }
+    },
 };

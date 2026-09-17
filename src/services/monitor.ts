@@ -35,19 +35,19 @@ export const useMonitorStore = create<MonitorState>((set) => ({
     taskStats: {},
     recordGlobalStat: (stat) =>
         set((state) => ({
-            globalStats: pushPoint(state.globalStats, stat, ariaNgConstants.globalStatStorageCapacity)
+            globalStats: pushPoint(state.globalStats, stat, ariaNgConstants.globalStatStorageCapacity),
         })),
     recordTaskStat: (gid, stat) =>
         set((state) => ({
             taskStats: {
                 ...state.taskStats,
-                [gid]: pushPoint(state.taskStats[gid] || [], stat, ariaNgConstants.taskStatStorageCapacity)
-            }
+                [gid]: pushPoint(state.taskStats[gid] || [], stat, ariaNgConstants.taskStatStorageCapacity),
+            },
         })),
     clearTaskStats: (gid) =>
         set((state) => {
             const next = { ...state.taskStats };
             delete next[gid];
             return { taskStats: next };
-        })
+        }),
 }));

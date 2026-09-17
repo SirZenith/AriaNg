@@ -2,7 +2,7 @@ export const aria2RpcConstants = {
     rpcServiceVersion: '2.0',
     rpcServiceName: 'aria2',
     rpcSystemServiceName: 'system',
-    rpcTokenPrefix: 'token:'
+    rpcTokenPrefix: 'token:',
 } as const;
 
 export interface Aria2RpcError {
@@ -13,6 +13,6 @@ export interface Aria2RpcError {
 export const aria2RpcErrors: Record<string, Aria2RpcError> = {
     Unauthorized: {
         message: 'Unauthorized',
-        tipTextKey: 'rpc.error.unauthorized'
-    }
+        tipTextKey: 'rpc.error.unauthorized',
+    },
 };

@@ -74,7 +74,11 @@ export default function AriaNgSettingsPage() {
                 </Field>
 
                 <Field label={t('Page Title')}>
-                    <input className={inputClass} value={options.title} onChange={(event) => setOption('title', event.target.value)} />
+                    <input
+                        className={inputClass}
+                        value={options.title}
+                        onChange={(event) => setOption('title', event.target.value)}
+                    />
                 </Field>
 
                 <Field label={t('Updating Page Title Interval')}>
@@ -316,7 +320,11 @@ export default function AriaNgSettingsPage() {
             <ImportExportSection />
 
             <div className="mt-6">
-                <button type="button" className="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700" onClick={resetAll}>
+                <button
+                    type="button"
+                    className="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
+                    onClick={resetAll}
+                >
                     {t('Reset Settings')}
                 </button>
             </div>

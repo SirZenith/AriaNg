@@ -24,6 +24,9 @@ jobs:
           name: Lint
           command: npm run lint
       - run:
+          name: Format check
+          command: npm run format:check
+      - run:
           name: Unit tests
           command: npm run test
       - run:

@@ -6,7 +6,7 @@ import en from '@/locales/en/translation.json';
 
 const localeLoaders = import.meta.glob<{ default: Record<string, string> }>([
     '../locales/*/translation.json',
-    '!../locales/en/translation.json'
+    '!../locales/en/translation.json',
 ]);
 
 export function getLanguageNameFromAlias(alias: string): string | null {
@@ -92,13 +92,13 @@ export async function ensureLanguageResources(lang: string): Promise<void> {
 
 const extraTranslations: Record<string, Record<string, string>> = {
     zh_Hans: {
-        'Reset': '重置',
-        'System': '跟随系统',
-        'Shutdown': '关闭 aria2',
+        Reset: '重置',
+        System: '跟随系统',
+        Shutdown: '关闭 aria2',
         'Download Links': '下载链接',
         'There is no task': '暂无任务',
         'Connection Status': '连接状态',
-        'Protocol': '协议',
+        Protocol: '协议',
         'RPC Host': 'RPC 地址',
         'RPC Port': 'RPC 端口',
         'RPC Interface': 'RPC 接口',
@@ -112,20 +112,20 @@ const extraTranslations: Record<string, Record<string, string>> = {
         'Save Session Succeeded': '保存会话成功',
         'Completed Length': '已完成',
         'Upload Length': '已上传',
-        'Health': '健康度',
+        Health: '健康度',
         'BitTorrent Name': '种子名称',
-        'Comment': '注释',
+        Comment: '注释',
         'Creation Date': '创建时间',
         'BitTorrent Mode': '种子模式',
         'There is no file': '暂无文件',
         'There is no peer': '暂无 Peer',
         'By Address': '按地址排序',
         'Changes take effect immediately.': '修改后立即生效.',
-        'Logs': '日志',
-        'Descending': '倒序',
-        'Ascending': '正序',
-        'Remove': '删除',
-        'Apply': '应用',
+        Logs: '日志',
+        Descending: '倒序',
+        Ascending: '正序',
+        Remove: '删除',
+        Apply: '应用',
         'Select Files by Type': '按类型选择文件',
         'Aria2 RPC Port': 'RPC 端口',
         'Aria2 RPC Interface': 'RPC 接口',
@@ -134,8 +134,8 @@ const extraTranslations: Record<string, Record<string, string>> = {
         'Up to 102400 Pieces': '最多 102400 个分片',
         'Are you sure you want to remove the selected tasks?': '确定要删除选中的任务吗?',
         'There is no url in selected tasks': '选中的任务中没有下载链接',
-        'There is no info hash in selected tasks': '选中的任务中没有 Info Hash'
-    }
+        'There is no info hash in selected tasks': '选中的任务中没有 Info Hash',
+    },
 };
 
 function applyExtraTranslations(lang: string): void {
@@ -148,7 +148,7 @@ function applyExtraTranslations(lang: string): void {
 
 void i18n.use(initReactI18next).init({
     resources: {
-        en: { translation: en as Record<string, string> }
+        en: { translation: en as Record<string, string> },
     },
     lng: 'en',
     fallbackLng: 'en',
@@ -158,8 +158,8 @@ void i18n.use(initReactI18next).init({
     keySeparator: false,
     nsSeparator: false,
     interpolation: {
-        escapeValue: false
-    }
+        escapeValue: false,
+    },
 });
 
 export default i18n;

@@ -13,7 +13,7 @@ import {
     useKeyboardShortcuts,
     useLanguageSync,
     useRpcConnectionWatcher,
-    useTheme
+    useTheme,
 } from '@/hooks/useAria2';
 import { useMonitorStore } from '@/services/monitor';
 import { getAllRpcSettings, isEnableDebugMode, setDefaultRpcSetting } from '@/services/settingService';
@@ -26,7 +26,7 @@ import { formatVolume } from '@/utils/format';
 const toolbarButtonClass =
     'flex items-center gap-1 rounded px-2 py-1.5 text-sm hover:bg-white/10 disabled:opacity-40 disabled:hover:bg-transparent';
 
-export default function AppLayout({ children }: { children: ReactNode; }) {
+export default function AppLayout({ children }: { children: ReactNode }) {
     const { t } = useTranslation();
     const desktopSearchRef = useRef<HTMLInputElement>(null);
     const mobileSearchRef = useRef<HTMLInputElement>(null);
@@ -100,7 +100,7 @@ export default function AppLayout({ children }: { children: ReactNode; }) {
         delete: () => {
             void removeTasks();
         },
-        find: focusSearchBox
+        find: focusSearchBox,
     });
 
     const changeRpc = (index: number) => {
@@ -120,176 +120,184 @@ export default function AppLayout({ children }: { children: ReactNode; }) {
         Connecting: 'bg-blue-600',
         Reconnecting: 'bg-blue-600',
         Disconnected: 'bg-red-600',
-        'Waiting to reconnect': 'bg-gray-500'
+        'Waiting to reconnect': 'bg-gray-500',
     };
 
     return (
         <div className="flex h-full flex-col">
             <header className="flex flex-wrap items-center gap-x-2 gap-y-1 bg-[#3c4852] px-2 py-1.5 text-white sm:gap-x-3 sm:px-3 sm:py-2">
                 <div className="flex min-w-0 items-center gap-2">
-                    <span className="text-base font-semibold sm:text-lg" title={ 'AriaNg ' + getBuildVersion() }>
+                    <span className="text-base font-semibold sm:text-lg" title={'AriaNg ' + getBuildVersion()}>
                         AriaNg
                     </span>
                     <select
                         className="max-w-[5.5rem] truncate rounded border border-white/30 bg-[#3c4852] px-1 py-0.5 text-xs sm:max-w-[14rem]"
-                        value={ rpcSettings.findIndex((item) => item.isDefault) }
-                        onChange={ (event) => changeRpc(Number(event.target.value)) }
-                        title={ t('RPC Settings') }
+                        value={rpcSettings.findIndex((item) => item.isDefault)}
+                        onChange={(event) => changeRpc(Number(event.target.value))}
+                        title={t('RPC Settings')}
                     >
-                        { rpcSettings.map((item, index) => (
-                            <option key={ index } value={ index }>
-                                { item.rpcAlias || item.rpcHost + ':' + item.rpcPort }
-                                { item.protocol === 'ws' || item.protocol === 'wss' ? ' (WS)' : '' }
+                        {rpcSettings.map((item, index) => (
+                            <option key={index} value={index}>
+                                {item.rpcAlias || item.rpcHost + ':' + item.rpcPort}
+                                {item.protocol === 'ws' || item.protocol === 'wss' ? ' (WS)' : ''}
                             </option>
-                        )) }
+                        ))}
                     </select>
                 </div>
 
                 <div className="flex items-center gap-0.5 sm:gap-1">
-                    <Link to="/new" className={ toolbarButtonClass } title={ t('New') } aria-label={ t('New') }>
+                    <Link to="/new" className={toolbarButtonClass} title={t('New')} aria-label={t('New')}>
                         <Plus className="h-4 w-4" aria-hidden="true" />
-                        <span className="hidden md:inline">{ t('New') }</span>
+                        <span className="hidden md:inline">{t('New')}</span>
                     </Link>
                     <button
                         type="button"
-                        className={ toolbarButtonClass }
-                        disabled={ selectedTasks.length < 1 }
-                        title={ t('Start') }
-                        aria-label={ t('Start') }
-                        onClick={ () => void changeTasksState('start') }
+                        className={toolbarButtonClass}
+                        disabled={selectedTasks.length < 1}
+                        title={t('Start')}
+                        aria-label={t('Start')}
+                        onClick={() => void changeTasksState('start')}
                     >
                         <Play className="h-4 w-4" aria-hidden="true" />
-                        <span className="hidden md:inline">{ t('Start') }</span>
+                        <span className="hidden md:inline">{t('Start')}</span>
                     </button>
                     <button
                         type="button"
-                        className={ toolbarButtonClass }
-                        disabled={ selectedTasks.length < 1 }
-                        title={ t('Pause') }
-                        aria-label={ t('Pause') }
-                        onClick={ () => void changeTasksState('pause') }
+                        className={toolbarButtonClass}
+                        disabled={selectedTasks.length < 1}
+                        title={t('Pause')}
+                        aria-label={t('Pause')}
+                        onClick={() => void changeTasksState('pause')}
                     >
                         <Pause className="h-4 w-4" aria-hidden="true" />
-                        <span className="hidden md:inline">{ t('Pause') }</span>
+                        <span className="hidden md:inline">{t('Pause')}</span>
                     </button>
                     <button
                         type="button"
-                        className={ toolbarButtonClass }
-                        disabled={ selectedTasks.length < 1 }
-                        title={ t('Delete') }
-                        aria-label={ t('Delete') }
-                        onClick={ () => void removeTasks() }
+                        className={toolbarButtonClass}
+                        disabled={selectedTasks.length < 1}
+                        title={t('Delete')}
+                        aria-label={t('Delete')}
+                        onClick={() => void removeTasks()}
                     >
                         <Trash2 className="h-4 w-4" aria-hidden="true" />
-                        <span className="hidden md:inline">{ t('Delete') }</span>
+                        <span className="hidden md:inline">{t('Delete')}</span>
                     </button>
                     <button
                         type="button"
-                        className={ toolbarButtonClass + ' hidden min-[420px]:flex' }
-                        disabled={ tasks.length < 1 }
-                        title={ t('Select All') }
-                        aria-label={ t('Select All') }
-                        onClick={ () => selectAll() }
+                        className={toolbarButtonClass + ' hidden min-[420px]:flex'}
+                        disabled={tasks.length < 1}
+                        title={t('Select All')}
+                        aria-label={t('Select All')}
+                        onClick={() => selectAll()}
                     >
                         <CheckSquare className="h-4 w-4" aria-hidden="true" />
-                        <span className="hidden md:inline">{ t('Select All') }</span>
+                        <span className="hidden md:inline">{t('Select All')}</span>
                     </button>
                 </div>
 
                 <div className="ml-auto hidden items-center gap-2 sm:flex">
                     <input
-                        ref={ desktopSearchRef }
+                        ref={desktopSearchRef}
                         type="text"
                         className="w-40 rounded border border-white/20 bg-white/10 px-2 py-1 text-sm placeholder-white/60 focus:outline-none lg:w-56"
-                        placeholder={ t('Search') }
-                        value={ searchKeyword }
-                        onChange={ (event) => setSearchKeyword(event.target.value) }
+                        placeholder={t('Search')}
+                        value={searchKeyword}
+                        onChange={(event) => setSearchKeyword(event.target.value)}
                     />
                 </div>
 
                 <button
                     type="button"
-                    className={ toolbarButtonClass + ' ml-auto sm:hidden' }
-                    title={ t('Search') }
-                    aria-label={ t('Search') }
-                    aria-expanded={ showMobileSearch }
-                    onClick={ () => setShowMobileSearch((value) => !value) }
+                    className={toolbarButtonClass + ' ml-auto sm:hidden'}
+                    title={t('Search')}
+                    aria-label={t('Search')}
+                    aria-expanded={showMobileSearch}
+                    onClick={() => setShowMobileSearch((value) => !value)}
                 >
                     <Search className="h-4 w-4" aria-hidden="true" />
                 </button>
 
-                { showMobileSearch ? (
+                {showMobileSearch ? (
                     <div className="flex w-full items-center gap-1 sm:hidden">
                         <input
-                            ref={ mobileSearchRef }
+                            ref={mobileSearchRef}
                             type="text"
                             className="min-w-0 flex-1 rounded border border-white/20 bg-white/10 px-2 py-1 text-sm placeholder-white/60 focus:outline-none"
-                            placeholder={ t('Search') }
-                            value={ searchKeyword }
-                            onChange={ (event) => setSearchKeyword(event.target.value) }
+                            placeholder={t('Search')}
+                            value={searchKeyword}
+                            onChange={(event) => setSearchKeyword(event.target.value)}
                         />
                         <button
                             type="button"
                             className="flex items-center rounded px-2 py-1 hover:bg-white/10"
-                            title={ t('Close') }
-                            aria-label={ t('Close') }
-                            onClick={ () => setShowMobileSearch(false) }
+                            title={t('Close')}
+                            aria-label={t('Close')}
+                            onClick={() => setShowMobileSearch(false)}
                         >
                             <X className="h-4 w-4" aria-hidden="true" />
                         </button>
                     </div>
-                ) : null }
+                ) : null}
             </header>
 
-            <main className="min-h-0 flex-1 overflow-y-auto p-4">{ children }</main>
+            <main className="min-h-0 flex-1 overflow-y-auto p-4">{children}</main>
 
             <footer className="relative flex items-center justify-between bg-[#3c4852] px-3 py-1 text-xs text-white">
                 <div className="flex items-center gap-2">
-                    <span className={ `rounded px-2 py-0.5 ${statusLabelClass[rpcStatus] || 'bg-gray-500'}` }>
-                        { t(rpcStatus) }
+                    <span className={`rounded px-2 py-0.5 ${statusLabelClass[rpcStatus] || 'bg-gray-500'}`}>
+                        {t(rpcStatus)}
                     </span>
                     <button
                         type="button"
                         className="rounded px-2 py-0.5 hover:bg-white/10"
-                        title={ t('Global Rate Limit') }
-                        onClick={ () => setQuickSetting(true) }
+                        title={t('Global Rate Limit')}
+                        onClick={() => setQuickSetting(true)}
                     >
-                        { t('Global Rate Limit') }
+                        {t('Global Rate Limit')}
                     </button>
                 </div>
                 <button
                     type="button"
                     className="flex items-center gap-4 rounded px-2 py-0.5 hover:bg-white/10"
-                    title={ t('Click to pin') }
-                    onClick={ () => setShowChart((value) => !value) }
+                    title={t('Click to pin')}
+                    onClick={() => setShowChart((value) => !value)}
                 >
                     <span>
                         <span className="mr-1 text-green-400">&#8595;</span>
-                        { formatVolume(globalStat.downloadSpeed) + '/s' }
+                        {formatVolume(globalStat.downloadSpeed) + '/s'}
                     </span>
                     <span>
                         <span className="mr-1 text-blue-300">&#8593;</span>
-                        { formatVolume(globalStat.uploadSpeed) + '/s' }
+                        {formatVolume(globalStat.uploadSpeed) + '/s'}
                     </span>
                 </button>
 
-                { showChart ? (
+                {showChart ? (
                     <div className="absolute bottom-full right-2 z-40 w-80 rounded border border-gray-300 bg-white p-2 shadow dark:border-gray-600 dark:bg-gray-800">
-                        <SpeedChart data={ globalStats } height={ 120 } />
+                        <SpeedChart data={globalStats} height={120} />
                     </div>
-                ) : null }
+                ) : null}
             </footer>
 
             <BottomNav
-                counts={ { active: globalStat.numActive, waiting: globalStat.numWaiting, stopped: globalStat.numStopped } }
-                debugMode={ debugMode }
+                counts={{
+                    active: globalStat.numActive,
+                    waiting: globalStat.numWaiting,
+                    stopped: globalStat.numStopped,
+                }}
+                debugMode={debugMode}
             />
 
             <NotificationContainer />
 
-            { quickSetting ? (
-                <QuickSettingDialog type="globalSpeedLimit" title="Global Rate Limit" onClose={ () => setQuickSetting(false) } />
-            ) : null }
+            {quickSetting ? (
+                <QuickSettingDialog
+                    type="globalSpeedLimit"
+                    title="Global Rate Limit"
+                    onClose={() => setQuickSetting(false)}
+                />
+            ) : null}
         </div>
     );
 }

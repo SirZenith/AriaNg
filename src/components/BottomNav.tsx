@@ -7,7 +7,7 @@ import {
     Settings,
     SlidersHorizontal,
     Wrench,
-    type LucideIcon
+    type LucideIcon,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
@@ -45,7 +45,7 @@ export default function BottomNav({ counts, debugMode }: BottomNavProps) {
         { to: '/settings/ariang', icon: Settings, label: t('Settings') },
         { to: '/settings/aria2/basic', icon: SlidersHorizontal, label: t('Aria2 Settings') },
         { to: '/status', icon: Server, label: t('Aria2 Status') },
-        ...(debugMode ? [{ to: '/debug', icon: Wrench, label: t('Debug') }] : [])
+        ...(debugMode ? [{ to: '/debug', icon: Wrench, label: t('Debug') }] : []),
     ];
 
     return (
@@ -54,7 +54,13 @@ export default function BottomNav({ counts, debugMode }: BottomNavProps) {
                 const Icon = item.icon;
 
                 return (
-                    <NavLink key={item.to} to={item.to} className={navItemClass} title={item.label} aria-label={item.label}>
+                    <NavLink
+                        key={item.to}
+                        to={item.to}
+                        className={navItemClass}
+                        title={item.label}
+                        aria-label={item.label}
+                    >
                         <span className="relative">
                             <Icon className="h-5 w-5" aria-hidden="true" />
                             {item.badge && item.badge > 0 ? (

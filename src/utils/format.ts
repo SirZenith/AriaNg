@@ -11,7 +11,7 @@ export function formatNumber(value: number, fractionSize: number): string {
 
     return value.toLocaleString('en-US', {
         minimumFractionDigits: fractionSize,
-        maximumFractionDigits: fractionSize
+        maximumFractionDigits: fractionSize,
     });
 }
 
@@ -78,7 +78,7 @@ export function formatDateTime(datetime: Date | number | string, format: string)
         DD: pad(date.getDate()),
         HH: pad(date.getHours()),
         mm: pad(date.getMinutes()),
-        ss: pad(date.getSeconds())
+        ss: pad(date.getSeconds()),
     };
 
     return format.replace(/YYYY|MM|DD|HH|mm|ss/g, (match) => replacements[match]);
@@ -95,10 +95,7 @@ export function formatDuration(durationSeconds: number, format: string): string 
     const seconds = totalSeconds % 60;
     const pad = (value: number) => String(value).padStart(2, '0');
 
-    return format
-        .replace(/HH/g, pad(hours))
-        .replace(/mm/g, pad(minutes))
-        .replace(/ss/g, pad(seconds));
+    return format.replace(/HH/g, pad(hours)).replace(/mm/g, pad(minutes)).replace(/ss/g, pad(seconds));
 }
 
 export function getTimeOption(time: number): TimeOption {
@@ -122,7 +119,7 @@ export function getTimeOption(time: number): TimeOption {
     return {
         name,
         value,
-        optionValue: time
+        optionValue: time,
     };
 }
 
@@ -133,7 +130,7 @@ export function getTimeOptions(timeList: number[], withDisabled: boolean): TimeO
         options.push({
             name: 'Disabled',
             value: 0,
-            optionValue: 0
+            optionValue: 0,
         });
     }
 

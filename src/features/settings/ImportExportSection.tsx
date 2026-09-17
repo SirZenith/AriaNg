@@ -85,7 +85,11 @@ export default function ImportExportSection() {
             <h3 className="mb-3 text-base font-semibold">{t('Import / Export AriaNg Settings')}</h3>
 
             <div className="flex flex-wrap gap-2">
-                <button type="button" className="rounded bg-[#3c8dbc] px-3 py-1.5 text-sm text-white" onClick={exportSettings}>
+                <button
+                    type="button"
+                    className="rounded bg-[#3c8dbc] px-3 py-1.5 text-sm text-white"
+                    onClick={exportSettings}
+                >
                     {t('Export Settings')}
                 </button>
                 <label className="cursor-pointer rounded bg-green-600 px-3 py-1.5 text-sm text-white">
@@ -97,10 +101,18 @@ export default function ImportExportSection() {
                         onChange={(event) => void openImportFile(event.target.files?.[0])}
                     />
                 </label>
-                <button type="button" className="rounded bg-gray-500 px-3 py-1.5 text-sm text-white" onClick={registerMagnetHandler}>
+                <button
+                    type="button"
+                    className="rounded bg-gray-500 px-3 py-1.5 text-sm text-white"
+                    onClick={registerMagnetHandler}
+                >
                     {t('Register as Magnet Handler')}
                 </button>
-                <button type="button" className="rounded bg-amber-600 px-3 py-1.5 text-sm text-white" onClick={clearHistory}>
+                <button
+                    type="button"
+                    className="rounded bg-amber-600 px-3 py-1.5 text-sm text-white"
+                    onClick={clearHistory}
+                >
                     {t('Clear Settings History')}
                 </button>
             </div>
@@ -123,8 +135,14 @@ export default function ImportExportSection() {
             </div>
 
             {showExport ? (
-                <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 p-4" onClick={() => setShowExport(false)}>
-                    <div className="mt-16 w-full max-w-2xl rounded bg-white p-4 dark:bg-gray-800" onClick={(event) => event.stopPropagation()}>
+                <div
+                    className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 p-4"
+                    onClick={() => setShowExport(false)}
+                >
+                    <div
+                        className="mt-16 w-full max-w-2xl rounded bg-white p-4 dark:bg-gray-800"
+                        onClick={(event) => event.stopPropagation()}
+                    >
                         <h3 className="mb-2 font-semibold">{t('Export Settings')}</h3>
                         <textarea
                             readOnly
@@ -132,13 +150,25 @@ export default function ImportExportSection() {
                             value={exportText}
                         />
                         <div className="mt-2 flex justify-end gap-2">
-                            <button type="button" className="rounded bg-gray-400 px-3 py-1.5 text-sm text-white" onClick={() => setShowExport(false)}>
+                            <button
+                                type="button"
+                                className="rounded bg-gray-400 px-3 py-1.5 text-sm text-white"
+                                onClick={() => setShowExport(false)}
+                            >
                                 {t('Close')}
                             </button>
-                            <button type="button" className="rounded bg-gray-500 px-3 py-1.5 text-sm text-white" onClick={downloadExport}>
+                            <button
+                                type="button"
+                                className="rounded bg-gray-500 px-3 py-1.5 text-sm text-white"
+                                onClick={downloadExport}
+                            >
                                 {t('Download')}
                             </button>
-                            <button type="button" className="rounded bg-[#3c8dbc] px-3 py-1.5 text-sm text-white" onClick={() => void copyExport()}>
+                            <button
+                                type="button"
+                                className="rounded bg-[#3c8dbc] px-3 py-1.5 text-sm text-white"
+                                onClick={() => void copyExport()}
+                            >
                                 {t('Copy')}
                             </button>
                         </div>

@@ -104,7 +104,11 @@ export function pushArrayTo<T>(array: T[], items: T[]): T[] {
     return array;
 }
 
-export function extendArray<T extends Record<string, unknown>>(sourceArray: T[], targetArray: T[], keyProperty: string): boolean {
+export function extendArray<T extends Record<string, unknown>>(
+    sourceArray: T[],
+    targetArray: T[],
+    keyProperty: string,
+): boolean {
     if (!targetArray || !sourceArray || sourceArray.length !== targetArray.length) {
         return false;
     }
@@ -132,7 +136,7 @@ export function parseOrderType(value: string): OrderType {
     const values = value.split(':');
     const obj = {
         type: values[0],
-        order: values[1]
+        order: values[1],
     } as OrderType;
 
     obj.equals = function (other: { type: string; order?: string }): boolean {
@@ -153,7 +157,7 @@ export function parseOrderType(value: string): OrderType {
         },
         set: function (value: boolean) {
             this.order = value ? 'desc' : 'asc';
-        }
+        },
     });
 
     return obj;

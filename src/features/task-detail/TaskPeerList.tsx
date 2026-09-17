@@ -61,7 +61,9 @@ export default function TaskPeerList({ peers }: TaskPeerListProps) {
                         <div className="col-span-6 truncate text-xs sm:col-span-3" title={peer.peerId}>
                             {peer.client?.info || peer.peerId || '-'}
                         </div>
-                        <div className="col-span-3 text-xs sm:col-span-2">{formatPercent(Number(peer.completePercent || 0), 2) + '%'}</div>
+                        <div className="col-span-3 text-xs sm:col-span-2">
+                            {formatPercent(Number(peer.completePercent || 0), 2) + '%'}
+                        </div>
                         <div className="col-span-3 text-right text-xs sm:col-span-2">
                             {formatVolume(Number(peer.downloadSpeed)) + '/s'}
                         </div>

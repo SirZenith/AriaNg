@@ -53,7 +53,11 @@ export default function QuickSettingDialog({ type, title, onClose }: QuickSettin
             {loading ? (
                 <div className="p-4 text-center text-sm text-gray-500">{t('Loading')}</div>
             ) : (
-                <OptionForm options={options} values={values} onChange={(key, value) => void changeOption(key, value)} />
+                <OptionForm
+                    options={options}
+                    values={values}
+                    onChange={(key, value) => void changeOption(key, value)}
+                />
             )}
         </Modal>
     );

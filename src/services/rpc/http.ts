@@ -70,7 +70,7 @@ export function createHttpTransport(): RpcTransport {
                     method,
                     headers,
                     body: requestBody,
-                    signal: AbortSignal.timeout(ariaNgConstants.httpRequestTimeout)
+                    signal: AbortSignal.timeout(ariaNgConstants.httpRequestTimeout),
                 });
 
                 const data = (await response.json()) as RpcResultPayload;
@@ -83,8 +83,8 @@ export function createHttpTransport(): RpcTransport {
                 return {
                     id: body.id,
                     error: {
-                        message: 'Cannot connect to aria2!'
-                    }
+                        message: 'Cannot connect to aria2!',
+                    },
                 };
             }
         },
@@ -93,6 +93,6 @@ export function createHttpTransport(): RpcTransport {
         },
         on(): void {
             // not implement
-        }
+        },
     };
 }

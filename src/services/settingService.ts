@@ -79,7 +79,7 @@ export function getCurrentRpcSetting(): AriaNgRpcSetting {
         protocol: options.protocol,
         httpMethod: options.httpMethod,
         rpcRequestHeaders: options.rpcRequestHeaders,
-        secret: options.secret
+        secret: options.secret,
     };
 }
 
@@ -125,7 +125,7 @@ export function addNewRpcSetting(): AriaNgRpcSetting {
         protocol: getDefaultProtocol(),
         httpMethod: ariaNgDefaultOptions.httpMethod,
         rpcRequestHeaders: '',
-        secret: ''
+        secret: '',
     };
 
     options.extendRpcServers.push(setting);
@@ -184,7 +184,7 @@ export function setDefaultRpcSetting(setting: AriaNgRpcSetting): void {
         httpMethod: setting.httpMethod,
         rpcRequestHeaders: setting.rpcRequestHeaders,
         secret: setting.secret,
-        extendRpcServers: servers
+        extendRpcServers: servers,
     });
 }
 
@@ -243,8 +243,7 @@ export function setTheme(value: AriaNgOptions['theme']): void {
 
 export function isBrowserSupportDarkMode(): boolean {
     return (
-        typeof window.matchMedia === 'function' &&
-        window.matchMedia('(prefers-color-scheme: dark)').media !== 'not all'
+        typeof window.matchMedia === 'function' && window.matchMedia('(prefers-color-scheme: dark)').media !== 'not all'
     );
 }
 

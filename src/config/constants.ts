@@ -18,7 +18,7 @@ export const ariaNgConstants = {
     errorTooltipDelay: 500,
     notificationInPageTimeout: 2000,
     historyMaxStoreCount: 10,
-    cachedDebugLogsLimit: 100
+    cachedDebugLogsLimit: 100,
 } as const;
 
 export interface AriaNgOptions {
@@ -106,5 +106,5 @@ export const ariaNgDefaultOptions: AriaNgOptions = {
     waitingTaskListPageDisplayOrder: 'default:asc',
     stoppedTaskListPageDisplayOrder: 'default:asc',
     fileListDisplayOrder: 'default:asc',
-    peerListDisplayOrder: 'default:asc'
+    peerListDisplayOrder: 'default:asc',
 };

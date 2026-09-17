@@ -1,7 +1,15 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
-import { closestCenter, DndContext, PointerSensor, useSensor, useSensors, type DragEndEvent, type DragStartEvent } from '@dnd-kit/core';
+import {
+    closestCenter,
+    DndContext,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    type DragEndEvent,
+    type DragStartEvent,
+} from '@dnd-kit/core';
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import ContextMenu, { type ContextMenuItem } from '@/components/ContextMenu';
@@ -61,7 +69,7 @@ export default function TaskListPage({ location }: { location: string }) {
 
     const visibleTasks = orderTasks(
         tasks.filter((task) => filterTask(task, searchKeyword)),
-        orderType
+        orderType,
     );
 
     const selectedTasks = tasks.filter((task) => selected[task.gid]);
@@ -150,9 +158,14 @@ export default function TaskListPage({ location }: { location: string }) {
             if (oldIndex >= 0 && newIndex >= 0) {
                 setTasks(arrayMove(visibleTasks, oldIndex, newIndex));
 
-                await aria2TaskService.changeTaskPosition(String(active.id), newIndex, () => {
-                    setPollingPaused(false);
-                }, true);
+                await aria2TaskService.changeTaskPosition(
+                    String(active.id),
+                    newIndex,
+                    () => {
+                        setPollingPaused(false);
+                    },
+                    true,
+                );
 
                 return;
             }
@@ -177,10 +190,18 @@ export default function TaskListPage({ location }: { location: string }) {
             {
                 label: t('Retry'),
                 disabled: !hasRetryable,
-                onClick: () => targets.filter((item) => isTaskRetryable(item)).forEach((item) => void retryTask(item))
+                onClick: () => targets.filter((item) => isTaskRetryable(item)).forEach((item) => void retryTask(item)),
             },
-            { label: t('Start'), disabled: !hasResumable, onClick: () => void aria2TaskService.startTasks(targets.map((item) => item.gid)) },
-            { label: t('Pause'), disabled: !hasPausable, onClick: () => void aria2TaskService.pauseTasks(targets.map((item) => item.gid)) },
+            {
+                label: t('Start'),
+                disabled: !hasResumable,
+                onClick: () => void aria2TaskService.startTasks(targets.map((item) => item.gid)),
+            },
+            {
+                label: t('Pause'),
+                disabled: !hasPausable,
+                onClick: () => void aria2TaskService.pauseTasks(targets.map((item) => item.gid)),
+            },
             { label: t('Delete'), onClick: () => void removeTasks(targets) },
             { divider: true, label: '' },
             { label: t('By File Name'), onClick: () => changeDisplayOrder('name:asc') },
@@ -193,13 +214,13 @@ export default function TaskListPage({ location }: { location: string }) {
             {
                 label: t('Copy Download Url'),
                 disabled: !targets.some((item) => item.singleUrl),
-                onClick: () => void copyDownloadUrls(targets)
+                onClick: () => void copyDownloadUrls(targets),
             },
             {
                 label: t('Copy Magnet Link'),
                 disabled: !targets.some((item) => item.infoHash),
-                onClick: () => void copyMagnetLinks(targets)
-            }
+                onClick: () => void copyMagnetLinks(targets),
+            },
         ];
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [contextMenu, selected, selectedTasks, t]);
@@ -208,7 +229,7 @@ export default function TaskListPage({ location }: { location: string }) {
         const completePercent = Number(task.completePercent || 0);
         const statusText = t(getTaskStatusKey(task, true), {
             errorcode: task.errorCode,
-            verifiedPercent: task.verifiedPercent
+            verifiedPercent: task.verifiedPercent,
         });
         const isActive = task.status === 'active';
 
@@ -269,7 +290,9 @@ export default function TaskListPage({ location }: { location: string }) {
                                 </div>
                                 <div className="text-xs text-gray-500 dark:text-gray-400">
                                     {formatVolume(Number(task.totalLength))}
-                                    {task.files ? ` (${t('format.settings.file-count', { count: task.selectedFileCount })})` : ''}
+                                    {task.files
+                                        ? ` (${t('format.settings.file-count', { count: task.selectedFileCount })})`
+                                        : ''}
                                 </div>
                             </div>
                         </div>
@@ -284,7 +307,10 @@ export default function TaskListPage({ location }: { location: string }) {
                             <div className="mt-0.5 flex justify-between text-xs">
                                 <span>{formatPercent(completePercent, 2) + '%'}</span>
                                 <span className="text-gray-500">
-                                    {isActive && task.remainTime !== undefined && task.remainTime >= 0 && task.remainTime < 86400
+                                    {isActive &&
+                                    task.remainTime !== undefined &&
+                                    task.remainTime >= 0 &&
+                                    task.remainTime < 86400
                                         ? formatDuration(Number(task.remainTime), 'HH:mm:ss')
                                         : ''}
                                 </span>
@@ -331,20 +357,36 @@ export default function TaskListPage({ location }: { location: string }) {
                 </button>
 
                 {location === 'stopped' ? (
-                    <button type="button" className="text-sm text-red-600 hover:underline" onClick={() => void clearStoppedTasks()}>
+                    <button
+                        type="button"
+                        className="text-sm text-red-600 hover:underline"
+                        onClick={() => void clearStoppedTasks()}
+                    >
                         {t('Clear Stopped Tasks')}
                     </button>
                 ) : null}
 
-                <button type="button" className="ml-auto text-sm text-blue-600 hover:underline" onClick={() => clearSelected()}>
+                <button
+                    type="button"
+                    className="ml-auto text-sm text-blue-600 hover:underline"
+                    onClick={() => clearSelected()}
+                >
                     {t('Select None')}
                 </button>
             </div>
 
             {visibleTasks.length > 0 ? (
                 isDraggable ? (
-                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={(event) => void handleDragEnd(event)}>
-                        <SortableContext items={visibleTasks.map((task) => task.gid)} strategy={verticalListSortingStrategy}>
+                    <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragStart={handleDragStart}
+                        onDragEnd={(event) => void handleDragEnd(event)}
+                    >
+                        <SortableContext
+                            items={visibleTasks.map((task) => task.gid)}
+                            strategy={verticalListSortingStrategy}
+                        >
                             <div>{visibleTasks.map(renderRow)}</div>
                         </SortableContext>
                     </DndContext>
@@ -362,7 +404,12 @@ export default function TaskListPage({ location }: { location: string }) {
             </div>
 
             {contextMenu ? (
-                <ContextMenu x={contextMenu.x} y={contextMenu.y} items={contextMenuItems} onClose={() => setContextMenu(null)} />
+                <ContextMenu
+                    x={contextMenu.x}
+                    y={contextMenu.y}
+                    items={contextMenuItems}
+                    onClose={() => setContextMenu(null)}
+                />
             ) : null}
         </section>
     );
@@ -377,13 +424,13 @@ interface SortableTaskRowProps {
 function SortableTaskRow({ task, isDraggable, children }: SortableTaskRowProps) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: task.gid,
-        disabled: !isDraggable
+        disabled: !isDraggable,
     });
 
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
-        opacity: isDragging ? 0.6 : 1
+        opacity: isDragging ? 0.6 : 1,
     };
 
     return (

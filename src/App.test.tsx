@@ -5,7 +5,7 @@ import App from './App';
 beforeAll(() => {
     vi.stubGlobal(
         'fetch',
-        vi.fn(() => new Promise<never>(() => undefined))
+        vi.fn(() => new Promise<never>(() => undefined)),
     );
 });
 

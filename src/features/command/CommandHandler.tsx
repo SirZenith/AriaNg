@@ -83,7 +83,10 @@ export default function CommandHandler() {
                     try {
                         secret = base64UrlDecode(secret);
                     } catch {
-                        notifyInPage('Error', i18n.t('RPC secret is not base64 encoded!'), { type: 'error', delay: false });
+                        notifyInPage('Error', i18n.t('RPC secret is not base64 encoded!'), {
+                            type: 'error',
+                            delay: false,
+                        });
                         navigate('/downloading', { replace: true });
                         return;
                     }
@@ -100,7 +103,7 @@ export default function CommandHandler() {
                     protocol,
                     httpMethod: ariaNgDefaultOptions.httpMethod,
                     rpcRequestHeaders: '',
-                    secret
+                    secret,
                 });
 
                 window.location.reload();

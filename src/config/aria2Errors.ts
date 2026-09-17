@@ -33,5 +33,5 @@ export const aria2Errors: Record<string, Aria2ErrorInfo> = {
     '28': { descriptionKey: 'error.option.bad' },
     '29': { descriptionKey: 'error.server.overload' },
     '30': { descriptionKey: 'error.rpc.request.parse.failed' },
-    '32': { descriptionKey: 'error.checksum.failed' }
+    '32': { descriptionKey: 'error.checksum.failed' },
 };

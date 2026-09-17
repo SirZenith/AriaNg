@@ -5,7 +5,7 @@ const typeStyles: Record<string, string> = {
     info: 'border-blue-400 bg-blue-50 text-blue-900 dark:bg-blue-950 dark:text-blue-100',
     success: 'border-green-400 bg-green-50 text-green-900 dark:bg-green-950 dark:text-green-100',
     warning: 'border-amber-400 bg-amber-50 text-amber-900 dark:bg-amber-950 dark:text-amber-100',
-    error: 'border-red-400 bg-red-50 text-red-900 dark:bg-red-950 dark:text-red-100'
+    error: 'border-red-400 bg-red-50 text-red-900 dark:bg-red-950 dark:text-red-100',
 };
 
 export default function NotificationContainer() {
