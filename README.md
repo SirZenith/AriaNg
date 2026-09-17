@@ -1,96 +1,73 @@
 # AriaNg
-[![License](https://img.shields.io/github/license/mayswind/AriaNg.svg?style=flat)](https://github.com/mayswind/AriaNg/blob/master/LICENSE)
-[![Lastest Build](https://img.shields.io/circleci/project/github/mayswind/AriaNg.svg?style=flat)](https://circleci.com/gh/mayswind/AriaNg/tree/master)
-[![Lastest Release](https://img.shields.io/github/release/mayswind/AriaNg.svg?style=flat)](https://github.com/mayswind/AriaNg/releases)
 
-## Introduction
-AriaNg is a modern web frontend making [aria2](https://github.com/aria2/aria2) easier to use. AriaNg is written in pure html & javascript, thus it does not need any compilers or runtime environment. You can just put AriaNg in your web server and open it in your browser. AriaNg uses responsive layout, and supports any desktop or mobile devices.
+AriaNg 是一个让 [aria2](https://github.com/aria2/aria2) 更易用的现代 Web 前端。
 
-## Features
-1. Pure Html & Javascript, no runtime required
-2. Responsive design, supporting desktop and mobile devices
-3. User-friendly interface
-    * Sort tasks (by name, size, progress, remaining time, download speed, etc.), files, bittorrent peers
-    * Search tasks
-    * Retry tasks
-    * Adjust task order by dragging
-    * More information of tasks (health percentage, client information of bt peers, etc.)
-    * Filter files by specified file types (videos, audios, pictures, documents, applications, archives, etc.) or file extensions
-    * Tree view for multi-directory task
-    * Download / upload speed chart for aria2 or single task
-    * Full support for aria2 settings
-4. Dark theme
-5. Url command line api support
-6. Download finished notification
-7. Multi-languages support
-8. Multi aria2 RPC host support
-9. Exporting and Importing settings support
-10. Less bandwidth usage, only requesting incremental data
+> 当前仓库为 **Vite + React + TypeScript** 重写版本；原 AngularJS 实现保存在 [`legacy/`](./legacy) 中，可独立构建。
 
-## Screenshots
-#### Desktop
-![AriaNg](https://raw.githubusercontent.com/mayswind/AriaNg-WebSite/master/screenshots/desktop.png)
-#### Mobile Device
-![AriaNg](https://raw.githubusercontent.com/mayswind/AriaNg-WebSite/master/screenshots/mobile.png)
+## 目录结构
 
-## Installation
-AriaNg now provides three versions, standard version, all-in-one version and [AriaNg Native](https://github.com/mayswind/AriaNg-Native). Standard version is suitable for deployment in the web server, and provides on-demand loading. All-In-One version is suitable for local using, and you can download it and just open the only html file in browser. [AriaNg Native](https://github.com/mayswind/AriaNg-Native) is also suitable for local using, and is no need for browser. 
+| 路径 | 说明 |
+| --- | --- |
+| 根目录 | 新版前端（Vite + React 19 + TypeScript + Tailwind CSS + Zustand + i18next） |
+| `legacy/` | 原 AngularJS 版本，归档并保持可独立构建 |
+| `PLAN.md` | 重写计划与阶段划分（阶段 0–5 已完成） |
+| `tools/convert-langs.mjs` | 由 legacy 翻译文件生成新版 i18n 资源 |
 
-#### Prebuilt release
-Latest Release: [https://github.com/mayswind/AriaNg/releases](https://github.com/mayswind/AriaNg/releases)
+## 环境要求
 
-Latest Daily Build (Standard Version): [https://github.com/mayswind/AriaNg-DailyBuild/archive/master.zip](https://github.com/mayswind/AriaNg-DailyBuild/archive/master.zip)
+Node.js `>= 20`。
 
-#### Building from source
-Make sure you have [Node.js](https://nodejs.org/), [NPM](https://www.npmjs.com/) and [Gulp](https://gulpjs.com/) installed. Then download the source code, and follow these steps.
+## 开发与构建
 
-##### Standard Version
+```bash
+npm install
 
-    $ npm install
-    $ gulp clean build
+npm run dev          # 开发服务器（默认 http://localhost:9000）
+npm run build        # 类型检查并构建到 dist/
+npm run preview      # 预览构建产物
+npm run typecheck    # 仅类型检查
+npm run lint         # ESLint
+npm run test         # Vitest 单元测试
+npm run convert-langs # 由 legacy 语言文件重新生成 src/locales/*/translation.json
+```
 
-##### All-In-One Version
+### 版本信息
 
-    $ npm install
-    $ gulp clean build-bundle
+构建时会注入 `buildVersion`（取自 `package.json` 的 `version`）与 `buildCommit`（`git rev-parse --short HEAD`），并展示在「AriaNg 设置」页底部。
 
-The builds will be placed in the dist directory.
+## 部署
 
-#### Usage Notes
-Since AriaNg standard version loads language resources asynchronously, you may not open index.html directly on the local file system to run AriaNg. It is recommended that you can use the all-in-one version or deploy AriaNg in a web container or download [AriaNg Native](https://github.com/mayswind/AriaNg-Native) that does not require a browser to run.
+- `dist/` 为纯静态资源，可直接部署到任意静态服务器。
+- 路由使用 Hash 模式，服务端无需额外 rewrite 配置。
+- 若部署在子路径下，请在 `vite.config.ts` 中设置 `base` 为对应子路径。
+- 构建产物包含 `manifest.json` 与 PWA 图标，浏览器可将应用「安装」为 PWA；同时通过 `protocol_handlers` 注册 `magnet:` 协议（需 HTTPS 或 localhost）。
+- **不注册 Service Worker，不提供离线缓存**；离线时仅受浏览器普通 HTTP 缓存影响。
+- 兼容旧版 URL 命令（`#!/...` 会在启动时重写为 `#/...`），包括 `#!/new/:url` 与 `#!/settings/rpc/set/...`。
 
-## Translating
+## CI 与发布
 
-Everyone is welcome to contribute translations. All translations files are put in `/src/langs/`. You can just modify and commit a new pull request.
+- [`.circleci/config.yml`](./.circleci/config.yml)：`build-web`（typecheck / lint / test / build）、`build-legacy`、`publish_daily_build`。
+- [`scripts/publish_dailybuild.sh`](./scripts/publish_dailybuild.sh)：将 `dist/` 发布到每日构建仓库（需配置写权限部署密钥）。
 
-If you want to translate AriaNg to a new language, you can add language configuration to `/src/scripts/config/languages.js`, then copy `/i18n/en.sample.txt` to `/src/langs/` and rename it to the language code to be translated, then you can start the translation work.
+## legacy 版本（AngularJS）
 
-Currently available translations:
+`legacy/` 保留重写前的完整实现，可独立安装与构建：
 
-| Tag | Language | Contributors |
-| --- | --- | --- |
-| cz-CZ | Čeština | [@vorm04](https://github.com/vorm04) |
-| de-DE | Deutsch | [@Malonsow](https://github.com/Malonsow) |
-| en | English | / |
-| es | Español | [@castillofrancodamian](https://github.com/castillofrancodamian) |
-| fr-FR | Français | [@Valaraukar86](https://github.com/Valaraukar86) |
-| it-IT | Italiano | [@ale-saglia](https://github.com/ale-saglia) |
-| pl-PL | Polski | [@Pirania3680](https://github.com/Pirania3680) |
-| ru-RU | Русский | [@gazizovemil](https://github.com/gazizovemil) |
-| zh-Hans | 简体中文 | / |
-| zh-Hant | 繁體中文 | [@zhtw2013](https://github.com/zhtw2013) [@ChiaYen-Kan](https://github.com/ChiaYen-Kan) |
+```bash
+cd legacy
+npm install
 
-Don't see your language? Help us add it!
+npm run build               # 标准版，输出到 legacy/dist
+npx gulp clean build-bundle # all-in-one 单文件版
+```
 
-## Documents
+构建需要 Node.js（原项目要求 `>= 14`）。
+
+## 文档与演示
+
 1. [English](http://ariang.mayswind.net)
 2. [Simplified Chinese (简体中文)](http://ariang.mayswind.net/zh_Hans)
 
-## Demo
-Please visit [http://ariang.mayswind.net/latest](http://ariang.mayswind.net/latest)
-
-## Third Party Extensions
-There are some third-party applications based on AriaNg, so you can use AriaNg in more scenarios or devices. Please visit [Third Party Extensions](http://ariang.mayswind.net/3rd-extensions.html) for more information.
-
 ## License
-[MIT](https://github.com/mayswind/AriaNg/blob/master/LICENSE)
+
+[MIT](./LICENSE)

@@ -131,11 +131,3 @@ Temporary Items
 *.code-workspace
 
 .tmp
-
-### Vite / React project
-.vite/
-coverage/
-*.local
-.env
-.env.*
-!.env.example
