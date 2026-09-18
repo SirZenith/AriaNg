@@ -133,6 +133,28 @@ describe('processBtPeers', () => {
         expect(peers[0].downloadSpeed).toBe(20);
         expect(peers[0].uploadSpeed).toBe(10);
     });
+
+    it('parses the client info from the percent encoded peer id', () => {
+        const task = createTask({ numPieces: '4', bitfield: '0', completePercent: 0 });
+        const peers: Aria2Peer[] = [
+            {
+                ip: '127.0.0.1',
+                port: '6881',
+                bitfield: 'f',
+                downloadSpeed: '0',
+                uploadSpeed: '0',
+                peerId: '%2DqB4500%2Dabcdefghijkl',
+            },
+        ];
+
+        processBtPeers(peers, task);
+
+        expect(peers[0].client).toEqual({
+            name: 'qBittorrent',
+            version: '4.5.0',
+            info: 'qBittorrent 4.5.0',
+        });
+    });
 });
 
 describe('estimateHealthPercentFromPeers', () => {

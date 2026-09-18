@@ -2,6 +2,7 @@ import i18n from '@/i18n';
 import { aria2Errors } from '@/config/aria2Errors';
 import type { Aria2File, Aria2Peer, Aria2Task } from '@/types/aria2';
 import { countArray, parseOrderType, orderByArray } from './common';
+import { decodePercentEncodedString, parseBittorrentClient } from './peerId';
 
 export function getFileName(file: Aria2File): string {
     if (!file) {
@@ -461,6 +462,22 @@ export function processBtPeers(peers: Aria2Peer[], task: Aria2Task, includeLocal
         peer.downloadSpeed = upstreamToSpeed;
         peer.uploadSpeed = downstreamFromSpeed;
         peer.seeder = peer.seeder === true || peer.seeder === 'true';
+
+        if (peer.peerId) {
+            const decodedPeerId = decodePercentEncodedString(peer.peerId);
+            const clientInfo = decodedPeerId ? parseBittorrentClient(decodedPeerId) : null;
+
+            if (clientInfo && clientInfo.client !== 'unknown') {
+                const name = clientInfo.client.trim();
+                const version = (clientInfo.version || '').trim();
+
+                peer.client = {
+                    name,
+                    version,
+                    info: name + (version ? ' ' + version : ''),
+                };
+            }
+        }
 
         if (completedPieceCount === localCompletedPieceCount && peer.completePercent !== localTaskCompletedPercent) {
             peer.completePercent = localTaskCompletedPercent;

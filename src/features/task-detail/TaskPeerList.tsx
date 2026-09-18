@@ -1,17 +1,40 @@
+import { ArrowDown, ArrowUp, Copy } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { notifyInPage } from '@/services/notification';
 import type { Aria2Peer } from '@/types/aria2';
+import { copyText } from '@/utils/clipboard';
 import { formatPercent, formatVolume } from '@/utils/format';
+import { toDisplayablePeerId } from '@/utils/peerId';
 import { orderPeers } from '@/utils/task';
 
 interface TaskPeerListProps {
     peers: Aria2Peer[];
 }
 
+const ipMaxLength = 25;
+
+function middleEllipsis(value: string, maxLength: number): string {
+    if (value.length <= maxLength) {
+        return value;
+    }
+
+    const head = Math.ceil((maxLength - 1) / 2);
+    const tail = Math.floor((maxLength - 1) / 2);
+
+    return value.slice(0, head) + '…' + value.slice(value.length - tail);
+}
+
 export default function TaskPeerList({ peers }: TaskPeerListProps) {
     const { t } = useTranslation();
     const [orderType, setOrderType] = useState('default:asc');
     const orderedPeers = useMemo(() => orderPeers(peers, orderType), [peers, orderType]);
+
+    const copyPeerIp = async (ip: string) => {
+        if (await copyText(ip)) {
+            notifyInPage('', t('Data has been copied to clipboard.'), { type: 'success' });
+        }
+    };
 
     if (peers.length < 1) {
         return <div className="p-4 text-center text-sm text-gray-500">{t('There is no peer')}</div>;
@@ -34,44 +57,69 @@ export default function TaskPeerList({ peers }: TaskPeerListProps) {
                 </select>
             </div>
 
-            <div className="rounded border border-gray-200 dark:border-gray-700">
-                <div className="hidden grid-cols-12 gap-2 border-b border-gray-200 bg-gray-50 px-2 py-1 text-xs font-semibold sm:grid dark:border-gray-700 dark:bg-gray-900">
-                    <div className="col-span-3">{t('Address')}</div>
-                    <div className="col-span-3">{t('Client')}</div>
-                    <div className="col-span-2">{t('Progress')}</div>
-                    <div className="col-span-2 text-right">{t('Download Speed')}</div>
-                    <div className="col-span-2 text-right">{t('Upload Speed')}</div>
-                </div>
+            <div className="flex flex-col gap-2">
+                {orderedPeers.map((peer, index) => {
+                    const displayIp = peer.ip || peer.name || '-';
+                    const displayClient = peer.client?.info || (peer.peerId ? toDisplayablePeerId(peer.peerId) : '-');
 
-                {orderedPeers.map((peer, index) => (
-                    <div
-                        key={(peer.peerId || peer.name || 'peer') + index}
-                        className="grid grid-cols-12 items-center gap-2 border-b border-gray-100 px-2 py-1.5 text-sm last:border-0 dark:border-gray-700"
-                    >
-                        <div className="col-span-12 flex items-center gap-1 sm:col-span-3">
-                            <span className="truncate" title={peer.name}>
-                                {peer.name}
-                            </span>
-                            {peer.seeder === true || peer.seeder === 'true' ? (
-                                <span className="text-green-600" title={t('Seeding')}>
-                                    &#8679;
+                    return (
+                        <div
+                            key={(peer.peerId || peer.name || 'peer') + index}
+                            className="flex flex-col gap-2 rounded border border-gray-200 p-2 text-sm dark:border-gray-700"
+                        >
+                            <div className="flex items-center justify-between gap-2">
+                                <span className="min-w-0 truncate font-mono text-xs" title={peer.ip}>
+                                    {middleEllipsis(displayIp, ipMaxLength)}
                                 </span>
-                            ) : null}
+                                {peer.ip ? (
+                                    <button
+                                        type="button"
+                                        className="shrink-0 rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-200"
+                                        title={t('Copy')}
+                                        aria-label={t('Copy')}
+                                        onClick={() => void copyPeerIp(peer.ip)}
+                                    >
+                                        <Copy className="h-3.5 w-3.5" aria-hidden="true" />
+                                    </button>
+                                ) : null}
+                            </div>
+
+                            <div className="flex min-w-0 items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                                <span className="min-w-0 truncate" title={displayClient}>
+                                    {displayClient}
+                                </span>
+                                {peer.seeder ? (
+                                    <span className="shrink-0 text-green-600" title={t('Seeding')}>
+                                        &#8679;
+                                    </span>
+                                ) : null}
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <div className="h-2 min-w-0 flex-1 overflow-hidden rounded bg-gray-200 dark:bg-gray-700">
+                                    <div
+                                        className="h-full bg-[#3c8dbc]"
+                                        style={{ width: Math.min(100, Number(peer.completePercent || 0)) + '%' }}
+                                    />
+                                </div>
+                                <span className="shrink-0 text-xs">
+                                    {formatPercent(Number(peer.completePercent || 0), 2) + '%'}
+                                </span>
+                            </div>
+
+                            <div className="flex items-center gap-3 text-xs">
+                                <span className="flex items-center gap-1 text-green-600 dark:text-green-500">
+                                    <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" />
+                                    {formatVolume(Number(peer.downloadSpeed)) + '/s'}
+                                </span>
+                                <span className="flex items-center gap-1 text-blue-500 dark:text-blue-400">
+                                    <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" />
+                                    {formatVolume(Number(peer.uploadSpeed)) + '/s'}
+                                </span>
+                            </div>
                         </div>
-                        <div className="col-span-6 truncate text-xs sm:col-span-3" title={peer.peerId}>
-                            {peer.client?.info || peer.peerId || '-'}
-                        </div>
-                        <div className="col-span-3 text-xs sm:col-span-2">
-                            {formatPercent(Number(peer.completePercent || 0), 2) + '%'}
-                        </div>
-                        <div className="col-span-3 text-right text-xs sm:col-span-2">
-                            {formatVolume(Number(peer.downloadSpeed)) + '/s'}
-                        </div>
-                        <div className="col-span-3 text-right text-xs sm:col-span-2">
-                            {formatVolume(Number(peer.uploadSpeed)) + '/s'}
-                        </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </div>
     );
