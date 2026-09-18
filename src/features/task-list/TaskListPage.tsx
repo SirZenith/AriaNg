@@ -79,8 +79,8 @@ export default function TaskListPage({ location }: { location: string }) {
         ? location === 'waiting'
             ? options.waitingTaskListPageDisplayOrder
             : location === 'stopped'
-              ? options.stoppedTaskListPageDisplayOrder
-              : options.displayOrder
+                ? options.stoppedTaskListPageDisplayOrder
+                : options.displayOrder
         : options.displayOrder;
 
     const visibleTasks = orderTasks(
@@ -447,12 +447,6 @@ export default function TaskListPage({ location }: { location: string }) {
                     {t('There is no task')}
                 </div>
             )}
-
-            <div className="text-center">
-                <Link to="/new" className="text-sm text-blue-600 hover:underline">
-                    {t('New')}
-                </Link>
-            </div>
 
             {contextMenu ? (
                 <ContextMenu
