@@ -404,7 +404,7 @@ export function getTaskStatusKey(task: Aria2Task, simplify?: boolean): string {
 }
 
 type TaskCardStatus =
-    'verify_integrity_pending'
+    | 'verify_integrity_pending'
     | 'verified_length'
     | 'seeding'
     | 'downloading'
@@ -412,8 +412,7 @@ type TaskCardStatus =
     | 'paused'
     | 'complete'
     | 'error'
-    | 'removed'
-    ;
+    | 'removed';
 
 export function getTaskCardStatus(task: Aria2Task): TaskCardStatus | null {
     if (!task) {
@@ -423,24 +422,24 @@ export function getTaskCardStatus(task: Aria2Task): TaskCardStatus | null {
     switch (task.status) {
         case 'active':
             if (task.verifyIntegrityPending) {
-                return 'verify_integrity_pending'
+                return 'verify_integrity_pending';
             } else if (task.verifiedLength) {
-                return 'verified_length'
+                return 'verified_length';
             } else if (isSeeding(task)) {
-                return 'seeding'
+                return 'seeding';
             } else {
-                return 'downloading'
+                return 'downloading';
             }
         case 'waiting':
-            return 'waiting'
+            return 'waiting';
         case 'paused':
-            return 'paused'
+            return 'paused';
         case 'complete':
-            return 'complete'
+            return 'complete';
         case 'error':
-            return 'error'
+            return 'error';
         case 'removed':
-            return 'removed'
+            return 'removed';
         default:
             return null;
     }
