@@ -74,11 +74,7 @@ export default function ImportExportSection() {
     return (
         <div>
             <div className="flex flex-wrap gap-2">
-                <button
-                    type="button"
-                    className="rounded bg-[#3c8dbc] px-3 py-1.5 text-sm text-white"
-                    onClick={exportSettings}
-                >
+                <button type="button" className="btn btn-primary btn-sm" onClick={exportSettings}>
                     {t('Export Settings')}
                 </button>
                 <label className="cursor-pointer rounded bg-green-600 px-3 py-1.5 text-sm text-white">
@@ -109,7 +105,7 @@ export default function ImportExportSection() {
                 <button
                     type="button"
                     disabled={!importText}
-                    className="mt-1 rounded bg-[#3c8dbc] px-3 py-1.5 text-sm text-white disabled:opacity-40"
+                    className="btn btn-primary btn-sm mt-1"
                     onClick={applyImport}
                 >
                     {t('Import')}
@@ -146,11 +142,7 @@ export default function ImportExportSection() {
                             >
                                 {t('Download')}
                             </button>
-                            <button
-                                type="button"
-                                className="rounded bg-[#3c8dbc] px-3 py-1.5 text-sm text-white"
-                                onClick={() => void copyExport()}
-                            >
+                            <button type="button" className="btn btn-primary btn-sm" onClick={() => void copyExport()}>
                                 {t('Copy')}
                             </button>
                         </div>

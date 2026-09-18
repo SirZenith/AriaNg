@@ -22,7 +22,7 @@ interface NavItem {
 const navItemClass = ({ isActive }: { isActive: boolean }) =>
     'flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 px-1 py-1.5 text-[11px] leading-tight transition-colors ' +
     (isActive
-        ? 'text-[#3c8dbc] dark:text-[#5ba7d6]'
+        ? 'text-primary dark:text-primary-light'
         : 'text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-100');
 
 export default function BottomNav({ counts, debugMode }: BottomNavProps) {
@@ -43,7 +43,7 @@ export default function BottomNav({ counts, debugMode }: BottomNavProps) {
     ];
 
     return (
-        <nav className="shrink-0 border-t border-gray-200 bg-white px-4 dark:border-gray-700 dark:bg-gray-800">
+        <nav className="bottom-nav px-4">
             <div className="mx-auto flex w-full max-w-[1000px]">
                 {items.map((item) => {
                     const Icon = item.icon;

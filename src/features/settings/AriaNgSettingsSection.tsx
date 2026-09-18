@@ -75,7 +75,7 @@ export default function AriaNgSettingsSection({ hideTabs = false, activeTab }: A
                             className={
                                 'rounded px-2 py-1 text-sm ' +
                                 (currentTab === tab.key
-                                    ? 'bg-[#3c8dbc] text-white'
+                                    ? 'bg-primary text-white'
                                     : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300')
                             }
                             onClick={() => setCurrentTab(tab.key)}

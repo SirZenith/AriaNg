@@ -84,7 +84,7 @@ export default function RpcSettingsSection() {
                         type="button"
                         className={
                             'rounded px-2 py-1 text-sm ' +
-                            (index === currentIndex ? 'bg-[#3c8dbc] text-white' : 'bg-gray-100 dark:bg-gray-700')
+                            (index === currentIndex ? 'bg-primary text-white' : 'bg-gray-100 dark:bg-gray-700')
                         }
                         onClick={() => setCurrentIndex(index)}
                     >
@@ -106,11 +106,7 @@ export default function RpcSettingsSection() {
                     <RpcSettingFields setting={current} onChange={updateField} />
 
                     <div className="flex flex-wrap gap-2">
-                        <button
-                            type="button"
-                            className="rounded bg-[#3c8dbc] px-3 py-1.5 text-sm text-white"
-                            onClick={save}
-                        >
+                        <button type="button" className="btn btn-primary btn-sm" onClick={save}>
                             {t('Save')}
                         </button>
                         {!current.isDefault ? (

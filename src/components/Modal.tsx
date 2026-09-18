@@ -16,19 +16,12 @@ export default function Modal({ title, onClose, children, footer, wide }: ModalP
             onClick={onClose}
         >
             <div
-                className={
-                    'mt-16 mb-8 w-full rounded bg-white text-gray-800 shadow-xl dark:bg-gray-800 dark:text-gray-100 ' +
-                    (wide ? 'max-w-3xl' : 'max-w-xl')
-                }
+                className={'modal-panel mt-16 mb-8 w-full ' + (wide ? 'max-w-3xl' : 'max-w-xl')}
                 onClick={(event) => event.stopPropagation()}
             >
-                <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-700">
+                <div className="modal-header">
                     <h3 className="font-semibold">{title}</h3>
-                    <button
-                        type="button"
-                        className="text-xl leading-none opacity-60 hover:opacity-100"
-                        onClick={onClose}
-                    >
+                    <button type="button" className="icon-btn text-xl leading-none" onClick={onClose}>
                         &times;
                     </button>
                 </div>

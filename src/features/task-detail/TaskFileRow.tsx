@@ -59,7 +59,7 @@ function ProgressPie({ percent }: { percent: number }) {
         >
             <span
                 className="absolute inset-0 rounded-full"
-                style={{ background: `conic-gradient(#3c8dbc ${value * 3.6}deg, transparent 0deg)` }}
+                style={{ background: `conic-gradient(var(--color-primary) ${value * 3.6}deg, transparent 0deg)` }}
             />
         </span>
     );
@@ -101,7 +101,7 @@ function TaskFileRow({
     const allSelected = totalCount > 0 && selectedCount === totalCount;
     const progressBar = (
         <div className="h-2 w-full overflow-hidden bg-gray-200 dark:bg-gray-700">
-            <div className="h-full bg-[#3c8dbc]" style={{ width: Math.min(100, percent) + '%' }} />
+            <div className="h-full bg-primary" style={{ width: Math.min(100, percent) + '%' }} />
         </div>
     );
 

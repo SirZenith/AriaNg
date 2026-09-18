@@ -7,8 +7,7 @@ import { aria2TaskService } from '@/services/taskService';
 import { useSettingStore } from '@/stores/settingStore';
 import { useTaskStore } from '@/stores/taskStore';
 
-const toolbarButtonClass =
-    'flex items-center gap-1 rounded px-2 py-1.5 text-sm hover:bg-white/10 disabled:opacity-40 disabled:hover:bg-transparent';
+const toolbarButtonClass = 'toolbar-btn';
 
 export default function TaskListToolbar() {
     const { t } = useTranslation();
@@ -130,7 +129,7 @@ export default function TaskListToolbar() {
                 <input
                     ref={desktopSearchRef}
                     type="text"
-                    className="w-40 rounded border border-white/20 bg-white/10 px-2 py-1 text-sm placeholder-white/60 focus:outline-none lg:w-56"
+                    className="toolbar-input w-40 lg:w-56"
                     placeholder={t('Search')}
                     value={searchKeyword}
                     onChange={(event) => setSearchKeyword(event.target.value)}
@@ -153,14 +152,14 @@ export default function TaskListToolbar() {
                     <input
                         ref={mobileSearchRef}
                         type="text"
-                        className="min-w-0 flex-1 rounded border border-white/20 bg-white/10 px-2 py-1 text-sm placeholder-white/60 focus:outline-none"
+                        className="toolbar-input min-w-0 flex-1"
                         placeholder={t('Search')}
                         value={searchKeyword}
                         onChange={(event) => setSearchKeyword(event.target.value)}
                     />
                     <button
                         type="button"
-                        className="flex items-center rounded px-2 py-1 hover:bg-white/10"
+                        className="toolbar-btn"
                         title={t('Close')}
                         aria-label={t('Close')}
                         onClick={() => setShowMobileSearch(false)}

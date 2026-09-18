@@ -94,13 +94,13 @@ describe('TaskListPage task card', () => {
         expect(screen.getByTitle('Connections').textContent).toContain('12');
     });
 
-    it('keeps the speed text on a single line', () => {
+    it('uses the shared chip style for the speed text', () => {
         const speedText = formatVolume(999999999999) + '/s';
         useTaskStore.setState({ tasks: [createTask({ downloadSpeed: 999999999999 })] });
 
         renderPage();
 
-        expect(screen.getByText(speedText).className).toContain('whitespace-nowrap');
+        expect(screen.getByText(speedText).className).toContain('chip');
     });
 
     it('toggles the selection when clicking the task name', () => {

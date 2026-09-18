@@ -88,7 +88,7 @@ export default function RpcSettingsEditor({ item }: { item: string }) {
             <RpcSettingFields setting={draft} onChange={setField} />
 
             <div className="flex flex-wrap gap-2">
-                <button type="button" className="rounded bg-[#3c8dbc] px-3 py-1.5 text-sm text-white" onClick={save}>
+                <button type="button" className="btn btn-primary btn-sm" onClick={save}>
                     {t('Save')}
                 </button>
                 {existing && !existing.isDefault ? (

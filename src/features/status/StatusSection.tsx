@@ -93,11 +93,7 @@ export default function StatusSection() {
             ) : null}
 
             <div className="mt-6 flex flex-wrap gap-2">
-                <button
-                    type="button"
-                    className="rounded bg-[#3c8dbc] px-4 py-2 text-sm text-white hover:bg-[#367fa9]"
-                    onClick={reconnect}
-                >
+                <button type="button" className="btn btn-primary px-4 py-2" onClick={reconnect}>
                     {t('Reconnect')}
                 </button>
                 <button

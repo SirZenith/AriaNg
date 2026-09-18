@@ -14,7 +14,7 @@ export default function TaskDetailToolbar() {
         <div className="mx-auto flex w-full max-w-[1000px] items-center gap-x-1">
             <button
                 type="button"
-                className="flex shrink-0 items-center rounded p-1.5 hover:bg-white/10"
+                className="toolbar-icon-btn"
                 title={t('Back')}
                 aria-label={t('Back')}
                 onClick={() => navigate(-1)}

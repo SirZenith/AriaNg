@@ -59,7 +59,7 @@ export default function TaskSettingsPanel({ options, values, onConfirm, onClose 
                     </button>
                     <button
                         type="button"
-                        className="rounded bg-[#3c8dbc] px-4 py-2 text-sm text-white hover:bg-[#367fa9]"
+                        className="btn btn-primary px-4 py-2"
                         onClick={() => {
                             onConfirm(draft);
                             onClose();

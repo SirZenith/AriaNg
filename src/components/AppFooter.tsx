@@ -27,12 +27,10 @@ export default function AppFooter() {
         <>
             <div className="relative mx-auto flex w-full max-w-[1000px] items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <span className={`rounded px-2 py-0.5 ${statusLabelClass[rpcStatus] || 'bg-gray-500'}`}>
-                        {t(rpcStatus)}
-                    </span>
+                    <span className={`badge ${statusLabelClass[rpcStatus] || 'bg-gray-500'}`}>{t(rpcStatus)}</span>
                     <button
                         type="button"
-                        className="rounded px-2 py-0.5 hover:bg-white/10"
+                        className="toolbar-btn"
                         title={t('Global Rate Limit')}
                         onClick={() => setQuickSetting(true)}
                     >
@@ -41,7 +39,7 @@ export default function AppFooter() {
                 </div>
                 <button
                     type="button"
-                    className="flex items-center gap-4 rounded px-2 py-0.5 hover:bg-white/10"
+                    className="toolbar-btn gap-4"
                     title={t('Click to pin')}
                     onClick={() => setShowChart((value) => !value)}
                 >
@@ -56,7 +54,7 @@ export default function AppFooter() {
                 </button>
 
                 {showChart ? (
-                    <div className="absolute bottom-full right-2 z-40 w-80 rounded border border-gray-300 bg-white p-2 shadow dark:border-gray-600 dark:bg-gray-800">
+                    <div className="popover absolute right-2 bottom-full z-40 w-80 p-2">
                         <SpeedChart data={globalStats} height={120} />
                     </div>
                 ) : null}

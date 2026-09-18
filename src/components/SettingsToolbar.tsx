@@ -76,12 +76,7 @@ export default function SettingsToolbar() {
 
     return (
         <div className="mx-auto flex w-full max-w-[1000px] items-center gap-x-1">
-            <Link
-                to={backTo}
-                className="flex shrink-0 items-center rounded p-1.5 hover:bg-white/10"
-                title={t('Back')}
-                aria-label={t('Back')}
-            >
+            <Link to={backTo} className="toolbar-icon-btn" title={t('Back')} aria-label={t('Back')}>
                 <ArrowLeft className="h-5 w-5" aria-hidden="true" />
             </Link>
             <span className="min-w-0 flex-1 truncate text-sm font-medium">{t(title)}</span>

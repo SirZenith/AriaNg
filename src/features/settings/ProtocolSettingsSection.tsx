@@ -37,7 +37,7 @@ export default function ProtocolSettingsSection({
                             className={
                                 'rounded px-2 py-1 text-sm ' +
                                 (currentType === category.key
-                                    ? 'bg-[#3c8dbc] text-white'
+                                    ? 'bg-primary text-white'
                                     : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300')
                             }
                             onClick={() => setCurrentType(category.key)}

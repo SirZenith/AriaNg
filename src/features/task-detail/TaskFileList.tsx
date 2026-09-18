@@ -299,11 +299,7 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
 
                 {isMultiDir ? (
                     <>
-                        <button
-                            type="button"
-                            className="rounded bg-[#3c8dbc] px-3 py-1.5 text-sm text-white hover:bg-[#367fa9]"
-                            onClick={expandAll}
-                        >
+                        <button type="button" className="btn btn-primary btn-sm" onClick={expandAll}>
                             {t('Expand All')}
                         </button>
                         <button
@@ -384,7 +380,7 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
                         <button
                             type="button"
                             disabled={saving}
-                            className="rounded bg-[#3c8dbc] px-3 py-1 text-sm text-white disabled:opacity-50"
+                            className="btn btn-primary btn-sm"
                             onClick={() => void saveChoosing()}
                         >
                             {t('Save')}

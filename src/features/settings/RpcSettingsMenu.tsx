@@ -21,9 +21,7 @@ export default function RpcSettingsMenu() {
                             {setting.rpcAlias || setting.rpcHost + ':' + setting.rpcPort}
                         </span>
                         {setting.isDefault ? (
-                            <span className="shrink-0 rounded bg-[#3c8dbc] px-1.5 py-0.5 text-[10px] text-white">
-                                {t('Default')}
-                            </span>
+                            <span className="badge bg-primary px-1.5 text-[10px]">{t('Default')}</span>
                         ) : null}
                         <ChevronRight className="h-4 w-4 shrink-0 text-gray-400" aria-hidden="true" />
                     </Link>

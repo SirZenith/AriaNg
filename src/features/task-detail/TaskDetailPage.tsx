@@ -89,7 +89,7 @@ export default function TaskDetailPage() {
                             className={
                                 'flex items-center gap-1 px-3 py-2 text-sm ' +
                                 (currentTab === item.key
-                                    ? 'border-b-2 border-[#3c8dbc] text-[#3c8dbc]'
+                                    ? 'border-b-2 border-primary text-primary'
                                     : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300')
                             }
                             onClick={() => setCurrentTab(item.key)}

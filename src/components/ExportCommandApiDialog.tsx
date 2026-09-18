@@ -87,11 +87,7 @@ export default function ExportCommandApiDialog({ options, onClose }: ExportComma
                     >
                         {t('Close')}
                     </button>
-                    <button
-                        type="button"
-                        className="rounded bg-[#3c8dbc] px-4 py-2 text-sm text-white hover:bg-[#367fa9]"
-                        onClick={() => void copy()}
-                    >
+                    <button type="button" className="btn btn-primary px-4 py-2" onClick={() => void copy()}>
                         {copied ? t('Data has been copied to clipboard.') : t('Copy')}
                     </button>
                 </>

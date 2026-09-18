@@ -33,10 +33,8 @@ export default function TaskCard({ task, isDraggable, onRetry, onCopyDownloadUrl
             {({ handleProps }) => (
                 <div
                     className={
-                        'flex h-full cursor-pointer flex-col gap-2 rounded-lg border bg-white p-3 text-sm shadow-sm transition-colors dark:bg-gray-800 ' +
-                        (isSelected
-                            ? 'border-[#3c8dbc] ring-1 ring-[#3c8dbc]/40'
-                            : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600')
+                        'card flex h-full cursor-pointer flex-col gap-2 p-3 text-sm ' +
+                        (isSelected ? 'card-selected' : 'card-interactive')
                     }
                     onClick={() => toggleSelected(task.gid)}
                     onContextMenu={(event) => {
@@ -61,7 +59,7 @@ export default function TaskCard({ task, isDraggable, onRetry, onCopyDownloadUrl
 
                         <Link
                             to={'/task/detail/' + task.gid}
-                            className="shrink-0 rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-200"
+                            className="icon-btn"
                             title={t('Click to view task detail')}
                             aria-label={t('Click to view task detail')}
                             onClick={(event) => event.stopPropagation()}
@@ -71,7 +69,7 @@ export default function TaskCard({ task, isDraggable, onRetry, onCopyDownloadUrl
 
                         <button
                             type="button"
-                            className="shrink-0 rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-200"
+                            className="icon-btn"
                             title={t('Copy Download Url')}
                             aria-label={t('Copy Download Url')}
                             onClick={(event) => {
@@ -96,7 +94,7 @@ export default function TaskCard({ task, isDraggable, onRetry, onCopyDownloadUrl
                     <div>
                         <div className="h-2 w-full overflow-hidden bg-gray-200 dark:bg-gray-700">
                             <div
-                                className={isError ? 'h-full bg-amber-500' : 'h-full bg-[#3c8dbc]'}
+                                className={isError ? 'h-full bg-amber-500' : 'h-full bg-primary'}
                                 style={{ width: Math.min(100, completePercent) + '%' }}
                             />
                         </div>
@@ -127,7 +125,7 @@ export default function TaskCard({ task, isDraggable, onRetry, onCopyDownloadUrl
                             {isTaskRetryable(task) ? (
                                 <button
                                     type="button"
-                                    className="rounded bg-[#3c8dbc] px-2 py-0.5 text-xs text-white hover:bg-[#367fa9]"
+                                    className="btn btn-primary btn-xs"
                                     onClick={(event) => {
                                         event.stopPropagation();
                                         onRetry(task);
@@ -145,11 +143,11 @@ export default function TaskCard({ task, isDraggable, onRetry, onCopyDownloadUrl
                             {`${task.connections ?? 0}/${task.numSeeders ?? 0}`}
                         </span>
                         <div className="flex flex-1 items-center justify-end gap-1">
-                            <span className="flex shrink-0 items-center gap-1 rounded bg-gray-100 px-1.5 py-0.5 whitespace-nowrap text-green-600 tabular-nums dark:bg-gray-700 dark:text-green-500">
+                            <span className="chip chip-download">
                                 <ArrowDown className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                                 {isActive ? formatVolume(Number(task.downloadSpeed)) + '/s' : '-'}
                             </span>
-                            <span className="flex shrink-0 items-center gap-1 rounded bg-gray-100 px-1.5 py-0.5 whitespace-nowrap text-blue-500 tabular-nums dark:bg-gray-700 dark:text-blue-400">
+                            <span className="chip chip-upload">
                                 <ArrowUp className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                                 {isActive ? formatVolume(Number(task.uploadSpeed)) + '/s' : '-'}
                             </span>

@@ -112,7 +112,7 @@ export default function DebugPage() {
                         className={
                             'px-3 py-2 text-sm ' +
                             (currentTab === tab
-                                ? 'border-b-2 border-[#3c8dbc] text-[#3c8dbc]'
+                                ? 'border-b-2 border-primary text-primary'
                                 : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300')
                         }
                         onClick={() => setCurrentTab(tab)}
@@ -225,7 +225,7 @@ export default function DebugPage() {
                     />
                     <button
                         type="button"
-                        className="self-start rounded bg-[#3c8dbc] px-4 py-2 text-sm text-white hover:bg-[#367fa9]"
+                        className="btn btn-primary self-start px-4 py-2"
                         onClick={() => void executeMethod()}
                     >
                         {t('Execute')}

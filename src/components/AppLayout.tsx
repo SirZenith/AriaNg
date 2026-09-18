@@ -54,7 +54,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     return (
         <div className="flex h-full flex-col">
             {headerContent ? (
-                <header className="bg-[#3c4852] px-4 py-1.5 text-white sm:py-2">{headerContent}</header>
+                <header className="bg-chrome px-4 py-1.5 text-white sm:py-2">{headerContent}</header>
             ) : null}
 
             <main
@@ -64,9 +64,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 <div className="mx-auto w-full max-w-[1000px]">{children}</div>
             </main>
 
-            {footerContent ? (
-                <footer className="bg-[#3c4852] px-4 py-1 text-xs text-white">{footerContent}</footer>
-            ) : null}
+            {footerContent ? <footer className="bg-chrome px-4 py-1 text-xs text-white">{footerContent}</footer> : null}
 
             <BottomNav
                 counts={{

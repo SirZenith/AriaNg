@@ -8,8 +8,7 @@ interface OptionFormProps {
     onChange: (key: string, value: string) => void;
 }
 
-const inputClass =
-    'w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm disabled:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:disabled:bg-gray-900';
+const inputClass = 'input';
 
 export default function OptionForm({ options, values, onChange }: OptionFormProps) {
     const { t } = useTranslation();

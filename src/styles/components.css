@@ -1,0 +1,109 @@
+@layer components {
+    .card {
+        @apply rounded-xl border border-gray-200 bg-white shadow-sm transition-[border-color,box-shadow] dark:border-gray-700 dark:bg-gray-800;
+    }
+
+    .card-interactive {
+        @apply hover:border-gray-300 hover:shadow-md dark:hover:border-gray-600;
+    }
+
+    .card-selected {
+        @apply border-primary ring-1 ring-primary/40;
+    }
+
+    .panel {
+        @apply rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800;
+    }
+
+    .btn {
+        @apply inline-flex items-center justify-center gap-1 rounded-lg font-medium transition-colors focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50;
+    }
+
+    .btn-primary {
+        @apply bg-primary text-white hover:bg-primary-hover;
+    }
+
+    .btn-danger {
+        @apply bg-red-600 text-white hover:bg-red-700;
+    }
+
+    .btn-ghost {
+        @apply text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700;
+    }
+
+    .btn-xs {
+        @apply px-2 py-0.5 text-xs;
+    }
+
+    .btn-sm {
+        @apply px-3 py-1.5 text-sm;
+    }
+
+    .icon-btn {
+        @apply shrink-0 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none dark:hover:bg-gray-700 dark:hover:text-gray-200;
+    }
+
+    .toolbar-btn {
+        @apply flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-40 disabled:hover:bg-transparent;
+    }
+
+    .toolbar-icon-btn {
+        @apply flex shrink-0 items-center rounded-lg p-1.5 transition-colors hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none;
+    }
+
+    .toolbar-input {
+        @apply rounded-lg border border-white/20 bg-white/10 px-2 py-1 text-sm text-white transition-colors placeholder-white/60 focus:border-white/40 focus:ring-2 focus:ring-white/20 focus:outline-none;
+    }
+
+    .nav-tab {
+        @apply flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-sm transition-colors;
+    }
+
+    .nav-tab-active {
+        @apply bg-primary text-white shadow-sm;
+    }
+
+    .nav-tab-inactive {
+        @apply text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700;
+    }
+
+    .badge {
+        @apply inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium text-white;
+    }
+
+    .chip {
+        @apply inline-flex shrink-0 items-center gap-1 rounded-md bg-gray-100 px-1.5 py-0.5 text-xs whitespace-nowrap tabular-nums dark:bg-gray-700;
+    }
+
+    .chip-download {
+        @apply text-green-600 dark:text-green-500;
+    }
+
+    .chip-upload {
+        @apply text-blue-500 dark:text-blue-400;
+    }
+
+    .input {
+        @apply w-full rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-sm transition-colors focus:border-primary focus:ring-2 focus:ring-primary/30 focus:outline-none disabled:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:focus:border-primary dark:disabled:bg-gray-900;
+    }
+
+    .popover {
+        @apply rounded-xl border border-gray-200 bg-white shadow-xl dark:border-gray-600 dark:bg-gray-800;
+    }
+
+    .menu-item {
+        @apply block w-full px-3 py-1.5 text-left transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:hover:bg-gray-700;
+    }
+
+    .bottom-nav {
+        @apply shrink-0 border-t border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800;
+    }
+
+    .modal-panel {
+        @apply rounded-xl bg-white text-gray-800 shadow-xl dark:bg-gray-800 dark:text-gray-100;
+    }
+
+    .modal-header {
+        @apply flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-700;
+    }
+}

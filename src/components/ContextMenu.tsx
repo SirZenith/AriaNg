@@ -31,7 +31,7 @@ export default function ContextMenu({ x, y, items, onClose }: ContextMenuProps) 
 
     return (
         <div
-            className="fixed z-50 min-w-48 rounded border border-gray-200 bg-white py-1 text-sm shadow-lg dark:border-gray-600 dark:bg-gray-800"
+            className="popover fixed z-50 min-w-48 py-1 text-sm"
             style={{
                 left: Math.min(x, window.innerWidth - 200),
                 top: Math.min(y, window.innerHeight - items.length * 30 - 10),
@@ -46,7 +46,7 @@ export default function ContextMenu({ x, y, items, onClose }: ContextMenuProps) 
                         key={index}
                         type="button"
                         disabled={item.disabled}
-                        className="block w-full px-3 py-1.5 text-left hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:hover:bg-gray-700"
+                        className="menu-item"
                         onClick={() => {
                             item.onClick?.();
                             onClose();

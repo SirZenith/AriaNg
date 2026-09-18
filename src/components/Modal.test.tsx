@@ -17,16 +17,15 @@ describe('Modal', () => {
         expect(screen.getByText('Content')).toBeTruthy();
     });
 
-    it('sets its own text color on the panel', () => {
+    it('applies the shared modal panel style', () => {
         render(
             <Modal title="Global Rate Limit" onClose={vi.fn()}>
                 <span>Content</span>
             </Modal>,
         );
 
-        const panel = screen.getByText('Global Rate Limit').closest('div.bg-white');
+        const panel = screen.getByText('Global Rate Limit').closest('.modal-panel');
 
-        expect(panel?.className).toContain('text-gray-800');
-        expect(panel?.className).toContain('dark:text-gray-100');
+        expect(panel).toBeTruthy();
     });
 });

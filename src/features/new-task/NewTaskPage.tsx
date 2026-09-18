@@ -159,7 +159,7 @@ export default function NewTaskPage() {
                         className={
                             'px-3 py-2 text-sm ' +
                             (taskType === type
-                                ? 'border-b-2 border-[#3c8dbc] text-[#3c8dbc]'
+                                ? 'border-b-2 border-primary text-primary'
                                 : 'text-gray-500 hover:text-gray-700')
                         }
                         onClick={() => setTaskType(type)}
@@ -188,7 +188,7 @@ export default function NewTaskPage() {
                         <label className="mb-1 block text-sm font-medium">
                             {t(taskType === 'torrent' ? 'Torrent File' : 'Metalink File')}
                         </label>
-                        <label className="inline-flex cursor-pointer items-center gap-1 rounded bg-[#3c8dbc] px-3 py-1.5 text-sm text-white hover:bg-[#367fa9]">
+                        <label className="btn btn-primary btn-sm cursor-pointer">
                             <FileUp className="h-4 w-4" aria-hidden="true" />
                             {t('Select File')}
                             <input
@@ -217,7 +217,7 @@ export default function NewTaskPage() {
                 <button
                     type="button"
                     disabled={submitting}
-                    className="ml-auto flex items-center gap-1 rounded bg-[#3c8dbc] px-4 py-2 text-sm text-white hover:bg-[#367fa9] disabled:opacity-50"
+                    className="btn btn-primary ml-auto px-4 py-2"
                     title={t('Start')}
                     aria-label={t('Start')}
                     onClick={() => void startDownload(false)}

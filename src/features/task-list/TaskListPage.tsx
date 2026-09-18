@@ -262,12 +262,7 @@ export default function TaskListPage({ location }: { location: string }) {
                         <NavLink
                             key={tab.key}
                             to={'/' + tab.key}
-                            className={
-                                'flex items-center gap-1 rounded px-2 py-1 text-sm ' +
-                                (location === tab.key
-                                    ? 'bg-[#3c8dbc] text-white'
-                                    : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300')
-                            }
+                            className={'nav-tab ' + (location === tab.key ? 'nav-tab-active' : 'nav-tab-inactive')}
                         >
                             <Icon className="h-4 w-4" aria-hidden="true" />
                             <span className="hidden md:inline">{t(tab.label)}</span>
@@ -279,10 +274,10 @@ export default function TaskListPage({ location }: { location: string }) {
                 })}
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 rounded bg-white px-3 py-2 shadow-sm dark:bg-gray-800">
+            <div className="panel flex flex-wrap items-center gap-2 px-3 py-2">
                 <span className="text-sm font-semibold">{t('Display Order')}</span>
                 <select
-                    className="rounded border border-gray-300 bg-white px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800"
+                    className="input w-auto"
                     value={orderType}
                     onChange={(event) => changeDisplayOrder(event.target.value)}
                 >
@@ -296,11 +291,7 @@ export default function TaskListPage({ location }: { location: string }) {
                 </select>
 
                 {location === 'stopped' ? (
-                    <button
-                        type="button"
-                        className="rounded bg-red-600 px-3 py-1.5 text-sm text-white hover:bg-red-700"
-                        onClick={() => void clearStoppedTasks()}
-                    >
+                    <button type="button" className="btn btn-danger btn-sm" onClick={() => void clearStoppedTasks()}>
                         {t('Clear Stopped Tasks')}
                     </button>
                 ) : null}
@@ -322,7 +313,7 @@ export default function TaskListPage({ location }: { location: string }) {
                     <div className={cardGridClass}>{taskCards}</div>
                 )
             ) : (
-                <div className="rounded bg-white p-8 text-center text-sm text-gray-500 shadow-sm dark:bg-gray-800 dark:text-gray-400">
+                <div className="panel p-8 text-center text-sm text-gray-500 dark:text-gray-400">
                     {t('There is no task')}
                 </div>
             )}
