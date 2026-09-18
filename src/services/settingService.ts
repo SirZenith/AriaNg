@@ -115,9 +115,8 @@ export function getAllRpcSettings(): AriaNgRpcSetting[] {
     return result;
 }
 
-export function addNewRpcSetting(): AriaNgRpcSetting {
-    const options = getOptions();
-    const setting: AriaNgRpcSetting = {
+export function createRpcSetting(): AriaNgRpcSetting {
+    return {
         rpcAlias: '',
         rpcHost: getDefaultHost(),
         rpcPort: ariaNgDefaultOptions.rpcPort,
@@ -127,6 +126,11 @@ export function addNewRpcSetting(): AriaNgRpcSetting {
         rpcRequestHeaders: '',
         secret: '',
     };
+}
+
+export function addNewRpcSetting(): AriaNgRpcSetting {
+    const options = getOptions();
+    const setting = createRpcSetting();
 
     options.extendRpcServers.push(setting);
     setOptions(options);

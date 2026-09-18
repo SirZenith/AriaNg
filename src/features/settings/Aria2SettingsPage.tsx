@@ -9,12 +9,14 @@ import { notifyInPage } from '@/services/notification';
 import AriaNgSettingsSection from './AriaNgSettingsSection';
 import { protocolCategories } from './protocolCategories';
 import ProtocolSettingsSection from './ProtocolSettingsSection';
+import RpcSettingsEditor from './RpcSettingsEditor';
+import RpcSettingsMenu from './RpcSettingsMenu';
 import SettingsMenu from './SettingsMenu';
 import { settingsCategories, settingsSubItems } from './settingsCategories';
 
 export default function Aria2SettingsPage() {
     const { t } = useTranslation();
-    const { type, sub } = useParams();
+    const { type, sub, item } = useParams();
     const isMobile = useMediaQuery('(max-width: 1023px)');
     const [globalOptions, setGlobalOptions] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(true);
@@ -69,6 +71,18 @@ export default function Aria2SettingsPage() {
 
     if (isMobile && settingsSubItems[type] && !sub) {
         return <SettingsMenu type={type} />;
+    }
+
+    if (isMobile && type === 'ariang' && sub === 'rpc') {
+        if (item) {
+            return (
+                <section className="rounded bg-white p-4 shadow dark:bg-gray-800">
+                    <RpcSettingsEditor key={item} item={item} />
+                </section>
+            );
+        }
+
+        return <RpcSettingsMenu />;
     }
 
     const renderContent = () => {

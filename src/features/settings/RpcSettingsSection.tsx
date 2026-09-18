@@ -9,18 +9,8 @@ import {
     setDefaultRpcSetting,
     updateRpcSetting,
 } from '@/services/settingService';
-
-const inputClass =
-    'w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800';
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-    return (
-        <div className="grid grid-cols-1 gap-1 sm:grid-cols-3 sm:items-center">
-            <label className="text-sm font-medium">{label}</label>
-            <div className="sm:col-span-2">{children}</div>
-        </div>
-    );
-}
+import { reloadPage } from '@/utils/navigation';
+import RpcSettingFields from './RpcSettingFields';
 
 export default function RpcSettingsSection() {
     const { t } = useTranslation();
@@ -68,13 +58,16 @@ export default function RpcSettingsSection() {
         setNeedRefresh(true);
     };
 
-    const applyAsDefault = (setting: AriaNgRpcSetting) => {
-        if (setting.isDefault) {
+    const save = () => {
+        if (!current) {
             return;
         }
 
-        setDefaultRpcSetting(setting);
-        window.location.reload();
+        if (!current.isDefault) {
+            setDefaultRpcSetting(current);
+        }
+
+        reloadPage();
     };
 
     return (
@@ -105,89 +98,24 @@ export default function RpcSettingsSection() {
 
             {current ? (
                 <div className="flex flex-col gap-3">
-                    <Field label={t('Aria2 RPC Alias')}>
-                        <input
-                            className={inputClass}
-                            value={current.rpcAlias}
-                            onChange={(event) => updateField('rpcAlias', event.target.value)}
-                        />
-                    </Field>
-                    <Field label={t('Aria2 RPC Protocol')}>
-                        <select
-                            className={inputClass}
-                            value={current.protocol}
-                            onChange={(event) => updateField('protocol', event.target.value)}
-                        >
-                            <option value="http">http</option>
-                            <option value="https">https</option>
-                            <option value="ws">ws</option>
-                            <option value="wss">wss</option>
-                        </select>
-                    </Field>
-                    <Field label={t('Aria2 RPC Address')}>
-                        <input
-                            className={inputClass}
-                            value={current.rpcHost}
-                            onChange={(event) => updateField('rpcHost', event.target.value)}
-                        />
-                    </Field>
-                    <Field label={t('Aria2 RPC Port')}>
-                        <input
-                            className={inputClass}
-                            value={current.rpcPort}
-                            onChange={(event) => updateField('rpcPort', event.target.value)}
-                        />
-                    </Field>
-                    <Field label={t('Aria2 RPC Interface')}>
-                        <input
-                            className={inputClass}
-                            value={current.rpcInterface}
-                            onChange={(event) => updateField('rpcInterface', event.target.value)}
-                        />
-                    </Field>
-                    <Field label={t('Aria2 RPC Secret Token')}>
-                        <input
-                            className={inputClass}
-                            value={current.secret}
-                            onChange={(event) => updateField('secret', event.target.value)}
-                        />
-                    </Field>
-                    <Field label={t('Aria2 RPC Http Request Method')}>
-                        <select
-                            className={inputClass}
-                            value={current.httpMethod}
-                            onChange={(event) => updateField('httpMethod', event.target.value)}
-                        >
-                            <option value="POST">POST</option>
-                            <option value="GET">GET</option>
-                        </select>
-                    </Field>
-                    <Field label={t('Aria2 RPC Request Headers')}>
-                        <textarea
-                            className={inputClass + ' h-20'}
-                            value={current.rpcRequestHeaders}
-                            onChange={(event) => updateField('rpcRequestHeaders', event.target.value)}
-                        />
-                    </Field>
+                    <RpcSettingFields setting={current} onChange={updateField} />
 
                     <div className="flex flex-wrap gap-2">
+                        <button
+                            type="button"
+                            className="rounded bg-[#3c8dbc] px-3 py-1.5 text-sm text-white"
+                            onClick={save}
+                        >
+                            {t('Save')}
+                        </button>
                         {!current.isDefault ? (
-                            <>
-                                <button
-                                    type="button"
-                                    className="rounded bg-[#3c8dbc] px-3 py-1.5 text-sm text-white"
-                                    onClick={() => applyAsDefault(current)}
-                                >
-                                    {t('Activate')}
-                                </button>
-                                <button
-                                    type="button"
-                                    className="rounded bg-red-600 px-3 py-1.5 text-sm text-white"
-                                    onClick={() => removeSetting(current)}
-                                >
-                                    {t('Remove')}
-                                </button>
-                            </>
+                            <button
+                                type="button"
+                                className="rounded bg-red-600 px-3 py-1.5 text-sm text-white"
+                                onClick={() => removeSetting(current)}
+                            >
+                                {t('Remove')}
+                            </button>
                         ) : null}
                         <button
                             type="button"

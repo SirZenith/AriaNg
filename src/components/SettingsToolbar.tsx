@@ -3,11 +3,39 @@ import { useTranslation } from 'react-i18next';
 import { Link, matchPath, useLocation } from 'react-router-dom';
 import { getSettingsCategory, getSettingsSubItem } from '@/features/settings/settingsCategories';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { getAllRpcSettings } from '@/services/settingService';
 import RpcSelector from './RpcSelector';
 
 const settingsBase = '/settings/aria2';
 
+function resolveItemTitle(type: string | undefined, sub: string | undefined, item: string | undefined): string {
+    if (type === 'ariang' && sub === 'rpc' && item) {
+        if (item === 'new') {
+            return 'Add New RPC Setting';
+        }
+
+        const setting = getAllRpcSettings()[Number(item)];
+
+        if (setting) {
+            return setting.rpcAlias || setting.rpcHost + ':' + setting.rpcPort;
+        }
+    }
+
+    return 'Aria2 Settings';
+}
+
 function resolveSettingsLocation(pathname: string): { title: string; backTo: string } {
+    const itemMatch = matchPath('/settings/aria2/:type/:sub/:item', pathname);
+
+    if (itemMatch) {
+        const { type, sub, item } = itemMatch.params;
+
+        return {
+            title: resolveItemTitle(type, sub, item),
+            backTo: settingsBase + '/' + (type || '') + '/' + (sub || ''),
+        };
+    }
+
     const subMatch = matchPath('/settings/aria2/:type/:sub', pathname);
 
     if (subMatch) {

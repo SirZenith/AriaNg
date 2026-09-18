@@ -1,6 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
+import { getOptions } from './services/settingService';
+import { reloadPage } from './utils/navigation';
+
+vi.mock('./utils/navigation', () => ({ reloadPage: vi.fn() }));
 
 function stubMatchMedia({ mobile }: { mobile: boolean }) {
     vi.stubGlobal(
@@ -26,7 +30,10 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
     vi.unstubAllGlobals();
+    window.localStorage.clear();
     window.location.hash = '';
 });
 
@@ -92,6 +99,56 @@ describe('App', () => {
 
         expect(screen.getByText('RPC Settings')).toBeTruthy();
         expect(screen.queryByText('Import / Export AriaNg Settings')).toBeNull();
+    });
+
+    it('shows the save button in the desktop rpc settings', () => {
+        window.location.hash = '#/settings/aria2/ariang/rpc';
+        render(<App />);
+
+        expect(screen.getByText('Save')).toBeTruthy();
+        expect(screen.queryByText('Activate')).toBeNull();
+    });
+
+    it('saves and reloads from the desktop rpc settings', () => {
+        window.location.hash = '#/settings/aria2/ariang/rpc';
+        render(<App />);
+
+        fireEvent.click(screen.getByText('Save'));
+
+        expect(vi.mocked(reloadPage)).toHaveBeenCalled();
+    });
+
+    it('shows the rpc setting list on small screens', () => {
+        stubMatchMedia({ mobile: true });
+        window.location.hash = '#/settings/aria2/ariang/rpc';
+        render(<App />);
+
+        expect(screen.getByRole('link', { name: /localhost:6800/ })).toBeTruthy();
+        expect(screen.getByText('Default')).toBeTruthy();
+        expect(screen.getByText('Add New RPC Setting')).toBeTruthy();
+    });
+
+    it('opens the rpc setting editor from the list on small screens', async () => {
+        stubMatchMedia({ mobile: true });
+        window.location.hash = '#/settings/aria2/ariang/rpc';
+        render(<App />);
+
+        fireEvent.click(screen.getByRole('link', { name: /localhost:6800/ }));
+
+        expect(await screen.findByText('Aria2 RPC Alias')).toBeTruthy();
+        expect(screen.getByText('Save')).toBeTruthy();
+    });
+
+    it('saves the rpc setting and reloads on small screens', () => {
+        stubMatchMedia({ mobile: true });
+        window.location.hash = '#/settings/aria2/ariang/rpc/0';
+        render(<App />);
+
+        fireEvent.change(screen.getByDisplayValue('localhost'), { target: { value: '192.168.1.2' } });
+        fireEvent.click(screen.getByText('Save'));
+
+        expect(getOptions().rpcHost).toBe('192.168.1.2');
+        expect(vi.mocked(reloadPage)).toHaveBeenCalled();
     });
 
     it('navigates the settings hierarchy and back on small screens', async () => {

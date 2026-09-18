@@ -22,6 +22,7 @@ export default function App() {
                     <Route path="/settings/aria2" element={<Aria2SettingsPage />} />
                     <Route path="/settings/aria2/:type" element={<Aria2SettingsPage />} />
                     <Route path="/settings/aria2/:type/:sub" element={<Aria2SettingsPage />} />
+                    <Route path="/settings/aria2/:type/:sub/:item" element={<Aria2SettingsPage />} />
                     <Route path="/settings/rpc/set/*" element={<CommandHandler />} />
                     <Route path="/status" element={<Navigate to="/settings/aria2/status" replace />} />
                     <Route path="/debug" element={<DebugPage />} />
