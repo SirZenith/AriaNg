@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ArrowDown, ArrowUp, Copy, Eye } from 'lucide-react';
+import { ArrowDown, ArrowUp, Copy, Eye, Network } from 'lucide-react';
 import { useTaskStore } from '@/stores/taskStore';
 import type { Aria2Task } from '@/types/aria2';
 import { formatDuration, formatPercent, formatVolume } from '@/utils/format';
@@ -114,8 +114,8 @@ export default function TaskCard({ task, isDraggable, onRetry, onCopyDownloadUrl
                         </div>
                     </div>
 
-                    <div className="mt-auto flex items-center justify-between text-xs">
-                        <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                    <div className="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
+                        <div className="flex flex-1 flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
                             <span className="flex items-center gap-1">
                                 {StatusIcon ? <StatusIcon className="h-3.5 w-3.5" aria-hidden="true" /> : null}
                             </span>
@@ -137,14 +137,23 @@ export default function TaskCard({ task, isDraggable, onRetry, onCopyDownloadUrl
                                 </button>
                             ) : null}
                         </div>
-                        <span className="flex items-center gap-1 text-green-600 dark:text-green-500">
-                            <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" />
-                            {isActive ? formatVolume(Number(task.downloadSpeed)) + '/s' : '-'}
+                        <span
+                            className="flex shrink-0 items-center gap-1 text-gray-500 dark:text-gray-400"
+                            title={t('Connections')}
+                        >
+                            <Network className="h-3.5 w-3.5" aria-hidden="true" />
+                            {`${task.connections ?? 0}/${task.numSeeders ?? 0}`}
                         </span>
-                        <span className="flex items-center gap-1 text-blue-500 dark:text-blue-400">
-                            <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" />
-                            {isActive ? formatVolume(Number(task.uploadSpeed)) + '/s' : '-'}
-                        </span>
+                        <div className="flex flex-1 items-center justify-end gap-1">
+                            <span className="flex items-center gap-1 rounded bg-gray-100 px-1.5 py-0.5 text-green-600 dark:bg-gray-700 dark:text-green-500">
+                                <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" />
+                                {isActive ? formatVolume(Number(task.downloadSpeed)) + '/s' : '-'}
+                            </span>
+                            <span className="flex items-center gap-1 rounded bg-gray-100 px-1.5 py-0.5 text-blue-500 dark:bg-gray-700 dark:text-blue-400">
+                                <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" />
+                                {isActive ? formatVolume(Number(task.uploadSpeed)) + '/s' : '-'}
+                            </span>
+                        </div>
                     </div>
                 </div>
             )}

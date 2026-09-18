@@ -17,7 +17,7 @@ vi.mock('@/services/taskService', () => ({
     },
 }));
 
-function createTask(): Aria2Task {
+function createTask(overrides: Partial<Aria2Task> = {}): Aria2Task {
     return {
         gid: 'gid123',
         status: 'active',
@@ -32,6 +32,7 @@ function createTask(): Aria2Task {
         files: [],
         connections: 0,
         remainTime: -1,
+        ...overrides,
     } as unknown as Aria2Task;
 }
 
@@ -82,6 +83,14 @@ describe('TaskListPage task card', () => {
         const card = screen.getByText('ubuntu.iso').closest('div.cursor-pointer');
 
         expect(card?.querySelector('svg.lucide-download')).toBeTruthy();
+    });
+
+    it('shows the connection count in the status row', () => {
+        useTaskStore.setState({ tasks: [createTask({ connections: 12 })] });
+
+        renderPage();
+
+        expect(screen.getByTitle('Connections').textContent).toContain('12');
     });
 
     it('toggles the selection when clicking the task name', () => {
