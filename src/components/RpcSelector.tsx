@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getAllRpcSettings, setDefaultRpcSetting } from '@/services/settingService';
+import { getAllRpcSettings, setDefaultRpcSettingByIndex } from '@/services/settingService';
 import { getBuildVersion } from '@/services/version';
+import { reloadPage } from '@/utils/navigation';
 
 export default function RpcSelector({ compact = false }: { compact?: boolean }) {
     const { t } = useTranslation();
@@ -15,8 +16,8 @@ export default function RpcSelector({ compact = false }: { compact?: boolean }) 
             return;
         }
 
-        setDefaultRpcSetting(target);
-        window.location.reload();
+        setDefaultRpcSettingByIndex(index);
+        reloadPage();
     };
 
     return (

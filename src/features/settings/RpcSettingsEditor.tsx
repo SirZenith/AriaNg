@@ -8,7 +8,7 @@ import {
     createRpcSetting,
     getAllRpcSettings,
     removeRpcSetting,
-    setDefaultRpcSetting,
+    setDefaultRpcSettingByIndex,
     updateRpcSetting,
 } from '@/services/settingService';
 import { reloadPage } from '@/utils/navigation';
@@ -40,23 +40,29 @@ export default function RpcSettingsEditor({ item }: { item: string }) {
     };
 
     const save = () => {
-        let target: AriaNgRpcSetting;
-
         if (isNew) {
-            target = addNewRpcSetting();
-        } else if (existing) {
-            target = existing;
-        } else {
+            const newIndex = addNewRpcSetting();
+
+            for (const field of rpcSettingFields) {
+                updateRpcSetting(newIndex, field, String(draft[field] ?? ''));
+            }
+
+            setDefaultRpcSettingByIndex(newIndex);
+            reloadPage();
+            return;
+        }
+
+        if (!existing) {
             navigate('/settings/aria2/ariang/rpc');
             return;
         }
 
         for (const field of rpcSettingFields) {
-            updateRpcSetting(target, field, String(draft[field] ?? ''));
+            updateRpcSetting(index, field, String(draft[field] ?? ''));
         }
 
-        if (!target.isDefault) {
-            setDefaultRpcSetting(target);
+        if (!existing.isDefault) {
+            setDefaultRpcSettingByIndex(index);
         }
 
         reloadPage();
@@ -73,7 +79,7 @@ export default function RpcSettingsEditor({ item }: { item: string }) {
             return;
         }
 
-        removeRpcSetting(existing);
+        removeRpcSetting(index);
         navigate('/settings/aria2/ariang/rpc');
     };
 

@@ -6,7 +6,7 @@ import {
     addNewRpcSetting,
     getAllRpcSettings,
     removeRpcSetting,
-    setDefaultRpcSetting,
+    setDefaultRpcSettingByIndex,
     updateRpcSetting,
 } from '@/services/settingService';
 import { reloadPage } from '@/utils/navigation';
@@ -31,28 +31,33 @@ export default function RpcSettingsSection() {
             return;
         }
 
-        updateRpcSetting(current, field, value);
+        updateRpcSetting(currentIndex, field, value);
         setSettings([...getAllRpcSettings()]);
         setNeedRefresh(true);
     };
 
     const addSetting = () => {
-        const created = addNewRpcSetting();
-        const next = getAllRpcSettings();
+        const index = addNewRpcSetting();
 
-        setSettings(next);
-        setCurrentIndex(next.indexOf(created));
+        setSettings(getAllRpcSettings());
+        setCurrentIndex(index);
         setNeedRefresh(true);
     };
 
-    const removeSetting = (setting: AriaNgRpcSetting) => {
+    const removeSetting = () => {
+        const setting = settings[currentIndex];
+
+        if (!setting || setting.isDefault) {
+            return;
+        }
+
         const name = setting.rpcAlias || setting.rpcHost + ':' + setting.rpcPort;
 
         if (!window.confirm(t('Are you sure you want to remove rpc setting "{rpcName}"?', { rpcName: name }))) {
             return;
         }
 
-        removeRpcSetting(setting);
+        removeRpcSetting(currentIndex);
         setSettings(getAllRpcSettings());
         setCurrentIndex(0);
         setNeedRefresh(true);
@@ -64,7 +69,7 @@ export default function RpcSettingsSection() {
         }
 
         if (!current.isDefault) {
-            setDefaultRpcSetting(current);
+            setDefaultRpcSettingByIndex(currentIndex);
         }
 
         reloadPage();
@@ -112,7 +117,7 @@ export default function RpcSettingsSection() {
                             <button
                                 type="button"
                                 className="rounded bg-red-600 px-3 py-1.5 text-sm text-white"
-                                onClick={() => removeSetting(current)}
+                                onClick={removeSetting}
                             >
                                 {t('Remove')}
                             </button>

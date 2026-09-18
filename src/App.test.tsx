@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
-import { getOptions } from './services/settingService';
+import { addNewRpcSetting, getAllRpcSettings, getOptions, updateRpcSetting } from './services/settingService';
 import { reloadPage } from './utils/navigation';
 
 vi.mock('./utils/navigation', () => ({ reloadPage: vi.fn() }));
@@ -149,6 +149,28 @@ describe('App', () => {
 
         expect(getOptions().rpcHost).toBe('192.168.1.2');
         expect(vi.mocked(reloadPage)).toHaveBeenCalled();
+    });
+
+    it('keeps other rpc settings when saving on small screens', () => {
+        addNewRpcSetting();
+        updateRpcSetting(0, 'rpcAlias', 'Server A');
+        updateRpcSetting(0, 'rpcHost', '10.0.0.2');
+        addNewRpcSetting();
+        updateRpcSetting(1, 'rpcAlias', 'Server B');
+        updateRpcSetting(1, 'rpcHost', '10.0.0.3');
+
+        stubMatchMedia({ mobile: true });
+        window.location.hash = '#/settings/aria2/ariang/rpc/0';
+        render(<App />);
+
+        fireEvent.change(screen.getByDisplayValue('10.0.0.2'), { target: { value: '192.168.1.2' } });
+        fireEvent.click(screen.getByText('Save'));
+
+        const settings = getAllRpcSettings();
+
+        expect(settings.find((item) => item.isDefault)?.rpcHost).toBe('192.168.1.2');
+        expect(settings.some((item) => item.rpcHost === '10.0.0.3')).toBe(true);
+        expect(getOptions().rpcHost).toBe('192.168.1.2');
     });
 
     it('navigates the settings hierarchy and back on small screens', async () => {
