@@ -1,9 +1,11 @@
+import { Folder, FolderOpen } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ariaNgFileTypes } from '@/config/fileTypes';
 import { aria2TaskService } from '@/services/taskService';
 import type { Aria2File, Aria2Task } from '@/types/aria2';
 import { getFileExtension } from '@/utils/common';
+import { getFileTypeIcon } from '@/utils/fileIcon';
 import { formatDuration, formatPercent, formatVolume } from '@/utils/format';
 
 interface TaskFileListProps {
@@ -108,6 +110,19 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
         }
 
         setSelected(next);
+    };
+
+    const toggleCollapse = (file: Aria2File) => {
+        const nodePath = file.nodePath || '';
+        const next = new Set(collapsed);
+
+        if (next.has(nodePath)) {
+            next.delete(nodePath);
+        } else {
+            next.add(nodePath);
+        }
+
+        setCollapsed(next);
     };
 
     const toggleDir = (dirNode: Aria2File, value: boolean) => {
@@ -314,6 +329,9 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
                     const percent = Number(file.completePercent || 0);
                     const isSelected = file.isDir ? false : choosing ? !!selected[String(file.index)] : !!file.selected;
                     const indent = isMultiDir ? Number(file.level || 0) * 16 : 0;
+                    const isCollapsed = collapsed.has(file.nodePath || '');
+                    const showDirButton = isMultiDir && !choosing;
+                    const FileIcon = file.isDir ? null : getFileTypeIcon(file.fileName || '');
 
                     return (
                         <div
@@ -337,28 +355,31 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
                                     />
                                 ) : choosing && file.isDir ? (
                                     renderDirCheckbox(file)
-                                ) : isMultiDir && file.isDir ? (
+                                ) : showDirButton && file.isDir ? (
                                     <button
                                         type="button"
-                                        className="w-4 text-gray-500"
-                                        onClick={() => {
-                                            const nodePath = file.nodePath || '';
-                                            const next = new Set(collapsed);
-
-                                            if (next.has(nodePath)) {
-                                                next.delete(nodePath);
-                                            } else {
-                                                next.add(nodePath);
-                                            }
-
-                                            setCollapsed(next);
-                                        }}
+                                        className="flex items-center text-gray-500"
+                                        aria-label={isCollapsed ? t('Expand') : t('Collapse')}
+                                        onClick={() => toggleCollapse(file)}
                                     >
-                                        {collapsed.has(file.nodePath || '') ? '&#9654;' : '&#9660;'}
+                                        {isCollapsed ? (
+                                            <Folder className="h-4 w-4" aria-hidden="true" />
+                                        ) : (
+                                            <FolderOpen className="h-4 w-4" aria-hidden="true" />
+                                        )}
                                     </button>
-                                ) : (
-                                    <span className={file.selected ? 'text-[#3c8dbc]' : 'text-gray-400'}>&#9679;</span>
-                                )}
+                                ) : null}
+
+                                {FileIcon ? (
+                                    <FileIcon className="h-4 w-4 shrink-0 text-gray-500" aria-hidden="true" />
+                                ) : file.isDir && !showDirButton ? (
+                                    isCollapsed ? (
+                                        <Folder className="h-4 w-4 shrink-0 text-gray-500" aria-hidden="true" />
+                                    ) : (
+                                        <FolderOpen className="h-4 w-4 shrink-0 text-gray-500" aria-hidden="true" />
+                                    )
+                                ) : null}
+
                                 <span className="truncate" title={file.path}>
                                     {file.isDir ? file.nodeName : file.fileName || file.path}
                                 </span>
