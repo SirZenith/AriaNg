@@ -4,10 +4,8 @@ import { Link, matchPath, useLocation } from 'react-router-dom';
 import { getAriaNgSettingItem } from '@/features/settings/ariaNgSettingItems';
 import { getRpcSettingFieldItem } from '@/features/settings/rpcSettingFieldItems';
 import { getSettingsCategory, getSettingsSubItem } from '@/features/settings/settingsCategories';
-import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { aria2SettingService } from '@/services/aria2SettingService';
 import { getAllRpcSettings } from '@/services/settingService';
-import RpcSelector from './RpcSelector';
 
 const settingsBase = '/settings/aria2';
 
@@ -112,16 +110,6 @@ function resolveSettingsLocation(pathname: string): { title: string; backTo: str
 export default function SettingsToolbar() {
     const { t } = useTranslation();
     const location = useLocation();
-    const isMobile = useMediaQuery('(max-width: 1023px)');
-
-    if (!isMobile) {
-        return (
-            <div className="mx-auto flex w-full max-w-250 flex-wrap items-center gap-x-2 gap-y-1 sm:gap-x-3">
-                <RpcSelector />
-            </div>
-        );
-    }
-
     const { title, backTo } = resolveSettingsLocation(location.pathname);
 
     return (

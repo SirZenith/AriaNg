@@ -17,53 +17,24 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 
 interface RpcSettingFieldsProps {
     setting: AriaNgRpcSetting;
-    mobile?: boolean;
     rpcItem?: string;
     onChange: (field: keyof AriaNgRpcSetting, value: string) => void;
 }
 
-export default function RpcSettingFields({ setting, mobile = false, rpcItem = '', onChange }: RpcSettingFieldsProps) {
+export default function RpcSettingFields({ setting, rpcItem = '', onChange }: RpcSettingFieldsProps) {
     const { t } = useTranslation();
 
-    const renderChoiceField = (label: string, field: 'protocol' | 'httpMethod', value: string) => {
-        if (!mobile) {
-            return (
-                <Field label={label}>
-                    <select
-                        className={inputClass}
-                        value={value}
-                        onChange={(event) => onChange(field, event.target.value)}
-                    >
-                        {field === 'protocol' ? (
-                            <>
-                                <option value="http">http</option>
-                                <option value="https">https</option>
-                                <option value="ws">ws</option>
-                                <option value="wss">wss</option>
-                            </>
-                        ) : (
-                            <>
-                                <option value="POST">POST</option>
-                                <option value="GET">GET</option>
-                            </>
-                        )}
-                    </select>
-                </Field>
-            );
-        }
-
-        return (
-            <Field label={label}>
-                <Link
-                    to={'/settings/aria2/ariang/rpc/' + rpcItem + '/' + field}
-                    className="input flex items-center justify-between gap-2"
-                >
-                    <span>{value}</span>
-                    <ChevronRight className="h-4 w-4 shrink-0 text-gray-400" aria-hidden="true" />
-                </Link>
-            </Field>
-        );
-    };
+    const renderChoiceField = (label: string, field: 'protocol' | 'httpMethod', value: string) => (
+        <Field label={label}>
+            <Link
+                to={'/settings/aria2/ariang/rpc/' + rpcItem + '/' + field}
+                className="input flex items-center justify-between gap-2"
+            >
+                <span>{value}</span>
+                <ChevronRight className="h-4 w-4 shrink-0 text-gray-400" aria-hidden="true" />
+            </Link>
+        </Field>
+    );
 
     return (
         <>

@@ -1,9 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Navigate, NavLink, useParams } from 'react-router-dom';
-import OptionForm from '@/components/OptionForm';
+import { useParams } from 'react-router-dom';
 import StatusSection from '@/features/status/StatusSection';
-import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { aria2SettingService } from '@/services/aria2SettingService';
 import { notifyInPage } from '@/services/notification';
 import Aria2OptionItemList from './Aria2OptionItemList';
@@ -11,17 +9,19 @@ import Aria2OptionValuePage from './Aria2OptionValuePage';
 import AriaNgSettingValuePage from './AriaNgSettingValuePage';
 import AriaNgSettingsSection from './AriaNgSettingsSection';
 import { protocolCategories } from './protocolCategories';
-import ProtocolSettingsSection from './ProtocolSettingsSection';
 import RpcSettingFieldPage from './RpcSettingFieldPage';
 import RpcSettingsEditor from './RpcSettingsEditor';
 import RpcSettingsMenu from './RpcSettingsMenu';
 import SettingsMenu from './SettingsMenu';
-import { settingsCategories, settingsSubItems } from './settingsCategories';
+import { settingsSubItems } from './settingsCategories';
+
+function Panel({ children }: { children: ReactNode }) {
+    return <section className="rounded-xl bg-white shadow dark:bg-gray-800">{children}</section>;
+}
 
 export default function Aria2SettingsPage() {
     const { t } = useTranslation();
     const { type, sub, item, field } = useParams();
-    const isMobile = useMediaQuery('(max-width: 1023px)');
     const [globalOptions, setGlobalOptions] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(true);
 
@@ -71,23 +71,25 @@ export default function Aria2SettingsPage() {
     };
 
     if (!type) {
-        return isMobile ? <SettingsMenu /> : <Navigate to="/settings/aria2/ariang" replace />;
+        return <SettingsMenu />;
     }
 
-    if (isMobile && settingsSubItems[type] && !sub) {
+    if (settingsSubItems[type] && !sub) {
         return <SettingsMenu type={type} />;
     }
 
-    if (isMobile && type === 'ariang' && sub === 'rpc') {
+    if (type === 'ariang' && sub === 'rpc') {
         if (item && field) {
             return <RpcSettingFieldPage rpcItem={item} field={field} />;
         }
 
         if (item) {
             return (
-                <section className="rounded bg-white p-4 shadow dark:bg-gray-800">
-                    <RpcSettingsEditor key={item} item={item} />
-                </section>
+                <Panel>
+                    <div className="p-4">
+                        <RpcSettingsEditor key={item} item={item} />
+                    </div>
+                </Panel>
             );
         }
 
@@ -110,118 +112,63 @@ export default function Aria2SettingsPage() {
         );
     };
 
-    if (isMobile) {
-        if (type === 'ariang' && sub === 'settings') {
-            return item ? <AriaNgSettingValuePage settingKey={item} /> : <AriaNgSettingsSection mobile />;
-        }
+    if (type === 'ariang' && sub === 'settings') {
+        return item ? <AriaNgSettingValuePage settingKey={item} /> : <AriaNgSettingsSection />;
+    }
 
-        if ((type === 'basic' || type === 'advanced') && sub) {
-            const page = renderOptionValuePage(sub);
+    if ((type === 'basic' || type === 'advanced') && sub) {
+        const page = renderOptionValuePage(sub);
 
-            if (page) {
-                return page;
-            }
-        }
-
-        if (type === 'protocol' && sub && item) {
-            const page = renderOptionValuePage(item);
-
-            if (page) {
-                return page;
-            }
+        if (page) {
+            return page;
         }
     }
 
-    const renderContent = () => {
-        if (type === 'ariang') {
-            return <AriaNgSettingsSection key={sub || 'settings'} hideTabs={isMobile} activeTab={sub} />;
+    if (type === 'protocol' && sub && item) {
+        const page = renderOptionValuePage(item);
+
+        if (page) {
+            return page;
         }
+    }
 
-        if (type === 'status') {
-            return <StatusSection />;
-        }
-
-        if (loading) {
-            return <div className="p-6 text-center text-sm text-gray-500">{t('Loading')}</div>;
-        }
-
-        if (showProtocolSettings) {
-            const initialType = sub || protocolType || protocolCategories[0].key;
-
-            if (isMobile) {
-                return (
-                    <Aria2OptionItemList
-                        routeBase={'/settings/aria2/protocol/' + initialType}
-                        options={optionItems}
-                        values={globalOptions}
-                        onChange={(key, value) => void changeOption(key, value)}
-                    />
-                );
-            }
-
-            return (
-                <ProtocolSettingsSection
-                    key={initialType}
-                    hideTabs={isMobile}
-                    initialType={initialType}
-                    options={globalOptions}
-                    onChange={(key, value) => void changeOption(key, value)}
-                />
-            );
-        }
-
-        if (isMobile) {
-            return (
-                <Aria2OptionItemList
-                    routeBase={'/settings/aria2/' + (type || '')}
-                    options={optionItems}
-                    values={globalOptions}
-                    onChange={(key, value) => void changeOption(key, value)}
-                />
-            );
-        }
-
+    if (type === 'status') {
         return (
-            <OptionForm
+            <Panel>
+                <StatusSection />
+            </Panel>
+        );
+    }
+
+    if (type === 'ariang') {
+        return (
+            <Panel>
+                <AriaNgSettingsSection activeTab={sub} />
+            </Panel>
+        );
+    }
+
+    if (loading) {
+        return (
+            <Panel>
+                <div className="p-6 text-center text-sm text-gray-500">{t('Loading')}</div>
+            </Panel>
+        );
+    }
+
+    const routeBase = showProtocolSettings
+        ? '/settings/aria2/protocol/' + (sub || protocolType || protocolCategories[0].key)
+        : '/settings/aria2/' + (type || '');
+
+    return (
+        <Panel>
+            <Aria2OptionItemList
+                routeBase={routeBase}
                 options={optionItems}
                 values={globalOptions}
                 onChange={(key, value) => void changeOption(key, value)}
             />
-        );
-    };
-
-    return (
-        <section className="rounded-xl bg-white shadow dark:bg-gray-800">
-            {isMobile ? null : (
-                <div className="mb-4 flex flex-wrap gap-2 border-b border-gray-200 pb-2 dark:border-gray-700">
-                    {settingsCategories.map((category) => {
-                        const Icon = category.icon;
-
-                        return (
-                            <NavLink
-                                key={category.key}
-                                to={'/settings/aria2/' + category.key}
-                                className={({ isActive }) => {
-                                    const active = category.key === 'protocol' ? showProtocolSettings : isActive;
-
-                                    return (
-                                        'flex items-center gap-1 rounded px-2 py-1 text-sm ' +
-                                        (active
-                                            ? 'bg-primary text-white'
-                                            : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300')
-                                    );
-                                }}
-                            >
-                                <Icon className="h-4 w-4" aria-hidden="true" />
-                                {t(category.label)}
-                            </NavLink>
-                        );
-                    })}
-                </div>
-            )}
-
-            {renderContent()}
-        </section>
+        </Panel>
     );
 }
 

@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import ExportCommandApiDialog, { type ExportCommandData } from '@/components/ExportCommandApiDialog';
 import type { AriaNgRpcSetting } from '@/config/constants';
-import { useMediaQuery } from '@/hooks/useMediaQuery';
 import {
     addNewRpcSetting,
     getAllRpcSettings,
@@ -29,7 +28,6 @@ const rpcSettingFields: (keyof AriaNgRpcSetting)[] = [
 export default function RpcSettingsEditor({ item }: { item: string }) {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const isMobile = useMediaQuery('(max-width: 1023px)');
     const isNew = item === 'new';
     const index = isNew ? -1 : Number(item);
 
@@ -95,7 +93,7 @@ export default function RpcSettingsEditor({ item }: { item: string }) {
 
     return (
         <div className="flex flex-col gap-3">
-            <RpcSettingFields setting={draft} mobile={isMobile} rpcItem={item} onChange={setField} />
+            <RpcSettingFields setting={draft} rpcItem={item} onChange={setField} />
 
             <div className="flex flex-wrap gap-2">
                 <button type="button" className="btn btn-primary btn-sm" onClick={save}>
