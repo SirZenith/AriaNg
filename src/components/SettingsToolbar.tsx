@@ -1,9 +1,63 @@
+import { ArrowLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Link, matchPath, useLocation } from 'react-router-dom';
+import { getSettingsCategory, getSettingsSubItem } from '@/features/settings/settingsCategories';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 import RpcSelector from './RpcSelector';
 
+const settingsBase = '/settings/aria2';
+
+function resolveSettingsLocation(pathname: string): { title: string; backTo: string } {
+    const subMatch = matchPath('/settings/aria2/:type/:sub', pathname);
+
+    if (subMatch) {
+        const { type, sub } = subMatch.params;
+        const subItem = type && sub ? getSettingsSubItem(type, sub) : undefined;
+
+        return {
+            title: subItem?.label || 'Aria2 Settings',
+            backTo: settingsBase + '/' + (type || ''),
+        };
+    }
+
+    const typeMatch = matchPath('/settings/aria2/:type', pathname);
+
+    if (typeMatch?.params.type) {
+        const category = getSettingsCategory(typeMatch.params.type);
+
+        return { title: category?.label || 'Aria2 Settings', backTo: settingsBase };
+    }
+
+    return { title: 'Aria2 Settings', backTo: '/downloading' };
+}
+
 export default function SettingsToolbar() {
+    const { t } = useTranslation();
+    const location = useLocation();
+    const isMobile = useMediaQuery('(max-width: 1023px)');
+
+    if (!isMobile) {
+        return (
+            <div className="mx-auto flex w-full max-w-[1000px] flex-wrap items-center gap-x-2 gap-y-1 sm:gap-x-3">
+                <RpcSelector />
+            </div>
+        );
+    }
+
+    const { title, backTo } = resolveSettingsLocation(location.pathname);
+
     return (
-        <div className="mx-auto flex w-full max-w-[1000px] flex-wrap items-center gap-x-2 gap-y-1 sm:gap-x-3">
-            <RpcSelector />
+        <div className="mx-auto flex w-full max-w-[1000px] items-center gap-x-1">
+            <Link
+                to={backTo}
+                className="flex shrink-0 items-center rounded p-1.5 hover:bg-white/10"
+                title={t('Back')}
+                aria-label={t('Back')}
+            >
+                <ArrowLeft className="h-5 w-5" aria-hidden="true" />
+            </Link>
+            <span className="min-w-0 flex-1 truncate text-sm font-medium">{t(title)}</span>
+            <RpcSelector compact />
         </div>
     );
 }

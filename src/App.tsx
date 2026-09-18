@@ -19,8 +19,9 @@ export default function App() {
                     <Route path="/new/*" element={<CommandHandler />} />
                     <Route path="/task/detail/:gid" element={<TaskDetailPage />} />
                     <Route path="/settings/ariang" element={<Navigate to="/settings/aria2/ariang" replace />} />
-                    <Route path="/settings/aria2" element={<Navigate to="/settings/aria2/ariang" replace />} />
+                    <Route path="/settings/aria2" element={<Aria2SettingsPage />} />
                     <Route path="/settings/aria2/:type" element={<Aria2SettingsPage />} />
+                    <Route path="/settings/aria2/:type/:sub" element={<Aria2SettingsPage />} />
                     <Route path="/settings/rpc/set/*" element={<CommandHandler />} />
                     <Route path="/status" element={<Navigate to="/settings/aria2/status" replace />} />
                     <Route path="/debug" element={<DebugPage />} />

@@ -7,6 +7,7 @@ import { isEnableDebugMode, resetOptions, setDebugMode } from '@/services/settin
 import { getBuildCommit, getBuildVersion } from '@/services/version';
 import { useSettingStore } from '@/stores/settingStore';
 import { getTimeOptions } from '@/utils/format';
+import { ariaNgSettingsTabs } from './ariaNgSettingsTabs';
 import ImportExportSection from './ImportExportSection';
 import RpcSettingsSection from './RpcSettingsSection';
 
@@ -24,19 +25,18 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     );
 }
 
-export default function AriaNgSettingsSection() {
+interface AriaNgSettingsSectionProps {
+    hideTabs?: boolean;
+    activeTab?: string;
+}
+
+export default function AriaNgSettingsSection({ hideTabs = false, activeTab }: AriaNgSettingsSectionProps) {
     const { t, i18n } = useTranslation();
     const options = useSettingStore((state) => state.options);
     const setOption = useSettingStore((state) => state.setOption);
 
     const timeOptions = getTimeOptions(refreshTimeList, true);
-    const [currentTab, setCurrentTab] = useState('settings');
-
-    const tabs = [
-        { key: 'settings', label: 'Settings' },
-        { key: 'rpc', label: 'RPC Settings' },
-        { key: 'importExport', label: 'Import / Export AriaNg Settings' },
-    ];
+    const [currentTab, setCurrentTab] = useState(activeTab ?? ariaNgSettingsTabs[0].key);
 
     const resetAll = () => {
         if (!window.confirm(t('Are you sure you want to reset all settings?'))) {
@@ -49,23 +49,25 @@ export default function AriaNgSettingsSection() {
 
     return (
         <>
-            <div className="mb-4 flex flex-wrap gap-2 border-b border-gray-200 pb-2 dark:border-gray-700">
-                {tabs.map((tab) => (
-                    <button
-                        key={tab.key}
-                        type="button"
-                        className={
-                            'rounded px-2 py-1 text-sm ' +
-                            (currentTab === tab.key
-                                ? 'bg-[#3c8dbc] text-white'
-                                : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300')
-                        }
-                        onClick={() => setCurrentTab(tab.key)}
-                    >
-                        {t(tab.label)}
-                    </button>
-                ))}
-            </div>
+            {hideTabs ? null : (
+                <div className="mb-4 flex flex-wrap gap-2 border-b border-gray-200 pb-2 dark:border-gray-700">
+                    {ariaNgSettingsTabs.map((tab) => (
+                        <button
+                            key={tab.key}
+                            type="button"
+                            className={
+                                'rounded px-2 py-1 text-sm ' +
+                                (currentTab === tab.key
+                                    ? 'bg-[#3c8dbc] text-white'
+                                    : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300')
+                            }
+                            onClick={() => setCurrentTab(tab.key)}
+                        >
+                            {t(tab.label)}
+                        </button>
+                    ))}
+                </div>
+            )}
 
             {currentTab === 'settings' ? (
                 <div className="flex flex-col gap-3">

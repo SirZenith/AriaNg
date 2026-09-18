@@ -87,6 +87,7 @@ Advanced Settings=進階設定
 Protocol Settings=協定設定
 Server:=伺服器：
 Tasks=任務
+Back=返回
 AriaNg Debug Console=AriaNg 偵錯控制台
 Aria2 Status=Aria2 狀態
 File Name=檔名

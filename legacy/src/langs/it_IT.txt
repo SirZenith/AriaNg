@@ -87,6 +87,7 @@ Advanced Settings=Impostazioni avanzate
 Protocol Settings=Impostazioni dei protocolli
 Server:=Server:
 Tasks=Attività
+Back=Indietro
 AriaNg Debug Console=Console di debug di AriaNg
 Aria2 Status=Stato di Aria2
 File Name=Nome file
