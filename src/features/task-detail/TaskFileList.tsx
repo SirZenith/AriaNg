@@ -1,11 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ariaNgFileTypes } from '@/config/fileTypes';
 import { aria2TaskService } from '@/services/taskService';
 import type { Aria2File, Aria2Task } from '@/types/aria2';
 import { getFileExtension } from '@/utils/common';
 import { formatDuration } from '@/utils/format';
-import TaskFileRow, { type TaskFileDirSelection } from './TaskFileRow';
+import TaskFileRow from './TaskFileRow';
 
 interface TaskFileListProps {
     task: Aria2Task;
@@ -52,13 +52,19 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
     const [orderType, setOrderType] = useState('default:asc');
     const [choosing, setChoosing] = useState(false);
     const [selected, setSelected] = useState<Record<string, boolean>>({});
-    const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+    const [collapsedState, setCollapsedState] = useState<Set<string> | null>(null);
     const [saving, setSaving] = useState(false);
     const [customExtensions, setCustomExtensions] = useState('');
 
     const files = useMemo(() => task.files || [], [task.files]);
     const canChoose = files.length > 1 && (task.status === 'waiting' || task.status === 'paused');
     const isMultiDir = !!task.multiDir;
+
+    const defaultCollapsed = useMemo(
+        () => new Set(files.filter((file) => file.isDir).map((file) => file.nodePath || '')),
+        [files],
+    );
+    const collapsed = collapsedState ?? defaultCollapsed;
 
     const orderedFiles = useMemo(() => {
         if (isMultiDir) {
@@ -99,6 +105,14 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
         setChoosing(false);
     };
 
+    const expandAll = () => {
+        setCollapsedState(new Set());
+    };
+
+    const collapseAll = () => {
+        setCollapsedState(defaultCollapsed);
+    };
+
     const selectAll = (value: boolean) => {
         const next: Record<string, boolean> = {};
 
@@ -111,29 +125,46 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
         setSelected(next);
     };
 
-    const toggleCollapse = (file: Aria2File) => {
-        const nodePath = file.nodePath || '';
-        const next = new Set(collapsed);
+    const toggleCollapse = useCallback(
+        (file: Aria2File) => {
+            setCollapsedState((current) => {
+                const nodePath = file.nodePath || '';
+                const next = new Set(current ?? defaultCollapsed);
 
-        if (next.has(nodePath)) {
-            next.delete(nodePath);
-        } else {
-            next.add(nodePath);
-        }
+                if (next.has(nodePath)) {
+                    next.delete(nodePath);
+                } else {
+                    next.add(nodePath);
+                }
 
-        setCollapsed(next);
-    };
+                return next;
+            });
+        },
+        [defaultCollapsed],
+    );
 
-    const toggleDir = (dirNode: Aria2File, value: boolean) => {
-        const targets = files.filter((file) => isUnderDir(file, dirNode.nodePath || ''));
-        const next = { ...selected };
+    const toggleSelected = useCallback((file: Aria2File, checked: boolean) => {
+        setSelected((current) => ({ ...current, [String(file.index)]: checked }));
+    }, []);
 
-        for (const file of targets) {
-            next[String(file.index)] = value;
-        }
+    const toggleDir = useCallback(
+        (dirNode: Aria2File, value: boolean) => {
+            setSelected((current) => {
+                const next = { ...current };
 
-        setSelected(next);
-    };
+                for (const file of files) {
+                    if (!isUnderDir(file, dirNode.nodePath || '')) {
+                        continue;
+                    }
+
+                    next[String(file.index)] = value;
+                }
+
+                return next;
+            });
+        },
+        [files],
+    );
 
     const applyTypeSelection = (type: string) => {
         const extensions = ariaNgFileTypes[type]?.extensions || [];
@@ -205,23 +236,85 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
         }
     };
 
-    const getDirSelection = (file: Aria2File): TaskFileDirSelection | undefined => {
-        if (!choosing || !file.isDir) {
-            return undefined;
+    const visibleFiles = useMemo(() => {
+        if (!isMultiDir) {
+            return orderedFiles;
         }
 
-        const targets = files.filter((item) => isUnderDir(item, file.nodePath || ''));
+        return orderedFiles.filter((file) => !isHiddenByCollapse(file, collapsed));
+    }, [orderedFiles, isMultiDir, collapsed]);
 
-        return {
-            selectedCount: targets.filter((item) => selected[String(item.index)]).length,
-            totalCount: targets.length,
-        };
-    };
+    const dirSelections = useMemo(() => {
+        if (!choosing) {
+            return null;
+        }
+
+        const result = new Map<string, { selectedCount: number; totalCount: number }>();
+
+        for (const file of files) {
+            if (file.isDir) {
+                result.set(file.nodePath || '', { selectedCount: 0, totalCount: 0 });
+            }
+        }
+
+        for (const file of files) {
+            if (file.isDir) {
+                continue;
+            }
+
+            const isSelected = !!selected[String(file.index)];
+            const parentPath = file.relativePath || '';
+            const candidates = [''];
+            let current = '';
+
+            for (const part of parentPath.split('/')) {
+                if (!part) {
+                    continue;
+                }
+
+                current = current ? current + '/' + part : part;
+                candidates.push(current);
+            }
+
+            for (const path of candidates) {
+                const entry = result.get(path);
+
+                if (entry) {
+                    entry.totalCount += 1;
+
+                    if (isSelected) {
+                        entry.selectedCount += 1;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }, [choosing, files, selected]);
 
     return (
         <div>
             <div className="mb-2 flex flex-wrap items-center gap-2">
                 <span className="text-sm font-semibold">{t('File Name')}</span>
+
+                {isMultiDir ? (
+                    <>
+                        <button
+                            type="button"
+                            className="rounded bg-[#3c8dbc] px-3 py-1.5 text-sm text-white hover:bg-[#367fa9]"
+                            onClick={expandAll}
+                        >
+                            {t('Expand All')}
+                        </button>
+                        <button
+                            type="button"
+                            className="rounded bg-gray-500 px-3 py-1.5 text-sm text-white hover:bg-gray-600"
+                            onClick={collapseAll}
+                        >
+                            {t('Collapse All')}
+                        </button>
+                    </>
+                ) : null}
 
                 {!isMultiDir ? (
                     <select
@@ -314,12 +407,10 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
                     <div className="col-span-3 text-right">{t('File Size')}</div>
                 </div>
 
-                {orderedFiles.map((file) => {
-                    if (isMultiDir && isHiddenByCollapse(file, collapsed)) {
-                        return null;
-                    }
-
+                {visibleFiles.map((file) => {
                     const isSelected = file.isDir ? false : choosing ? !!selected[String(file.index)] : !!file.selected;
+                    const dirSelection =
+                        file.isDir && dirSelections ? dirSelections.get(file.nodePath || '') : undefined;
 
                     return (
                         <TaskFileRow
@@ -330,12 +421,11 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
                             choosing={choosing}
                             selected={isSelected}
                             collapsed={collapsed.has(file.nodePath || '')}
-                            dirSelection={getDirSelection(file)}
-                            onToggleCollapse={() => toggleCollapse(file)}
-                            onToggleSelected={(checked) =>
-                                setSelected((current) => ({ ...current, [String(file.index)]: checked }))
-                            }
-                            onToggleDir={(checked) => toggleDir(file, checked)}
+                            dirSelectedCount={dirSelection?.selectedCount}
+                            dirTotalCount={dirSelection?.totalCount}
+                            onToggleCollapse={toggleCollapse}
+                            onToggleSelected={toggleSelected}
+                            onToggleDir={toggleDir}
                         />
                     );
                 })}

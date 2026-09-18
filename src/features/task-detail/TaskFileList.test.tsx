@@ -42,10 +42,21 @@ function createTask(): Aria2Task {
 }
 
 describe('TaskFileList', () => {
+    it('collapses all directories by default', () => {
+        render(<TaskFileList task={createTask()} onChanged={vi.fn()} />);
+
+        expect(screen.getByText('Media')).toBeTruthy();
+        expect(screen.getByText('Docs')).toBeTruthy();
+        expect(screen.queryByText('movie.mkv')).toBeNull();
+        expect(screen.queryByText('manual.pdf')).toBeNull();
+    });
+
     it('renders the folder toggle button only for directories', () => {
         render(<TaskFileList task={createTask()} onChanged={vi.fn()} />);
 
         expect(screen.getAllByLabelText(/Expand|Collapse/)).toHaveLength(2);
+
+        fireEvent.click(screen.getByText('Expand All'));
 
         const fileRow = screen.getByText('movie.mkv').closest('div');
         expect(fileRow?.querySelector('button')).toBeNull();
@@ -60,22 +71,40 @@ describe('TaskFileList', () => {
         const dirRow = screen.getByText('Media').closest('div[class*="grid-cols-12"]');
         expect(dirRow?.textContent).not.toContain('%');
 
+        fireEvent.click(screen.getByText('Expand All'));
+
         const fileRow = screen.getByText('movie.mkv').closest('div[class*="grid-cols-12"]');
         expect(fileRow?.textContent).toContain('50.00%');
+    });
+
+    it('expands and collapses all directories', () => {
+        render(<TaskFileList task={createTask()} onChanged={vi.fn()} />);
+
+        expect(screen.queryByText('movie.mkv')).toBeNull();
+
+        fireEvent.click(screen.getByText('Expand All'));
+
+        expect(screen.getByText('movie.mkv')).toBeTruthy();
+        expect(screen.getByText('manual.pdf')).toBeTruthy();
+
+        fireEvent.click(screen.getByText('Collapse All'));
+
+        expect(screen.queryByText('movie.mkv')).toBeNull();
+        expect(screen.queryByText('manual.pdf')).toBeNull();
     });
 
     it('toggles the directory when clicking anywhere on the row', () => {
         render(<TaskFileList task={createTask()} onChanged={vi.fn()} />);
 
+        expect(screen.queryByText('movie.mkv')).toBeNull();
+
+        fireEvent.click(screen.getByText('Media'));
+
         expect(screen.getByText('movie.mkv')).toBeTruthy();
+        expect(screen.queryByText('manual.pdf')).toBeNull();
 
         fireEvent.click(screen.getByText('Media'));
 
         expect(screen.queryByText('movie.mkv')).toBeNull();
-        expect(screen.getByText('manual.pdf')).toBeTruthy();
-
-        fireEvent.click(screen.getByText('Media'));
-
-        expect(screen.getByText('movie.mkv')).toBeTruthy();
     });
 });

@@ -9,6 +9,7 @@ import {
     Folder,
     FolderOpen,
 } from 'lucide-react';
+import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Aria2File } from '@/types/aria2';
 import { getFileType } from '@/utils/fileIcon';
@@ -64,11 +65,6 @@ function ProgressPie({ percent }: { percent: number }) {
     );
 }
 
-export interface TaskFileDirSelection {
-    selectedCount: number;
-    totalCount: number;
-}
-
 interface TaskFileRowProps {
     file: Aria2File;
     indent: number;
@@ -76,20 +72,22 @@ interface TaskFileRowProps {
     choosing: boolean;
     selected: boolean;
     collapsed: boolean;
-    dirSelection?: TaskFileDirSelection;
-    onToggleCollapse: () => void;
-    onToggleSelected: (checked: boolean) => void;
-    onToggleDir: (checked: boolean) => void;
+    dirSelectedCount?: number;
+    dirTotalCount?: number;
+    onToggleCollapse: (file: Aria2File) => void;
+    onToggleSelected: (file: Aria2File, checked: boolean) => void;
+    onToggleDir: (file: Aria2File, checked: boolean) => void;
 }
 
-export default function TaskFileRow({
+function TaskFileRow({
     file,
     indent,
     isMultiDir,
     choosing,
     selected,
     collapsed,
-    dirSelection,
+    dirSelectedCount,
+    dirTotalCount,
     onToggleCollapse,
     onToggleSelected,
     onToggleDir,
@@ -98,9 +96,9 @@ export default function TaskFileRow({
     const percent = Number(file.completePercent || 0);
     const showDirButton = isMultiDir && !choosing;
     const clickableDir = showDirButton && !!file.isDir;
-    const dirSelectedCount = dirSelection?.selectedCount || 0;
-    const dirTotalCount = dirSelection?.totalCount || 0;
-    const allSelected = dirTotalCount > 0 && dirSelectedCount === dirTotalCount;
+    const selectedCount = dirSelectedCount || 0;
+    const totalCount = dirTotalCount || 0;
+    const allSelected = totalCount > 0 && selectedCount === totalCount;
     const progressBar = (
         <div className="h-2 w-full overflow-hidden bg-gray-200 dark:bg-gray-700">
             <div className="h-full bg-[#3c8dbc]" style={{ width: Math.min(100, percent) + '%' }} />
@@ -110,10 +108,10 @@ export default function TaskFileRow({
     return (
         <div
             className={
-                'grid grid-cols-12 items-center gap-2 border-b border-gray-100 px-2 py-1.5 text-sm last:border-0 dark:border-gray-700' +
+                '[content-visibility:auto] [contain-intrinsic-size:auto_33px] grid grid-cols-12 items-center gap-2 border-b border-gray-100 px-2 py-1.5 text-sm last:border-0 dark:border-gray-700' +
                 (clickableDir ? ' cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900' : '')
             }
-            onClick={clickableDir ? onToggleCollapse : undefined}
+            onClick={clickableDir ? () => onToggleCollapse(file) : undefined}
         >
             <div
                 className={
@@ -126,7 +124,7 @@ export default function TaskFileRow({
                     <input
                         type="checkbox"
                         checked={selected}
-                        onChange={(event) => onToggleSelected(event.target.checked)}
+                        onChange={(event) => onToggleSelected(file, event.target.checked)}
                     />
                 ) : choosing && file.isDir ? (
                     <input
@@ -134,10 +132,10 @@ export default function TaskFileRow({
                         checked={allSelected}
                         ref={(element) => {
                             if (element) {
-                                element.indeterminate = dirSelectedCount > 0 && !allSelected;
+                                element.indeterminate = selectedCount > 0 && !allSelected;
                             }
                         }}
-                        onChange={(event) => onToggleDir(event.target.checked)}
+                        onChange={(event) => onToggleDir(file, event.target.checked)}
                     />
                 ) : clickableDir ? (
                     <button
@@ -146,7 +144,7 @@ export default function TaskFileRow({
                         aria-label={collapsed ? t('Expand') : t('Collapse')}
                         onClick={(event) => {
                             event.stopPropagation();
-                            onToggleCollapse();
+                            onToggleCollapse(file);
                         }}
                     >
                         {collapsed ? (
@@ -190,3 +188,5 @@ export default function TaskFileRow({
         </div>
     );
 }
+
+export default memo(TaskFileRow);
