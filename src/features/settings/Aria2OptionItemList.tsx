@@ -14,7 +14,7 @@ export default function Aria2OptionItemList({ routeBase, options, values, onChan
     const { t } = useTranslation();
 
     return (
-        <div className="overflow-hidden rounded-xl bg-white shadow dark:bg-gray-800">
+        <div className="overflow-hidden">
             {options.map((option) => {
                 const value = values[option.key] ?? option.defaultValue ?? '';
                 const name = t(option.nameKey);

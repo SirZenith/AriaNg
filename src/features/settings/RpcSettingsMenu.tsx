@@ -10,7 +10,7 @@ export default function RpcSettingsMenu() {
 
     return (
         <div className="flex flex-col gap-3">
-            <div className="overflow-hidden rounded bg-white shadow dark:bg-gray-800">
+            <div className="overflow-hidden rounded-xl bg-white shadow dark:bg-gray-800">
                 {settings.map((setting, index) => (
                     <Link
                         key={index}
@@ -30,7 +30,7 @@ export default function RpcSettingsMenu() {
 
             <Link
                 to="/settings/aria2/ariang/rpc/new"
-                className="flex items-center justify-center gap-1 rounded border border-dashed border-gray-300 bg-white px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-900"
+                className="flex items-center justify-center gap-1 rounded-xl border border-dashed border-gray-300 bg-white px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-900"
             >
                 <Plus className="h-4 w-4" aria-hidden="true" />
                 {t('Add New RPC Setting')}

@@ -23,7 +23,7 @@ interface PatternedContent {
 
 const taskListPatterns = ['/downloading', '/waiting', '/stopped'];
 
-export default function AppLayout({ children }: { children: ReactNode }) {
+export default function AppLayout({ children }: { children: ReactNode; }) {
     const location = useLocation();
 
     useLanguageSync();
@@ -53,7 +53,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     return (
         <div className="flex h-full flex-col">
             {headerContent ? (
-                <header className="bg-transparent px-4 py-1.5 text-black sm:py-2">{headerContent}</header>
+                <header className="bg-transparent px-4 py-1.5 text-black dark:text-white sm:py-2">{headerContent}</header>
             ) : null}
 
             <main data-scroll-container className="min-h-0 flex-1 overflow-y-auto p-4 scrollbar-gutter-both">

@@ -51,7 +51,7 @@ export default function StatusSection() {
     };
 
     return (
-        <>
+        <div className="p-4">
             <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 <div className="rounded border border-gray-200 p-3 dark:border-gray-700">
                     <dt className="text-xs text-gray-500">{t('Connection Status')}</dt>
@@ -111,6 +111,6 @@ export default function StatusSection() {
                     {t('Shutdown')}
                 </button>
             </div>
-        </>
+        </div>
     );
 }

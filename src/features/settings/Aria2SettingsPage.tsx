@@ -191,7 +191,7 @@ export default function Aria2SettingsPage() {
     };
 
     return (
-        <section className="rounded-xl bg-white p-4 shadow dark:bg-gray-800">
+        <section className="rounded-xl bg-white shadow dark:bg-gray-800">
             {isMobile ? null : (
                 <div className="mb-4 flex flex-wrap gap-2 border-b border-gray-200 pb-2 dark:border-gray-700">
                     {settingsCategories.map((category) => {
@@ -227,7 +227,7 @@ export default function Aria2SettingsPage() {
 
 function i18nText(data: unknown): string {
     if (data && typeof data === 'object' && 'message' in data) {
-        return String((data as { message: unknown }).message);
+        return String((data as { message: unknown; }).message);
     }
 
     return String(data);
