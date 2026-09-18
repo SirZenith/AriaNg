@@ -76,7 +76,9 @@ function resolveSettingsLocation(pathname: string): { title: string; backTo: str
         const backTo =
             type === 'basic' || type === 'advanced'
                 ? settingsBase + '/' + type
-                : settingsBase + '/' + (type || '') + '/' + (sub || '');
+                : type === 'protocol'
+                  ? settingsBase + '/protocol'
+                  : settingsBase + '/' + (type || '') + '/' + (sub || '');
 
         return {
             title: resolveItemTitle(type, sub, item),

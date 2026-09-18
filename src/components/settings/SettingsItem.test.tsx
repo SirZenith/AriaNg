@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import SettingsItem from './SettingsItem';
@@ -57,5 +57,97 @@ describe('SettingsItem', () => {
         );
 
         expect(screen.queryByRole('button')).toBeNull();
+    });
+
+    it('renders the description as a tooltip', () => {
+        renderItem(
+            <SettingsItem
+                label="Dir"
+                description="Download directory"
+                indicator={{ type: 'value', text: '/downloads' }}
+                onClick={() => undefined}
+            />,
+        );
+
+        expect(screen.getByText('Download directory')).toBeTruthy();
+    });
+
+    it('shows the description modal on long press on small screens', () => {
+        vi.useFakeTimers();
+
+        try {
+            renderItem(
+                <SettingsItem
+                    label="Dir"
+                    description="Download directory"
+                    indicator={{ type: 'value', text: '/downloads' }}
+                    onClick={() => undefined}
+                />,
+            );
+
+            fireEvent.pointerDown(screen.getByRole('button'));
+
+            act(() => {
+                vi.advanceTimersByTime(500);
+            });
+
+            expect(screen.getAllByText('Download directory').length).toBe(2);
+        } finally {
+            vi.useRealTimers();
+        }
+    });
+
+    it('does not open the description modal on large screens', () => {
+        vi.stubGlobal('matchMedia', () => ({ matches: true }) as unknown as MediaQueryList);
+        vi.useFakeTimers();
+
+        try {
+            renderItem(
+                <SettingsItem
+                    label="Dir"
+                    description="Download directory"
+                    indicator={{ type: 'value', text: '/downloads' }}
+                    onClick={() => undefined}
+                />,
+            );
+
+            fireEvent.pointerDown(screen.getByRole('button'));
+
+            act(() => {
+                vi.advanceTimersByTime(500);
+            });
+
+            expect(screen.getAllByText('Download directory').length).toBe(1);
+        } finally {
+            vi.useRealTimers();
+            vi.unstubAllGlobals();
+        }
+    });
+
+    it('places the tooltip above when the item is near the viewport bottom', () => {
+        vi.stubGlobal('matchMedia', () => ({ matches: true }) as unknown as MediaQueryList);
+        vi.stubGlobal('innerHeight', 720);
+
+        const rectSpy = vi
+            .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+            .mockReturnValue({ bottom: 700 } as DOMRect);
+
+        try {
+            renderItem(
+                <SettingsItem
+                    label="Dir"
+                    description="Download directory"
+                    indicator={{ type: 'value', text: '/downloads' }}
+                    onClick={() => undefined}
+                />,
+            );
+
+            fireEvent.pointerEnter(screen.getByRole('button'));
+
+            expect(screen.getByText('Download directory').className).toContain('settings-tooltip-up');
+        } finally {
+            rectSpy.mockRestore();
+            vi.unstubAllGlobals();
+        }
     });
 });

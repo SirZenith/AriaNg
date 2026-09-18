@@ -37,6 +37,7 @@ afterEach(() => {
     vi.clearAllMocks();
     vi.unstubAllGlobals();
     Reflect.deleteProperty(window.navigator, 'registerProtocolHandler');
+    Reflect.deleteProperty(window.navigator, 'unregisterProtocolHandler');
     window.localStorage.clear();
     window.location.hash = '';
     useSettingStore.setState({ options: ariaNgDefaultOptions });
@@ -70,20 +71,33 @@ describe('App', () => {
         expect(screen.queryByText('Server:')).toBeNull();
     });
 
-    it('registers the magnet handler from the settings page', () => {
+    it('registers and unregisters the magnet handler from the settings page', () => {
         const register = vi.fn();
+        const unregister = vi.fn();
 
         Object.defineProperty(window.navigator, 'registerProtocolHandler', {
             value: register,
+            configurable: true,
+        });
+        Object.defineProperty(window.navigator, 'unregisterProtocolHandler', {
+            value: unregister,
             configurable: true,
         });
 
         window.location.hash = '#/settings/ariang/settings';
         render(<App />);
 
-        fireEvent.click(screen.getByText('Register as Magnet Handler'));
+        const toggle = screen.getByRole('switch', { name: 'Register as Magnet Handler' });
+
+        fireEvent.click(toggle);
 
         expect(register).toHaveBeenCalledWith('magnet', expect.stringContaining('#/new?uri=%s'));
+        expect(useSettingStore.getState().options.registerMagnetHandler).toBe(true);
+
+        fireEvent.click(toggle);
+
+        expect(unregister).toHaveBeenCalledWith('magnet', expect.stringContaining('#/new?uri=%s'));
+        expect(useSettingStore.getState().options.registerMagnetHandler).toBe(false);
     });
 
     it('opens the task settings panel on the new task page', () => {
@@ -147,14 +161,12 @@ describe('App', () => {
         expect(screen.queryByText('Server:')).toBeNull();
     });
 
-    it('redirects a legacy protocol category link to the protocol settings page', async () => {
+    it('redirects a protocol category link to the protocol settings page', async () => {
         window.location.hash = '#/settings/bt';
         render(<App />);
 
-        expect(await screen.findByText('BitTorrent Settings')).toBeTruthy();
-
         await waitFor(() => {
-            expect(window.location.hash).toBe('#/settings/protocol/bt');
+            expect(window.location.hash).toBe('#/settings/protocol');
         });
     });
 
@@ -239,7 +251,9 @@ describe('App', () => {
 
         fireEvent.click(screen.getByText('Protocol Settings'));
 
-        expect(await screen.findByText('BitTorrent Settings')).toBeTruthy();
+        await waitFor(() => {
+            expect(window.location.hash).toBe('#/settings/protocol');
+        });
 
         fireEvent.click(screen.getByLabelText('Back'));
 

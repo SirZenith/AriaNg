@@ -12,7 +12,7 @@ export interface AriaNgSettingChoice {
     labelParams?: Record<string, unknown>;
 }
 
-export type AriaNgSettingSpecial = 'language' | 'browserNotification' | 'debugMode';
+export type AriaNgSettingSpecial = 'language' | 'browserNotification' | 'debugMode' | 'magnetHandler';
 
 export interface AriaNgSettingItem {
     key: keyof AriaNgOptions | 'debug';
@@ -164,6 +164,12 @@ export const ariaNgSettingItems: AriaNgSettingItem[] = [
             { value: 'middle', labelKey: 'Middle (Up to 1 Notification / 1 Minute)' },
             { value: 'low', labelKey: 'Low (Up to 1 Notification / 5 Minutes)' },
         ],
+    },
+    {
+        key: 'registerMagnetHandler',
+        label: 'Register as Magnet Handler',
+        kind: 'switch',
+        special: 'magnetHandler',
     },
     { key: 'debug', label: 'Debug Mode', kind: 'switch', special: 'debugMode' },
 ];

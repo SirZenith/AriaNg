@@ -1,6 +1,14 @@
-import type { ReactNode } from 'react';
+import {
+    type DOMAttributes,
+    type MouseEvent as ReactMouseEvent,
+    type ReactNode,
+    useCallback,
+    useRef,
+    useState,
+} from 'react';
 import { Check, ChevronRight, type LucideIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import Modal from '@/components/Modal';
 import Switch from '@/components/Switch';
 
 export type SettingsIndicator =
@@ -21,6 +29,13 @@ export interface SettingsItemProps {
     ariaSelected?: boolean;
 }
 
+const longPressDelay = 500;
+const tooltipBottomSpace = 96;
+
+function isLargeScreen(): boolean {
+    return typeof window.matchMedia === 'function' && window.matchMedia('(min-width: 1024px)').matches;
+}
+
 export default function SettingsItem({
     icon: Icon,
     label,
@@ -32,17 +47,101 @@ export default function SettingsItem({
     role,
     ariaSelected,
 }: SettingsItemProps) {
+    const [showDescription, setShowDescription] = useState(false);
+    const [tooltipUp, setTooltipUp] = useState(false);
+    const longPressTimer = useRef<number | undefined>(undefined);
+    const longPressed = useRef(false);
+    const itemRef = useRef<HTMLElement | null>(null);
+
+    const setItemRef = useCallback((node: HTMLElement | null) => {
+        itemRef.current = node;
+    }, []);
+
     const interactive = !disabled && (!!to || !!onClick);
     const valueText = indicator.type === 'navigate' || indicator.type === 'value' ? indicator.text : undefined;
+    const hasDescription = !!description;
+
+    const updateTooltipPlacement = () => {
+        if (!hasDescription || !isLargeScreen()) {
+            return;
+        }
+
+        const rect = itemRef.current?.getBoundingClientRect();
+
+        if (!rect) {
+            return;
+        }
+
+        setTooltipUp(window.innerHeight - rect.bottom < tooltipBottomSpace);
+    };
+
+    const startLongPress = () => {
+        if (!hasDescription || disabled || isLargeScreen()) {
+            return;
+        }
+
+        longPressed.current = false;
+        longPressTimer.current = window.setTimeout(() => {
+            longPressed.current = true;
+            setShowDescription(true);
+        }, longPressDelay);
+    };
+
+    const cancelLongPress = () => {
+        if (longPressTimer.current !== undefined) {
+            window.clearTimeout(longPressTimer.current);
+            longPressTimer.current = undefined;
+        }
+    };
+
+    const handleClick = (event: ReactMouseEvent<HTMLElement>) => {
+        if (longPressed.current) {
+            event.preventDefault();
+            event.stopPropagation();
+            longPressed.current = false;
+            return;
+        }
+
+        onClick?.();
+    };
+
+    const pressHandlers: DOMAttributes<HTMLElement> = hasDescription
+        ? {
+              onPointerEnter: updateTooltipPlacement,
+              onPointerDown: startLongPress,
+              onPointerUp: cancelLongPress,
+              onPointerLeave: cancelLongPress,
+              onPointerCancel: cancelLongPress,
+              onContextMenu: (event) => {
+                  if (!isLargeScreen()) {
+                      event.preventDefault();
+                  }
+              },
+              onClick: handleClick,
+          }
+        : { onClick };
 
     const content = (
         <>
+            {hasDescription ? (
+                <span
+                    className={
+                        'settings-tooltip lg:group-hover:block lg:group-focus-within:block' +
+                        (tooltipUp ? ' settings-tooltip-up' : '')
+                    }
+                >
+                    {description}
+                </span>
+            ) : null}
             {Icon ? <Icon className="settings-item-icon" aria-hidden="true" /> : null}
             <span className="settings-item-text">
                 <span className="settings-item-title">{label}</span>
-                {description ? <span className="settings-item-description">{description}</span> : null}
             </span>
-            {valueText ? <span className="settings-item-value">{valueText}</span> : null}
+            {valueText ? (
+                <span className="settings-item-value" title={valueText}>
+                    {valueText}
+                </span>
+            ) : null}
             {(indicator.type === 'navigate' || indicator.type === 'value') && !disabled ? (
                 <ChevronRight className="settings-item-indicator" aria-hidden="true" />
             ) : null}
@@ -62,27 +161,52 @@ export default function SettingsItem({
         </>
     );
 
-    const className = 'settings-item' + (interactive ? ' settings-item-interactive' : '');
+    const className = 'settings-item group relative' + (interactive ? ' settings-item-interactive' : '');
 
-    if (to && !disabled) {
-        return (
-            <Link to={to} className={className} role={role} aria-selected={ariaSelected}>
+    const element =
+        to && !disabled ? (
+            <Link
+                ref={setItemRef}
+                to={to}
+                className={className}
+                role={role}
+                aria-selected={ariaSelected}
+                {...pressHandlers}
+            >
                 {content}
             </Link>
-        );
-    }
-
-    if (onClick && !disabled) {
-        return (
-            <button type="button" className={className} role={role} aria-selected={ariaSelected} onClick={onClick}>
+        ) : onClick && !disabled ? (
+            <button
+                ref={setItemRef}
+                type="button"
+                className={className}
+                role={role}
+                aria-selected={ariaSelected}
+                {...pressHandlers}
+            >
                 {content}
             </button>
+        ) : (
+            <div
+                ref={setItemRef}
+                className={className}
+                role={role}
+                aria-selected={ariaSelected}
+                aria-disabled={disabled || undefined}
+                {...pressHandlers}
+            >
+                {content}
+            </div>
         );
-    }
 
     return (
-        <div className={className} role={role} aria-selected={ariaSelected} aria-disabled={disabled || undefined}>
-            {content}
-        </div>
+        <>
+            {element}
+            {showDescription && hasDescription ? (
+                <Modal title={typeof label === 'string' ? label : ''} onClose={() => setShowDescription(false)}>
+                    <div className="text-sm text-gray-600 dark:text-gray-300">{description}</div>
+                </Modal>
+            ) : null}
+        </>
     );
 }

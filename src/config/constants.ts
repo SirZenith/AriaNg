@@ -29,6 +29,7 @@ export interface AriaNgOptions {
     browserNotification: boolean;
     browserNotificationSound: boolean;
     browserNotificationFrequency: string;
+    registerMagnetHandler: boolean;
     rpcAlias: string;
     rpcHost: string;
     rpcPort: string;
@@ -79,6 +80,7 @@ export const ariaNgDefaultOptions: AriaNgOptions = {
     browserNotification: false,
     browserNotificationSound: true,
     browserNotificationFrequency: 'unlimited',
+    registerMagnetHandler: false,
     rpcAlias: '',
     rpcHost: '',
     rpcPort: '6800',

@@ -108,6 +108,7 @@ interface SettingsItemView {
 - 独立页面：`SettingsHomePage`、`SettingsMenuPage`、`Basic/Advanced/RpcGlobal/ProtocolSettingsPage`、`Basic/Advanced/ProtocolOptionValuePage`、`AriaNgSettingsPage`、`RpcSettingsListPage`、`RpcSettingsEditorPage`、`ImportExportPage`、`StatusPage`；`AriaNgSettingValuePage`、`RpcSettingFieldPage` 补 `SettingsPage` 外壳并从路由取参。
 - 路由：`App.tsx` 改为静态路由；协议分类直链（如 `/settings/bt`）重定向到 `/settings/protocol/:category`；删除 `Aria2SettingsPage`。
 - 路径简化：设置页前缀由 `/settings/aria2` 统一为 `/settings`（不保留旧前缀重定向）。
+- ProtocolSettingsPage 合并：所有协议分类改写为 `SettingsSection` 列表；取消 `/settings/protocol/:sub` 子页；协议分类直链统一重定向到 `/settings/protocol`。
 - 验证：`lint`、`typecheck`、`test`（121 通过）、`build` 全部通过。
 
 ---

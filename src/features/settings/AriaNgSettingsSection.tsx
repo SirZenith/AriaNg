@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import SettingsSection from '@/components/settings/SettingsSection';
-import { notifyInPage } from '@/services/notification';
 import { resetOptions } from '@/services/settingService';
 import { ariaNgSettingsTabs } from './ariaNgSettingsTabs';
 import ImportExportSection from './ImportExportSection';
@@ -23,22 +22,6 @@ export default function AriaNgSettingsSection({ activeTab = 'settings' }: AriaNg
         window.location.reload();
     };
 
-    const registerMagnetHandler = () => {
-        if (typeof navigator.registerProtocolHandler !== 'function') {
-            notifyInPage('Error', t('This browser does not support registering a magnet handler'), { type: 'error' });
-            return;
-        }
-
-        const templateUrl = window.location.origin + window.location.pathname + '#/new?uri=%s';
-
-        try {
-            navigator.registerProtocolHandler('magnet', templateUrl);
-            notifyInPage('', t('Magnet handler registration requested'), { type: 'success' });
-        } catch {
-            notifyInPage('Error', t('Failed to register a magnet handler'), { type: 'error' });
-        }
-    };
-
     if (activeTab === 'importExport') {
         return (
             <SettingsSection title={title}>
@@ -56,18 +39,8 @@ export default function AriaNgSettingsSection({ activeTab = 'settings' }: AriaNg
     }
 
     return (
-        <div className="space-y-4">
-            <SettingsSection title={title}>
-                <SettingsItemList />
-            </SettingsSection>
-
-            <button
-                type="button"
-                className="btn btn-secondary btn-sm"
-                onClick={registerMagnetHandler}
-            >
-                {t('Register as Magnet Handler')}
-            </button>
-        </div>
+        <SettingsSection title={title}>
+            <SettingsItemList />
+        </SettingsSection>
     );
 }

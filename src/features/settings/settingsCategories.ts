@@ -1,6 +1,5 @@
 import { Globe, Network, Server, Settings, Settings2, Wrench, type LucideIcon } from 'lucide-react';
 import { ariaNgSettingsTabs } from './ariaNgSettingsTabs';
-import { protocolCategories } from './protocolCategories';
 
 export const settingsCategories: { key: string; label: string; icon: LucideIcon }[] = [
     { key: 'ariang', label: 'AriaNg Settings', icon: Settings },
@@ -13,7 +12,6 @@ export const settingsCategories: { key: string; label: string; icon: LucideIcon 
 
 export const settingsSubItems: Record<string, { key: string; label: string }[]> = {
     ariang: ariaNgSettingsTabs,
-    protocol: protocolCategories,
 };
 
 export function getSettingsCategory(key: string) {

@@ -41,8 +41,7 @@ export default function App() {
                     <Route path="/settings/advanced" element={<AdvancedSettingsPage />} />
                     <Route path="/settings/advanced/:option" element={<AdvancedOptionValuePage />} />
                     <Route path="/settings/rpc" element={<RpcGlobalSettingsPage />} />
-                    <Route path="/settings/protocol" element={<SettingsMenuPage type="protocol" />} />
-                    <Route path="/settings/protocol/:sub" element={<ProtocolSettingsPage />} />
+                    <Route path="/settings/protocol" element={<ProtocolSettingsPage />} />
                     <Route path="/settings/protocol/:sub/:option" element={<ProtocolOptionValuePage />} />
                     <Route path="/settings/ariang" element={<SettingsMenuPage type="ariang" />} />
                     <Route path="/settings/ariang/settings" element={<AriaNgSettingsPage />} />
@@ -55,7 +54,7 @@ export default function App() {
                         <Route
                             key={category.key}
                             path={'/settings/' + category.key}
-                            element={<Navigate to={'/settings/protocol/' + category.key} replace />}
+                            element={<Navigate to="/settings/protocol" replace />}
                         />
                     ))}
                     <Route path="/settings/rpc/set/*" element={<CommandHandler />} />

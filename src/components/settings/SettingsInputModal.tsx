@@ -55,7 +55,7 @@ export default function SettingsInputModal({
             <div className="flex items-center gap-2">
                 <input
                     autoFocus
-                    className="input"
+                    className="input min-w-0"
                     type={inputType}
                     value={draft}
                     list={history.length > 0 ? historyListId : undefined}
