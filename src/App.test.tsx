@@ -18,6 +18,7 @@ describe('App', () => {
         render(<App />);
 
         expect(screen.getByRole('banner')).toBeTruthy();
+        expect(screen.getByText('Tasks')).toBeTruthy();
         expect(screen.getByText('Downloading')).toBeTruthy();
         expect(screen.getByText('Waiting')).toBeTruthy();
         expect(screen.getAllByText('Aria2 Settings').length).toBeGreaterThan(0);

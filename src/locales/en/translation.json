@@ -724,6 +724,7 @@
   "options.truncate-console-readout.description": "Truncate console readout to fit in a single line.",
   "Protocol Settings": "Protocol Settings",
   "Server:": "Server:",
+  "Tasks": "Tasks",
   "Register as Magnet Handler": "Register as Magnet Handler",
   "Register": "Register"
 }

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import {
     closestCenter,
     DndContext,
@@ -12,7 +12,7 @@ import {
 } from '@dnd-kit/core';
 import { arrayMove, rectSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ArrowDown, ArrowUp } from 'lucide-react';
+import { ArrowDown, ArrowUp, CheckCircle2, Clock, Download, type LucideIcon } from 'lucide-react';
 import ContextMenu, { type ContextMenuItem } from '@/components/ContextMenu';
 import { useTaskListPolling } from '@/hooks/useAria2';
 import { aria2TaskService } from '@/services/taskService';
@@ -32,6 +32,12 @@ interface ContextMenuState {
 }
 
 const cardGridClass = 'grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4';
+
+const taskListTabs: { key: string; label: string; icon: LucideIcon }[] = [
+    { key: 'downloading', label: 'Downloading', icon: Download },
+    { key: 'waiting', label: 'Waiting', icon: Clock },
+    { key: 'stopped', label: 'Finished / Stopped', icon: CheckCircle2 },
+];
 
 function buildMagnetLink(task: Aria2Task): string {
     const infoHash = task.infoHash ? String(task.infoHash) : '';
@@ -56,9 +62,16 @@ export default function TaskListPage({ location }: { location: string }) {
     const clearSelected = useTaskStore((state) => state.clearSelected);
     const setTasks = useTaskStore((state) => state.setTasks);
     const setPollingPaused = useTaskStore((state) => state.setPollingPaused);
+    const globalStat = useTaskStore((state) => state.globalStat);
     const options = useSettingStore((state) => state.options);
     const setOption = useSettingStore((state) => state.setOption);
     const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
+
+    const taskCounts: Record<string, number> = {
+        downloading: globalStat.numActive,
+        waiting: globalStat.numWaiting,
+        stopped: globalStat.numStopped,
+    };
 
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
 
@@ -346,6 +359,31 @@ export default function TaskListPage({ location }: { location: string }) {
 
     return (
         <section className="space-y-3">
+            <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-2 dark:border-gray-700">
+                {taskListTabs.map((tab) => {
+                    const Icon = tab.icon;
+
+                    return (
+                        <NavLink
+                            key={tab.key}
+                            to={'/' + tab.key}
+                            className={
+                                'flex items-center gap-1 rounded px-2 py-1 text-sm ' +
+                                (location === tab.key
+                                    ? 'bg-[#3c8dbc] text-white'
+                                    : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300')
+                            }
+                        >
+                            <Icon className="h-4 w-4" aria-hidden="true" />
+                            {t(tab.label)}
+                            <span className="rounded-full bg-black/10 px-1.5 text-[10px] dark:bg-white/15">
+                                {taskCounts[tab.key] ?? 0}
+                            </span>
+                        </NavLink>
+                    );
+                })}
+            </div>
+
             <div className="flex flex-wrap items-center gap-2 rounded bg-white px-3 py-2 shadow-sm dark:bg-gray-800">
                 <span className="text-sm font-semibold">{t('Display Order')}</span>
                 <select
