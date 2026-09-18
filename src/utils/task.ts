@@ -1,3 +1,15 @@
+import {
+    AlertCircle,
+    CheckCircle2,
+    Clock,
+    Download,
+    LoaderCircle,
+    Pause,
+    ShieldCheck,
+    Trash2,
+    Upload,
+    type LucideIcon,
+} from 'lucide-react';
 import i18n from '@/i18n';
 import { aria2Errors } from '@/config/aria2Errors';
 import type { Aria2File, Aria2Peer, Aria2Task } from '@/types/aria2';
@@ -357,6 +369,10 @@ export function filterTask(task: Aria2Task, keyword: string): boolean {
     return task.taskName.toLowerCase().indexOf(keyword.toLowerCase()) >= 0;
 }
 
+export function isSeeding(task: Aria2Task): boolean {
+    return task.seeder === true || task.seeder === 'true';
+}
+
 export function getTaskStatusKey(task: Aria2Task, simplify?: boolean): string {
     if (!task) {
         return '';
@@ -367,7 +383,7 @@ export function getTaskStatusKey(task: Aria2Task, simplify?: boolean): string {
             return 'Pending Verification';
         } else if (task.verifiedLength) {
             return task.verifiedPercent ? 'format.task.verifying-percent' : 'Verifying';
-        } else if (task.seeder === true || task.seeder === 'true') {
+        } else if (isSeeding(task)) {
             return 'Seeding';
         } else {
             return 'Downloading';
@@ -385,6 +401,79 @@ export function getTaskStatusKey(task: Aria2Task, simplify?: boolean): string {
     }
 
     return '';
+}
+
+type TaskCardStatus =
+    'verify_integrity_pending'
+    | 'verified_length'
+    | 'seeding'
+    | 'downloading'
+    | 'waiting'
+    | 'paused'
+    | 'complete'
+    | 'error'
+    | 'removed'
+    ;
+
+export function getTaskCardStatus(task: Aria2Task): TaskCardStatus | null {
+    if (!task) {
+        return null;
+    }
+
+    switch (task.status) {
+        case 'active':
+            if (task.verifyIntegrityPending) {
+                return 'verify_integrity_pending'
+            } else if (task.verifiedLength) {
+                return 'verified_length'
+            } else if (isSeeding(task)) {
+                return 'seeding'
+            } else {
+                return 'downloading'
+            }
+        case 'waiting':
+            return 'waiting'
+        case 'paused':
+            return 'paused'
+        case 'complete':
+            return 'complete'
+        case 'error':
+            return 'error'
+        case 'removed':
+            return 'removed'
+        default:
+            return null;
+    }
+}
+
+export function getTaskStatusIcon(task: Aria2Task, simplify?: boolean): LucideIcon | null {
+    if (!task) {
+        return null;
+    }
+
+    const status = getTaskCardStatus(task);
+
+    if (status === 'verify_integrity_pending') {
+        return LoaderCircle;
+    } else if (status === 'verified_length') {
+        return ShieldCheck;
+    } else if (status === 'seeding') {
+        return Upload;
+    } else if (status === 'downloading') {
+        return Download;
+    } else if (status === 'waiting') {
+        return Clock;
+    } else if (status === 'paused') {
+        return Pause;
+    } else if (!simplify && status === 'complete') {
+        return CheckCircle2;
+    } else if (!simplify && status === 'error') {
+        return AlertCircle;
+    } else if (!simplify && status === 'removed') {
+        return Trash2;
+    }
+
+    return null;
 }
 
 export function orderTasks<T extends Record<string, unknown>>(array: T[], type: string): T[] {

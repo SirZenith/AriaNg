@@ -1,9 +1,21 @@
+import {
+    AlertCircle,
+    CheckCircle2,
+    Clock,
+    Download,
+    LoaderCircle,
+    Pause,
+    ShieldCheck,
+    Trash2,
+    Upload,
+} from 'lucide-react';
 import { describe, expect, it } from 'vitest';
 import type { Aria2Peer, Aria2Task } from '@/types/aria2';
 import {
     estimateHealthPercentFromPeers,
     getCombinedPieces,
     getPieceStatus,
+    getTaskStatusIcon,
     getTaskStatusKey,
     isTaskRetryable,
     orderTasks,
@@ -72,6 +84,27 @@ describe('getTaskStatusKey', () => {
         expect(getTaskStatusKey(createTask({ status: 'waiting' }), true)).toBe('Waiting');
         expect(getTaskStatusKey(createTask({ status: 'paused' }), true)).toBe('Paused');
         expect(getTaskStatusKey(createTask({ status: 'complete' }), false)).toBe('Completed');
+    });
+});
+
+describe('getTaskStatusIcon', () => {
+    it('returns the icon matching the task status', () => {
+        expect(getTaskStatusIcon(createTask({ status: 'active' }))).toBe(Download);
+        expect(getTaskStatusIcon(createTask({ status: 'active', seeder: true }))).toBe(Upload);
+        expect(getTaskStatusIcon(createTask({ status: 'active', seeder: 'true' }))).toBe(Upload);
+        expect(getTaskStatusIcon(createTask({ status: 'active', verifyIntegrityPending: true }))).toBe(LoaderCircle);
+        expect(getTaskStatusIcon(createTask({ status: 'active', verifiedLength: '100' }))).toBe(ShieldCheck);
+        expect(getTaskStatusIcon(createTask({ status: 'waiting' }))).toBe(Clock);
+        expect(getTaskStatusIcon(createTask({ status: 'paused' }))).toBe(Pause);
+        expect(getTaskStatusIcon(createTask({ status: 'complete' }), false)).toBe(CheckCircle2);
+        expect(getTaskStatusIcon(createTask({ status: 'error' }), false)).toBe(AlertCircle);
+        expect(getTaskStatusIcon(createTask({ status: 'removed' }), false)).toBe(Trash2);
+    });
+
+    it('returns no icon for simplified stopped statuses', () => {
+        expect(getTaskStatusIcon(createTask({ status: 'complete' }), true)).toBeNull();
+        expect(getTaskStatusIcon(createTask({ status: 'error' }), true)).toBeNull();
+        expect(getTaskStatusIcon(createTask({ status: 'removed' }), true)).toBeNull();
     });
 });
 

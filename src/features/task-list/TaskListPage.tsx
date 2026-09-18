@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
     closestCenter,
     DndContext,
@@ -10,9 +10,8 @@ import {
     type DragEndEvent,
     type DragStartEvent,
 } from '@dnd-kit/core';
-import { arrayMove, rectSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { ArrowDown, ArrowUp, CheckCircle2, Clock, Copy, Download, type LucideIcon } from 'lucide-react';
+import { arrayMove, rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
+import { CheckCircle2, Clock, Download, type LucideIcon } from 'lucide-react';
 import ContextMenu, { type ContextMenuItem } from '@/components/ContextMenu';
 import { useTaskListPolling } from '@/hooks/useAria2';
 import { useScrollRestoration } from '@/hooks/useScrollRestoration';
@@ -23,8 +22,8 @@ import { useSettingStore } from '@/stores/settingStore';
 import { useTaskStore } from '@/stores/taskStore';
 import type { Aria2Task } from '@/types/aria2';
 import { copyText } from '@/utils/clipboard';
-import { formatDuration, formatPercent, formatVolume } from '@/utils/format';
-import { filterTask, getTaskStatusKey, isTaskRetryable, orderTasks } from '@/utils/task';
+import { filterTask, isTaskRetryable, orderTasks } from '@/utils/task';
+import TaskCard from './TaskCard';
 
 interface ContextMenuState {
     x: number;
@@ -60,7 +59,6 @@ export default function TaskListPage({ location }: { location: string }) {
     const tasks = useTaskStore((state) => state.tasks);
     const selected = useTaskStore((state) => state.selected);
     const searchKeyword = useTaskStore((state) => state.searchKeyword);
-    const toggleSelected = useTaskStore((state) => state.toggleSelected);
     const clearSelected = useTaskStore((state) => state.clearSelected);
     const setTasks = useTaskStore((state) => state.setTasks);
     const setPollingPaused = useTaskStore((state) => state.setPollingPaused);
@@ -243,134 +241,16 @@ export default function TaskListPage({ location }: { location: string }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [contextMenu, selected, selectedTasks, t]);
 
-    const renderCard = (task: Aria2Task) => {
-        const completePercent = Number(task.completePercent || 0);
-        const statusText = t(getTaskStatusKey(task, true), {
-            errorcode: task.errorCode,
-            verifiedPercent: task.verifiedPercent,
-        });
-        const isActive = task.status === 'active';
-        const isSelected = !!selected[task.gid];
-        const isError = task.status === 'error';
-        const showRemainTime =
-            isActive && task.remainTime !== undefined && task.remainTime >= 0 && task.remainTime < 86400;
-
-        return (
-            <SortableTaskRow key={task.gid} task={task} isDraggable={isDraggable}>
-                {({ handleProps }) => (
-                    <div
-                        className={
-                            'flex h-full cursor-pointer flex-col gap-2 rounded-lg border bg-white p-3 text-sm shadow-sm transition-colors dark:bg-gray-800 ' +
-                            (isSelected
-                                ? 'border-[#3c8dbc] ring-1 ring-[#3c8dbc]/40'
-                                : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600')
-                        }
-                        onClick={() => toggleSelected(task.gid)}
-                        onContextMenu={(event) => {
-                            event.preventDefault();
-                            setContextMenu({ x: event.clientX, y: event.clientY, task });
-                        }}
-                    >
-                        <div className="flex items-start gap-2">
-                            <input
-                                type="checkbox"
-                                className="mt-0.5"
-                                checked={isSelected}
-                                onClick={(event) => event.stopPropagation()}
-                                onChange={() => toggleSelected(task.gid)}
-                            />
-
-                            <div className="min-w-0 flex-1">
-                                <Link
-                                    to={'/task/detail/' + task.gid}
-                                    className="line-clamp-2 font-medium text-blue-600 hover:underline"
-                                    title={task.taskName}
-                                    onClick={(event) => event.stopPropagation()}
-                                >
-                                    {task.taskName}
-                                </Link>
-                                <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                                    <span>{statusText}</span>
-                                    {isError && task.errorDescription ? (
-                                        <span className="text-red-600" title={t(task.errorDescription)}>
-                                            &#10005;
-                                        </span>
-                                    ) : null}
-                                    {isTaskRetryable(task) ? (
-                                        <button
-                                            type="button"
-                                            className="rounded bg-[#3c8dbc] px-2 py-0.5 text-xs text-white hover:bg-[#367fa9]"
-                                            onClick={(event) => {
-                                                event.stopPropagation();
-                                                void retryTask(task);
-                                            }}
-                                        >
-                                            {t('Retry')}
-                                        </button>
-                                    ) : null}
-                                </div>
-                            </div>
-
-                            <button
-                                type="button"
-                                className="shrink-0 rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-200"
-                                title={t('Copy Download Url')}
-                                aria-label={t('Copy Download Url')}
-                                onClick={(event) => {
-                                    event.stopPropagation();
-                                    void copyDownloadUrls([task]);
-                                }}
-                            >
-                                <Copy className="h-4 w-4" aria-hidden="true" />
-                            </button>
-
-                            {isDraggable ? (
-                                <span
-                                    className="cursor-grab touch-none select-none text-gray-400 hover:text-gray-600"
-                                    title={t('Change Tasks Order by Drag-and-drop')}
-                                    {...handleProps}
-                                >
-                                    &#8942;&#8942;
-                                </span>
-                            ) : null}
-                        </div>
-
-                        <div>
-                            <div className="h-2 w-full overflow-hidden bg-gray-200 dark:bg-gray-700">
-                                <div
-                                    className={isError ? 'h-full bg-amber-500' : 'h-full bg-[#3c8dbc]'}
-                                    style={{ width: Math.min(100, completePercent) + '%' }}
-                                />
-                            </div>
-                            <div className="mt-1 flex items-center justify-between text-xs">
-                                <span className="font-medium">{formatPercent(completePercent, 2) + '%'}</span>
-                                <span className="text-gray-500 dark:text-gray-400">
-                                    {formatVolume(Number(task.totalLength))}
-                                    {task.files
-                                        ? ` (${t('format.settings.file-count', { count: task.selectedFileCount })})`
-                                        : ''}
-                                </span>
-                            </div>
-                        </div>
-
-                        <div className="mt-auto flex items-center justify-between text-xs">
-                            <span className="flex items-center gap-1 text-green-600 dark:text-green-500">
-                                <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" />
-                                {isActive ? formatVolume(Number(task.downloadSpeed)) + '/s' : '-'}
-                            </span>
-                            <span className="flex items-center gap-1 text-blue-500 dark:text-blue-400">
-                                <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" />
-                                {isActive ? formatVolume(Number(task.uploadSpeed)) + '/s' : '-'}
-                            </span>
-                            <span className="text-gray-500 dark:text-gray-400">
-                                {showRemainTime ? formatDuration(Number(task.remainTime), 'HH:mm:ss') : ''}
-                            </span>
-                        </div>
-                    </div>
-                )}
-            </SortableTaskRow>
-        );
-    };
+    const taskCards = visibleTasks.map((task) => (
+        <TaskCard
+            key={task.gid}
+            task={task}
+            isDraggable={isDraggable}
+            onRetry={(task) => void retryTask(task)}
+            onCopyDownloadUrl={(task) => void copyDownloadUrls([task])}
+            onContextMenu={(event, task) => setContextMenu({ x: event.clientX, y: event.clientY, task })}
+        />
+    ));
 
     return (
         <section className="space-y-3">
@@ -435,11 +315,11 @@ export default function TaskListPage({ location }: { location: string }) {
                         onDragEnd={(event) => void handleDragEnd(event)}
                     >
                         <SortableContext items={visibleTasks.map((task) => task.gid)} strategy={rectSortingStrategy}>
-                            <div className={cardGridClass}>{visibleTasks.map(renderCard)}</div>
+                            <div className={cardGridClass}>{taskCards}</div>
                         </SortableContext>
                     </DndContext>
                 ) : (
-                    <div className={cardGridClass}>{visibleTasks.map(renderCard)}</div>
+                    <div className={cardGridClass}>{taskCards}</div>
                 )
             ) : (
                 <div className="rounded bg-white p-8 text-center text-sm text-gray-500 shadow-sm dark:bg-gray-800 dark:text-gray-400">
@@ -456,30 +336,5 @@ export default function TaskListPage({ location }: { location: string }) {
                 />
             ) : null}
         </section>
-    );
-}
-
-interface SortableTaskRowProps {
-    task: Aria2Task;
-    isDraggable: boolean;
-    children: (props: { handleProps: Record<string, unknown> }) => React.ReactNode;
-}
-
-function SortableTaskRow({ task, isDraggable, children }: SortableTaskRowProps) {
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-        id: task.gid,
-        disabled: !isDraggable,
-    });
-
-    const style = {
-        transform: CSS.Transform.toString(transform),
-        transition,
-        opacity: isDragging ? 0.6 : 1,
-    };
-
-    return (
-        <div ref={setNodeRef} style={style} className="h-full">
-            {children({ handleProps: { ...attributes, ...listeners } })}
-        </div>
     );
 }

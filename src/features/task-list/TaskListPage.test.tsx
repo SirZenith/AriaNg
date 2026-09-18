@@ -1,0 +1,96 @@
+import { fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
+import { useTaskStore } from '@/stores/taskStore';
+import type { Aria2Task } from '@/types/aria2';
+import TaskListPage from './TaskListPage';
+
+vi.mock('@/services/taskService', () => ({
+    aria2TaskService: {
+        getTaskList: vi.fn(() => new Promise(() => undefined)),
+        changeTaskPosition: vi.fn(),
+        retryTask: vi.fn(),
+        removeTasks: vi.fn(),
+        clearStoppedTasks: vi.fn(),
+        startTasks: vi.fn(),
+        pauseTasks: vi.fn(),
+    },
+}));
+
+function createTask(): Aria2Task {
+    return {
+        gid: 'gid123',
+        status: 'active',
+        taskName: 'ubuntu.iso',
+        totalLength: 1000,
+        completedLength: 500,
+        completePercent: 50,
+        downloadSpeed: 0,
+        uploadSpeed: 0,
+        numPieces: 0,
+        bitfield: '',
+        files: [],
+        connections: 0,
+        remainTime: -1,
+    } as unknown as Aria2Task;
+}
+
+function renderPage() {
+    return render(
+        <MemoryRouter initialEntries={['/downloading']}>
+            <TaskListPage location="downloading" />
+        </MemoryRouter>,
+    );
+}
+
+afterEach(() => {
+    useTaskStore.setState({ tasks: [], selected: {}, searchKeyword: '' });
+});
+
+describe('TaskListPage task card', () => {
+    it('renders the task name as plain text', () => {
+        useTaskStore.setState({ tasks: [createTask()] });
+
+        renderPage();
+
+        expect(screen.getByText('ubuntu.iso').closest('a')).toBeNull();
+    });
+
+    it('provides a view detail link in the card', () => {
+        useTaskStore.setState({ tasks: [createTask()] });
+
+        renderPage();
+
+        expect(screen.getByLabelText('Click to view task detail').getAttribute('href')).toBe('/task/detail/gid123');
+    });
+
+    it('keeps the task unselected when clicking the view detail link', () => {
+        useTaskStore.setState({ tasks: [createTask()] });
+
+        renderPage();
+
+        fireEvent.click(screen.getByLabelText('Click to view task detail'));
+
+        expect(useTaskStore.getState().selected['gid123']).toBeFalsy();
+    });
+
+    it('shows the status icon on the card', () => {
+        useTaskStore.setState({ tasks: [createTask()] });
+
+        renderPage();
+
+        const card = screen.getByText('ubuntu.iso').closest('div.cursor-pointer');
+
+        expect(card?.querySelector('svg.lucide-download')).toBeTruthy();
+    });
+
+    it('toggles the selection when clicking the task name', () => {
+        useTaskStore.setState({ tasks: [createTask()] });
+
+        renderPage();
+
+        fireEvent.click(screen.getByText('ubuntu.iso'));
+
+        expect(useTaskStore.getState().selected['gid123']).toBe(true);
+    });
+});
