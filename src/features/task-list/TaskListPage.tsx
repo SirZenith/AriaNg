@@ -12,7 +12,7 @@ import {
 } from '@dnd-kit/core';
 import { arrayMove, rectSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ArrowDown, ArrowUp, CheckCircle2, Clock, Download, type LucideIcon } from 'lucide-react';
+import { ArrowDown, ArrowUp, CheckCircle2, Clock, Copy, Download, type LucideIcon } from 'lucide-react';
 import ContextMenu, { type ContextMenuItem } from '@/components/ContextMenu';
 import { useTaskListPolling } from '@/hooks/useAria2';
 import { useScrollRestoration } from '@/hooks/useScrollRestoration';
@@ -299,7 +299,7 @@ export default function TaskListPage({ location }: { location: string }) {
                                     {isTaskRetryable(task) ? (
                                         <button
                                             type="button"
-                                            className="text-blue-600 hover:underline"
+                                            className="rounded bg-[#3c8dbc] px-2 py-0.5 text-xs text-white hover:bg-[#367fa9]"
                                             onClick={(event) => {
                                                 event.stopPropagation();
                                                 void retryTask(task);
@@ -310,6 +310,19 @@ export default function TaskListPage({ location }: { location: string }) {
                                     ) : null}
                                 </div>
                             </div>
+
+                            <button
+                                type="button"
+                                className="shrink-0 rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-200"
+                                title={t('Copy Download Url')}
+                                aria-label={t('Copy Download Url')}
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    void copyDownloadUrls([task]);
+                                }}
+                            >
+                                <Copy className="h-4 w-4" aria-hidden="true" />
+                            </button>
 
                             {isDraggable ? (
                                 <span
@@ -402,31 +415,15 @@ export default function TaskListPage({ location }: { location: string }) {
                     <option value="uspeed:desc">{t('By Upload Speed')}</option>
                 </select>
 
-                <button
-                    type="button"
-                    className="text-sm text-blue-600 hover:underline"
-                    onClick={() => void copyDownloadUrls(selectedTasks.length > 0 ? selectedTasks : visibleTasks)}
-                >
-                    {t('Copy Download Url')}
-                </button>
-
                 {location === 'stopped' ? (
                     <button
                         type="button"
-                        className="text-sm text-red-600 hover:underline"
+                        className="rounded bg-red-600 px-3 py-1.5 text-sm text-white hover:bg-red-700"
                         onClick={() => void clearStoppedTasks()}
                     >
                         {t('Clear Stopped Tasks')}
                     </button>
                 ) : null}
-
-                <button
-                    type="button"
-                    className="ml-auto text-sm text-blue-600 hover:underline"
-                    onClick={() => clearSelected()}
-                >
-                    {t('Select None')}
-                </button>
             </div>
 
             {visibleTasks.length > 0 ? (
