@@ -85,6 +85,7 @@ Metalink Settings=Ustawienia Metalink
 RPC Settings=Ustawienia RPC
 Advanced Settings=Zaawansowane ustawienia
 Protocol Settings=Ustawienia protokołów
+Server:=Serwer:
 AriaNg Debug Console=Konsola debugowania AriaNg
 Aria2 Status=Status Aria2
 File Name=Nazwa pliku

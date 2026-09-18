@@ -37,7 +37,7 @@ export default function BottomNav({ counts, debugMode }: BottomNavProps) {
     ];
 
     return (
-        <nav className="shrink-0 border-t border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+        <nav className="shrink-0 border-t border-gray-200 bg-white px-4 dark:border-gray-700 dark:bg-gray-800">
             <div className="mx-auto flex w-full max-w-[1000px]">
                 {items.map((item) => {
                     const Icon = item.icon;
