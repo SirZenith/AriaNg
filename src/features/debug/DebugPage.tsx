@@ -101,7 +101,7 @@ export default function DebugPage() {
     };
 
     return (
-        <section className="rounded bg-white p-4 shadow dark:bg-gray-800">
+        <section className="mt-4 rounded bg-white p-4 shadow dark:bg-gray-800">
             <h2 className="mb-3 text-lg font-semibold">{t('AriaNg Debug Console')}</h2>
 
             <div className="mb-3 flex gap-2 border-b border-gray-200 dark:border-gray-700">

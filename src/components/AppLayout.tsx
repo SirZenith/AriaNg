@@ -28,7 +28,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         <div className="flex h-full flex-col">
             <main
                 data-scroll-container
-                className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-4 scrollbar-gutter-both"
+                className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-4 pt-0 pb-4 scrollbar-gutter-both"
             >
                 <div className="mx-auto w-full max-w-250">{children}</div>
             </main>
