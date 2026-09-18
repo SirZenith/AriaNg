@@ -145,12 +145,12 @@ export default function TaskCard({ task, isDraggable, onRetry, onCopyDownloadUrl
                             {`${task.connections ?? 0}/${task.numSeeders ?? 0}`}
                         </span>
                         <div className="flex flex-1 items-center justify-end gap-1">
-                            <span className="flex items-center gap-1 rounded bg-gray-100 px-1.5 py-0.5 text-green-600 dark:bg-gray-700 dark:text-green-500">
-                                <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" />
+                            <span className="flex shrink-0 items-center gap-1 rounded bg-gray-100 px-1.5 py-0.5 whitespace-nowrap text-green-600 tabular-nums dark:bg-gray-700 dark:text-green-500">
+                                <ArrowDown className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                                 {isActive ? formatVolume(Number(task.downloadSpeed)) + '/s' : '-'}
                             </span>
-                            <span className="flex items-center gap-1 rounded bg-gray-100 px-1.5 py-0.5 text-blue-500 dark:bg-gray-700 dark:text-blue-400">
-                                <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" />
+                            <span className="flex shrink-0 items-center gap-1 rounded bg-gray-100 px-1.5 py-0.5 whitespace-nowrap text-blue-500 tabular-nums dark:bg-gray-700 dark:text-blue-400">
+                                <ArrowUp className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                                 {isActive ? formatVolume(Number(task.uploadSpeed)) + '/s' : '-'}
                             </span>
                         </div>

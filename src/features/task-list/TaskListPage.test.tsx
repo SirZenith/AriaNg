@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { useTaskStore } from '@/stores/taskStore';
 import type { Aria2Task } from '@/types/aria2';
+import { formatVolume } from '@/utils/format';
 import TaskListPage from './TaskListPage';
 
 vi.mock('@/services/taskService', () => ({
@@ -91,6 +92,15 @@ describe('TaskListPage task card', () => {
         renderPage();
 
         expect(screen.getByTitle('Connections').textContent).toContain('12');
+    });
+
+    it('keeps the speed text on a single line', () => {
+        const speedText = formatVolume(999999999999) + '/s';
+        useTaskStore.setState({ tasks: [createTask({ downloadSpeed: 999999999999 })] });
+
+        renderPage();
+
+        expect(screen.getByText(speedText).className).toContain('whitespace-nowrap');
     });
 
     it('toggles the selection when clicking the task name', () => {
