@@ -27,7 +27,7 @@ export default function RpcSettingFields({ setting, rpcItem = '', onChange }: Rp
     const renderChoiceField = (label: string, field: 'protocol' | 'httpMethod', value: string) => (
         <Field label={label}>
             <Link
-                to={'/settings/aria2/ariang/rpc/' + rpcItem + '/' + field}
+                to={'/settings/ariang/rpc/' + rpcItem + '/' + field}
                 className="input flex items-center justify-between gap-2"
             >
                 <span>{value}</span>

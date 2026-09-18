@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Modal from './Modal';
-import OptionForm from './OptionForm';
+import SettingsCard from './settings/SettingsCard';
+import Aria2OptionItemList from '@/features/settings/Aria2OptionItemList';
 import { aria2SettingService } from '@/services/aria2SettingService';
 
 interface QuickSettingDialogProps {
@@ -53,11 +54,13 @@ export default function QuickSettingDialog({ type, title, onClose }: QuickSettin
             {loading ? (
                 <div className="p-4 text-center text-sm text-gray-500">{t('Loading')}</div>
             ) : (
-                <OptionForm
-                    options={options}
-                    values={values}
-                    onChange={(key, value) => void changeOption(key, value)}
-                />
+                <SettingsCard>
+                    <Aria2OptionItemList
+                        options={options}
+                        values={values}
+                        onChange={(key, value) => void changeOption(key, value)}
+                    />
+                </SettingsCard>
             )}
         </Modal>
     );

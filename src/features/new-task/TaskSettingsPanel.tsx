@@ -1,7 +1,8 @@
 import { ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import OptionForm from '@/components/OptionForm';
+import SettingsCard from '@/components/settings/SettingsCard';
+import Aria2OptionItemList from '@/features/settings/Aria2OptionItemList';
 import { aria2SettingService, type Aria2OptionItem } from '@/services/aria2SettingService';
 
 interface TaskSettingsPanelProps {
@@ -46,13 +47,15 @@ export default function TaskSettingsPanel({ options, values, onConfirm, onClose 
                 </div>
 
                 <div className="min-h-0 flex-1 overflow-y-auto p-4">
-                    <OptionForm options={options} values={draft} onChange={setValue} />
+                    <SettingsCard>
+                        <Aria2OptionItemList options={options} values={draft} onChange={setValue} />
+                    </SettingsCard>
                 </div>
 
                 <div className="flex justify-end gap-2 border-t border-gray-200 px-4 py-3 dark:border-gray-700">
                     <button
                         type="button"
-                        className="rounded bg-gray-500 px-4 py-2 text-sm text-white hover:bg-gray-600"
+                        className="btn btn-secondary px-4 py-2"
                         onClick={onClose}
                     >
                         {t('Back')}

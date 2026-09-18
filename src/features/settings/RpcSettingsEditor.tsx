@@ -59,7 +59,7 @@ export default function RpcSettingsEditor({ item }: { item: string }) {
 
         if (!existing) {
             clearDraft(item);
-            navigate('/settings/aria2/ariang/rpc');
+            navigate('/settings/ariang/rpc');
             return;
         }
 
@@ -88,7 +88,7 @@ export default function RpcSettingsEditor({ item }: { item: string }) {
 
         clearDraft(item);
         removeRpcSetting(index);
-        navigate('/settings/aria2/ariang/rpc');
+        navigate('/settings/ariang/rpc');
     };
 
     return (
@@ -106,7 +106,7 @@ export default function RpcSettingsEditor({ item }: { item: string }) {
                 ) : null}
                 <button
                     type="button"
-                    className="btn btn-sm bg-gray-500 text-white hover:bg-gray-600"
+                    className="btn btn-secondary btn-sm"
                     onClick={() => setExportOptions({ type: 'setting', data: draft })}
                 >
                     {t('Export Command API')}

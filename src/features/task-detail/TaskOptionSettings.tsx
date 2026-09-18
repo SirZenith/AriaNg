@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import OptionForm from '@/components/OptionForm';
+import SettingsCard from '@/components/settings/SettingsCard';
+import Aria2OptionItemList from '@/features/settings/Aria2OptionItemList';
 import { aria2SettingService } from '@/services/aria2SettingService';
 import { aria2TaskService } from '@/services/taskService';
 import type { Aria2Task } from '@/types/aria2';
@@ -46,7 +47,13 @@ export default function TaskOptionSettings({ task }: TaskOptionSettingsProps) {
     return (
         <div>
             <p className="mb-3 text-xs text-gray-500 dark:text-gray-400">{t('Changes take effect immediately.')}</p>
-            <OptionForm options={options} values={values} onChange={(key, value) => void changeOption(key, value)} />
+            <SettingsCard>
+                <Aria2OptionItemList
+                    options={options}
+                    values={values}
+                    onChange={(key, value) => void changeOption(key, value)}
+                />
+            </SettingsCard>
         </div>
     );
 }

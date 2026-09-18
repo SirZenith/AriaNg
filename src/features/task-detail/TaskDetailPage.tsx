@@ -1,9 +1,10 @@
 import { FileText, LayoutDashboard, LayoutGrid, Radio, Settings, Users, type LucideIcon } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { type ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import PieceBar from '@/components/PieceBar';
 import PieceMap from '@/components/PieceMap';
+import TaskDetailToolbar from '@/components/TaskDetailToolbar';
 import { useTaskDetail } from '@/hooks/useTaskDetail';
 import { getShowPiecesInfoInTaskDetailPage } from '@/services/settingService';
 import type { Aria2Task } from '@/types/aria2';
@@ -34,6 +35,15 @@ function isShowPiecesInfo(task: Aria2Task | null): boolean {
     return true;
 }
 
+function TaskDetailPanel({ children }: { children: ReactNode }) {
+    return (
+        <div className="space-y-3">
+            <TaskDetailToolbar />
+            {children}
+        </div>
+    );
+}
+
 export default function TaskDetailPage() {
     const { t } = useTranslation();
     const { gid } = useParams();
@@ -58,11 +68,19 @@ export default function TaskDetailPage() {
     }, [task, peers]);
 
     if (loading && !task) {
-        return <div className="p-6 text-sm text-gray-500">{t('Loading')}</div>;
+        return (
+            <TaskDetailPanel>
+                <div className="p-6 text-sm text-gray-500">{t('Loading')}</div>
+            </TaskDetailPanel>
+        );
     }
 
     if (!task) {
-        return <div className="p-6 text-sm text-gray-500">{t('There is no task')}</div>;
+        return (
+            <TaskDetailPanel>
+                <div className="p-6 text-sm text-gray-500">{t('There is no task')}</div>
+            </TaskDetailPanel>
+        );
     }
 
     const showTrackers = !!task.bittorrent?.announceList?.length;
@@ -77,52 +95,56 @@ export default function TaskDetailPage() {
     ];
 
     return (
-        <section className="rounded bg-white p-4 shadow dark:bg-gray-800">
-            <div className="mb-3 flex flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700">
-                {tabs.map((item) => {
-                    const Icon = item.icon;
+        <TaskDetailPanel>
+            <section className="rounded bg-white p-4 shadow dark:bg-gray-800">
+                <div className="mb-3 flex flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700">
+                    {tabs.map((item) => {
+                        const Icon = item.icon;
 
-                    return (
-                        <button
-                            key={item.key}
-                            type="button"
-                            className={
-                                'flex items-center gap-1 px-3 py-2 text-sm ' +
-                                (currentTab === item.key
-                                    ? 'border-b-2 border-primary text-primary'
-                                    : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300')
-                            }
-                            onClick={() => setCurrentTab(item.key)}
-                        >
-                            <Icon className="h-4 w-4" aria-hidden="true" />
-                            <span className="hidden md:inline">{t(item.label)}</span>
-                        </button>
-                    );
-                })}
-            </div>
-
-            {currentTab === 'overview' ? (
-                <TaskOverview task={task} healthPercent={healthPercent} showPiecesInfo={showPiecesInfo} />
-            ) : null}
-
-            {currentTab === 'pieces' && showPiecesInfo ? (
-                <div>
-                    <PieceBar bitField={task.bitfield} pieceCount={Number(task.numPieces || 0)} />
-                    <div className="mt-4">
-                        <PieceMap bitField={task.bitfield} pieceCount={Number(task.numPieces || 0)} />
-                    </div>
+                        return (
+                            <button
+                                key={item.key}
+                                type="button"
+                                className={
+                                    'flex items-center gap-1 px-3 py-2 text-sm ' +
+                                    (currentTab === item.key
+                                        ? 'border-b-2 border-primary text-primary'
+                                        : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300')
+                                }
+                                onClick={() => setCurrentTab(item.key)}
+                            >
+                                <Icon className="h-4 w-4" aria-hidden="true" />
+                                <span className="hidden md:inline">{t(item.label)}</span>
+                            </button>
+                        );
+                    })}
                 </div>
-            ) : null}
 
-            {currentTab === 'filelist' ? (
-                <TaskFileList key={refreshKey} task={task} onChanged={() => setRefreshKey((value) => value + 1)} />
-            ) : null}
+                {currentTab === 'overview' ? (
+                    <TaskOverview task={task} healthPercent={healthPercent} showPiecesInfo={showPiecesInfo} />
+                ) : null}
 
-            {currentTab === 'btpeers' ? <TaskPeerList peers={peers} pieceCount={Number(task.numPieces || 0)} /> : null}
+                {currentTab === 'pieces' && showPiecesInfo ? (
+                    <div>
+                        <PieceBar bitField={task.bitfield} pieceCount={Number(task.numPieces || 0)} />
+                        <div className="mt-4">
+                            <PieceMap bitField={task.bitfield} pieceCount={Number(task.numPieces || 0)} />
+                        </div>
+                    </div>
+                ) : null}
 
-            {currentTab === 'trackers' && showTrackers ? <TaskTrackerList task={task} /> : null}
+                {currentTab === 'filelist' ? (
+                    <TaskFileList key={refreshKey} task={task} onChanged={() => setRefreshKey((value) => value + 1)} />
+                ) : null}
 
-            {currentTab === 'settings' ? <TaskOptionSettings task={task} /> : null}
-        </section>
+                {currentTab === 'btpeers' ? (
+                    <TaskPeerList peers={peers} pieceCount={Number(task.numPieces || 0)} />
+                ) : null}
+
+                {currentTab === 'trackers' && showTrackers ? <TaskTrackerList task={task} /> : null}
+
+                {currentTab === 'settings' ? <TaskOptionSettings task={task} /> : null}
+            </section>
+        </TaskDetailPanel>
     );
 }

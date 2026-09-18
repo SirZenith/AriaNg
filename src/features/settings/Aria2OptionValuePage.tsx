@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
+import SettingsChoiceList from '@/components/settings/SettingsChoiceList';
 import type { Aria2OptionItem } from '@/services/aria2SettingService';
-import OptionChoiceList from './OptionChoiceList';
 
 interface Aria2OptionValuePageProps {
     option: Aria2OptionItem;
@@ -16,7 +16,7 @@ export default function Aria2OptionValuePage({ option, value, onChange }: Aria2O
     }
 
     return (
-        <OptionChoiceList
+        <SettingsChoiceList
             items={option.options.map((item) => ({ value: item.value, label: t(item.name) }))}
             value={value}
             onSelect={(next) => onChange(option.key, next)}

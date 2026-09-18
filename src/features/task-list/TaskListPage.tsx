@@ -13,6 +13,7 @@ import {
 import { arrayMove, rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
 import { CheckCircle2, Clock, Download, type LucideIcon } from 'lucide-react';
 import ContextMenu, { type ContextMenuItem } from '@/components/ContextMenu';
+import TaskListToolbar from '@/components/TaskListToolbar';
 import { useTaskListPolling } from '@/hooks/useAria2';
 import { useScrollRestoration } from '@/hooks/useScrollRestoration';
 import { aria2TaskService } from '@/services/taskService';
@@ -254,6 +255,8 @@ export default function TaskListPage({ location }: { location: string }) {
 
     return (
         <section className="space-y-3">
+            <TaskListToolbar />
+
             <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-2 dark:border-gray-700">
                 {taskListTabs.map((tab) => {
                     const Icon = tab.icon;

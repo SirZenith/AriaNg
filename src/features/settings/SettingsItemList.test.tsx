@@ -24,7 +24,7 @@ describe('SettingsItemList', () => {
 
         const link = screen.getByRole('link', { name: /Theme/ });
 
-        expect(link.getAttribute('href')).toBe('/settings/aria2/ariang/settings/theme');
+        expect(link.getAttribute('href')).toBe('/settings/ariang/settings/theme');
         expect(link.textContent).toContain('Light');
     });
 
@@ -36,9 +36,14 @@ describe('SettingsItemList', () => {
         expect(useSettingStore.getState().options.keyboardShortcuts).toBe(false);
     });
 
-    it('renders the page title as a text input', () => {
+    it('edits the page title through the input modal', () => {
         renderList();
 
-        expect(screen.getByRole('textbox', { name: 'Page Title' })).toBeTruthy();
+        fireEvent.click(screen.getByText('Page Title'));
+
+        fireEvent.change(screen.getByRole('textbox'), { target: { value: 'My AriaNg' } });
+        fireEvent.click(screen.getByText('Confirm'));
+
+        expect(useSettingStore.getState().options.title).toBe('My AriaNg');
     });
 });

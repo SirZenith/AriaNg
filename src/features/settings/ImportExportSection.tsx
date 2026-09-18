@@ -77,7 +77,7 @@ export default function ImportExportSection() {
                 <button type="button" className="btn btn-primary btn-sm" onClick={exportSettings}>
                     {t('Export Settings')}
                 </button>
-                <label className="cursor-pointer rounded bg-green-600 px-3 py-1.5 text-sm text-white">
+                <label className="btn btn-success btn-sm cursor-pointer">
                     {t('Import Settings')}
                     <input
                         type="file"
@@ -88,7 +88,7 @@ export default function ImportExportSection() {
                 </label>
                 <button
                     type="button"
-                    className="rounded bg-amber-600 px-3 py-1.5 text-sm text-white"
+                    className="btn btn-warning btn-sm"
                     onClick={clearHistory}
                 >
                     {t('Clear Settings History')}
@@ -130,14 +130,14 @@ export default function ImportExportSection() {
                         <div className="mt-2 flex justify-end gap-2">
                             <button
                                 type="button"
-                                className="rounded bg-gray-400 px-3 py-1.5 text-sm text-white"
+                                className="btn btn-muted btn-sm"
                                 onClick={() => setShowExport(false)}
                             >
                                 {t('Close')}
                             </button>
                             <button
                                 type="button"
-                                className="rounded bg-gray-500 px-3 py-1.5 text-sm text-white"
+                                className="btn btn-secondary btn-sm"
                                 onClick={downloadExport}
                             >
                                 {t('Download')}

@@ -39,7 +39,7 @@ src/
   App.tsx  main.tsx            # 路由入口（HashRouter）
   styles/index.css             # Tailwind 入口、主题变量、dark 变体声明
   styles/components.css        # 公共组件样式类（btn/card/chip/input 等，@layer components）
-  components/                  # 通用组件（AppLayout、工具栏、OptionForm、PieceBar/PieceMap 等）
+  components/                  # 通用组件（AppLayout、工具栏、settings/ 通用设置组件、PieceBar/PieceMap 等）
   features/                    # 按功能划分：task-list / new-task / task-detail / settings / status / debug / command
   hooks/                       # useAria2（轮询/主题/标题/快捷键）、useScrollRestoration、useMediaQuery 等
   services/                    # rpc/（http、websocket、index）、taskService、aria2SettingService、settingService、notification、log、monitor
@@ -55,15 +55,13 @@ tools/convert-langs.mjs        # 语言 txt -> i18next JSON 转换脚本
 
 ## 架构要点
 
-- **路由**：`src/App.tsx` 集中定义（HashRouter）。兼容旧式 `#!/` 路径与 `#!/new/:url`、`#!/settings/rpc/set/...` 命令行链接。
-- **全局布局**：`src/components/AppLayout.tsx`。
-  - 顶栏/底栏内容按路由映射：`headerContentByPattern` / `footerContentByPattern` + `matchPath`（任务列表 → `TaskListToolbar`；`/task/detail/:gid` → `TaskDetailToolbar`；`/settings/*` → `SettingsToolbar`；未命中则隐藏）。
-  - 新增需要顶栏/底栏的页面时，在映射表中追加 `pattern` 即可。
-  - 主滚动容器是 `<main data-scroll-container>`；`useScrollRestoration` 依赖该属性（列表页返回时恢复滚动位置）。
-- **响应式**：断点使用 Tailwind 默认（`sm` 640、`lg` 1024 等）。桌面与移动端布局差异明显：移动端设置页为分级列表（`features/settings/` 中的 `SettingsMenu`、`RpcSettingsMenu`），其中下拉类设置项渲染为与根菜单一致的入口条目，点击进入选项子页（`OptionChoiceList`，选择后停留并显示选中态），布尔设置项统一用 `Switch` 开关（所有尺寸）；桌面保留页签 + 下拉布局。设置页层级路由为 `/settings/aria2/:type/:sub/:item`（RPC 字段子页多一段 `/:field`），标题与返回目标由 `SettingsToolbar` 的 `resolveSettingsLocation` 解析。改设置页时需考虑两套布局。
+- **路由**：`src/App.tsx` 集中定义（HashRouter）。兼容旧式 `#!/` 路径与 `#!/new/:url`、`#!/settings/rpc/set/...` 命令行链接。设置页前缀为 `/settings`，每个路由对应 `features/settings/` 的独立页面（`BasicSettingsPage`/`ProtocolSettingsPage`/`AriaNgSettingsPage`/`RpcSettingsListPage`/`StatusPage` 等），共用 `SettingsPage` 外壳；协议分类直链（如 `/settings/bt`）重定向到 `/settings/protocol/bt`。
+- **全局布局**：`src/components/AppLayout.tsx` 只提供主滚动容器 `<main data-scroll-container>`、`BottomNav` 与通知容器，不再集中映射顶栏/底栏。顶栏由各页面自行渲染：`TaskListPage` → `TaskListToolbar`、`TaskDetailPage` → `TaskDetailToolbar`、`Aria2SettingsPage` → `SettingsToolbar`；`AppFooter` 组件保留定义但当前未接入。
+  - `useScrollRestoration` 依赖 `<main data-scroll-container>` 属性（列表页返回时恢复滚动位置）。
+- **响应式**：断点使用 Tailwind 默认（`sm` 640、`lg` 1024 等）。设置页不区分尺寸，统一为分级列表：`features/settings/` 中的 `SettingsMenu`、`RpcSettingsMenu` 用通用条目组件渲染入口，点击进入选项子页（`SettingsChoiceList`，选择后停留并显示选中态）；字符串/数值输入使用 `SettingsInputModal` 弹窗，布尔项用 `Switch`。设置页层级路由为 `/settings/:type/:sub/:item`（RPC 字段子页多一段 `/:field`），标题与返回目标由 `SettingsToolbar` 的 `resolveSettingsLocation` 解析。
 - **状态**：zustand。`settingStore`（`AriaNgOptions`，持久化 localStorage）、`taskStore`（任务列表、选中、RPC 状态、全局统计）、`taskDetailStore`（当前详情任务标题，由 `useTaskDetail` 写入，供 `TaskDetailToolbar` 展示）、`rpcDraftStore`（RPC 编辑草稿，按 `item` 键控，编辑页与字段子页共享，保存/移除后清理）。
 - **服务层**：`services/rpc/` 提供 HTTP/WebSocket 双传输（Promise + mitt 事件）；RPC 连接在模块加载时根据当前设置创建，**切换默认 RPC 后需要重载页面生效**（统一使用 `@/utils/navigation` 的 `reloadPage()`）。
-- **设置表单**：数据驱动。Aria2 选项定义在 `config/aria2Options.ts`（桌面由 `components/OptionForm.tsx` 渲染；移动端为 `features/settings/Aria2OptionItemList.tsx` + 选项子页），AriaNg 设置项定义在 `features/settings/ariaNgSettingItems.ts`，避免逐项硬编码。
+- **通用设置组件**：数据驱动。通用组件位于 `components/settings/`（`SettingsItem` 条目、`SettingsCard` 卡片、`SettingsSection` 标题+卡片、`SettingsChoiceList` 候选值、`SettingsInputModal` 输入弹窗、`SettingsChoiceModal` 选择弹窗），样式类为 `styles/components.css` 中的 `.settings-*`。Aria2 选项定义在 `config/aria2Options.ts`，由 `features/settings/Aria2OptionItemList.tsx` 渲染；`features/settings/settingsItemViews.ts` 把 `Aria2OptionItem` 与 `ariaNgSettingItems` 映射为统一条目视图。设置页与任务设置（`TaskSettingsPanel`、`TaskOptionSettings`、`QuickSettingDialog`）共用这套组件。设置路由页面共用基本形式：`SettingsPage`（外壳）、`useAria2GlobalOptions`（Aria2 选项数据）、`Aria2OptionListPage`（列表基本形式）、`Aria2OptionValueRoutePage`（值页基本形式），各路由只做薄组合。
 - **分片可视化**：`PieceBar`（条状，canvas）与 `PieceMap`（方块图，canvas，监听父容器尺寸变化）。
 - **主题**：`useTheme` 切换 `body.theme-dark` class，Tailwind dark 变体在 `styles/index.css` 中通过 `@custom-variant dark (&:where(.theme-dark, .theme-dark *))` 声明。
 

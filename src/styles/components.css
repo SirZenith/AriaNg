@@ -31,6 +31,22 @@
         @apply text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700;
     }
 
+    .btn-secondary {
+        @apply bg-gray-500 text-white hover:bg-gray-600;
+    }
+
+    .btn-muted {
+        @apply bg-gray-400 text-white hover:bg-gray-500;
+    }
+
+    .btn-success {
+        @apply bg-green-600 text-white hover:bg-green-700;
+    }
+
+    .btn-warning {
+        @apply bg-amber-600 text-white hover:bg-amber-700;
+    }
+
     .btn-xs {
         @apply px-2 py-0.5 text-xs;
     }
@@ -121,5 +137,49 @@
 
     .switch-on .switch-thumb {
         @apply translate-x-[22px];
+    }
+
+    .settings-card {
+        @apply overflow-hidden rounded-xl bg-white shadow dark:bg-gray-800;
+    }
+
+    .settings-section-title {
+        @apply mb-2 px-1 text-sm font-medium text-gray-500 dark:text-gray-400;
+    }
+
+    .settings-item {
+        @apply flex w-full items-center gap-3 border-b border-gray-100 px-4 py-3 text-left text-sm last:border-b-0 dark:border-gray-700;
+    }
+
+    .settings-item-interactive {
+        @apply transition-colors hover:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 dark:hover:bg-gray-900;
+    }
+
+    .settings-item-icon {
+        @apply h-4 w-4 shrink-0 text-gray-500;
+    }
+
+    .settings-item-text {
+        @apply min-w-0 flex-1;
+    }
+
+    .settings-item-title {
+        @apply block truncate;
+    }
+
+    .settings-item-description {
+        @apply mt-0.5 block text-xs text-gray-500 dark:text-gray-400;
+    }
+
+    .settings-item-value {
+        @apply shrink-0 text-sm text-gray-500 dark:text-gray-400;
+    }
+
+    .settings-item-indicator {
+        @apply h-4 w-4 shrink-0 text-gray-400;
+    }
+
+    .settings-item-check {
+        @apply h-4 w-4 shrink-0 text-primary;
     }
 }

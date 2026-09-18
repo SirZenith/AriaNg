@@ -65,7 +65,7 @@ export default function DebugPage() {
     }, [logs, levelFilter, orderDesc]);
 
     if (!isEnableDebugMode()) {
-        return <Navigate to="/settings/aria2/ariang" replace />;
+        return <Navigate to="/settings/ariang" replace />;
     }
 
     const executeMethod = async () => {

@@ -7,7 +7,7 @@ import { getSettingsCategory, getSettingsSubItem } from '@/features/settings/set
 import { aria2SettingService } from '@/services/aria2SettingService';
 import { getAllRpcSettings } from '@/services/settingService';
 
-const settingsBase = '/settings/aria2';
+const settingsBase = '/settings';
 
 function resolveOptionTitle(
     type: string | undefined,
@@ -58,7 +58,7 @@ function resolveItemTitle(type: string | undefined, sub: string | undefined, ite
 }
 
 function resolveSettingsLocation(pathname: string): { title: string; backTo: string } {
-    const fieldMatch = matchPath('/settings/aria2/:type/:sub/:item/:field', pathname);
+    const fieldMatch = matchPath('/settings/:type/:sub/:item/:field', pathname);
 
     if (fieldMatch) {
         const { item, field } = fieldMatch.params;
@@ -69,7 +69,7 @@ function resolveSettingsLocation(pathname: string): { title: string; backTo: str
         };
     }
 
-    const itemMatch = matchPath('/settings/aria2/:type/:sub/:item', pathname);
+    const itemMatch = matchPath('/settings/:type/:sub/:item', pathname);
 
     if (itemMatch) {
         const { type, sub, item } = itemMatch.params;
@@ -84,7 +84,7 @@ function resolveSettingsLocation(pathname: string): { title: string; backTo: str
         };
     }
 
-    const subMatch = matchPath('/settings/aria2/:type/:sub', pathname);
+    const subMatch = matchPath('/settings/:type/:sub', pathname);
 
     if (subMatch) {
         const { type, sub } = subMatch.params;
@@ -96,7 +96,7 @@ function resolveSettingsLocation(pathname: string): { title: string; backTo: str
         };
     }
 
-    const typeMatch = matchPath('/settings/aria2/:type', pathname);
+    const typeMatch = matchPath('/settings/:type', pathname);
 
     if (typeMatch?.params.type) {
         const category = getSettingsCategory(typeMatch.params.type);

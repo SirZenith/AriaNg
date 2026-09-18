@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 import { useRpcDraftStore } from '@/stores/rpcDraftStore';
 import RpcSettingFieldPage from './RpcSettingFieldPage';
 
@@ -10,7 +11,11 @@ afterEach(() => {
 
 describe('RpcSettingFieldPage', () => {
     it('stores the selected value into the rpc draft', () => {
-        render(<RpcSettingFieldPage rpcItem="0" field="protocol" />);
+        render(
+            <MemoryRouter>
+                <RpcSettingFieldPage rpcItem="0" field="protocol" />
+            </MemoryRouter>,
+        );
 
         fireEvent.click(screen.getByRole('option', { name: 'wss' }));
 
