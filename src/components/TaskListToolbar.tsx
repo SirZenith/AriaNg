@@ -115,7 +115,7 @@ export default function TaskListToolbar() {
                 </button>
                 <button
                     type="button"
-                    className={toolbarButtonClass + ' hidden min-[420px]:flex'}
+                    className={toolbarButtonClass}
                     disabled={tasks.length < 1}
                     title={t('Select All')}
                     aria-label={t('Select All')}

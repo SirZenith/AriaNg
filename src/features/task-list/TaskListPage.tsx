@@ -375,7 +375,7 @@ export default function TaskListPage({ location }: { location: string }) {
                             }
                         >
                             <Icon className="h-4 w-4" aria-hidden="true" />
-                            {t(tab.label)}
+                            <span className="hidden md:inline" >{t(tab.label)}</span>
                             <span className="rounded-full bg-black/10 px-1.5 text-[10px] dark:bg-white/15">
                                 {taskCounts[tab.key] ?? 0}
                             </span>

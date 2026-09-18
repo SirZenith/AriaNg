@@ -118,6 +118,14 @@ describe('App', () => {
         expect(vi.mocked(reloadPage)).toHaveBeenCalled();
     });
 
+    it('keeps the select all button visible on small screens', () => {
+        stubMatchMedia({ mobile: true });
+        window.location.hash = '#/downloading';
+        render(<App />);
+
+        expect(screen.getByLabelText('Select All').className).not.toContain('hidden');
+    });
+
     it('shows the rpc setting list on small screens', () => {
         stubMatchMedia({ mobile: true });
         window.location.hash = '#/settings/aria2/ariang/rpc';
