@@ -122,7 +122,7 @@ export default function Aria2SettingsPage() {
     };
 
     return (
-        <section className="rounded bg-white p-4 shadow dark:bg-gray-800">
+        <section className="rounded-xl bg-white p-4 shadow dark:bg-gray-800">
             {isMobile ? null : (
                 <div className="mb-4 flex flex-wrap gap-2 border-b border-gray-200 pb-2 dark:border-gray-700">
                     {settingsCategories.map((category) => {
