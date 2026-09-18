@@ -6,16 +6,17 @@ interface PieceMapProps {
     pieceCount: number;
 }
 
-const CELL_SIZE = 4;
-const CELL_GAP = 1;
+const CELL_SIZE = 10;
+const CELL_GAP = 4;
 
 export default function PieceMap({ bitField, pieceCount }: PieceMapProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
         const canvas = canvasRef.current;
+        const parent = canvas?.parentElement;
 
-        if (!canvas) {
+        if (!canvas || !parent) {
             return;
         }
 
@@ -26,23 +27,42 @@ export default function PieceMap({ bitField, pieceCount }: PieceMapProps) {
         }
 
         const pieces = getPieceStatus(bitField, pieceCount);
-        const step = CELL_SIZE + CELL_GAP;
-        const availableWidth = canvas.parentElement?.clientWidth || 600;
-        const columns = Math.max(1, Math.floor(availableWidth / step));
-        const rows = Math.max(1, Math.ceil(pieces.length / columns));
-        const isDark = document.body.classList.contains('theme-dark');
 
-        canvas.width = columns * step;
-        canvas.height = rows * step;
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        const draw = () => {
+            const step = CELL_SIZE + CELL_GAP;
+            const availableWidth = parent.clientWidth || 600;
+            const columns = Math.max(1, Math.floor(availableWidth / step));
+            const rows = Math.max(1, Math.ceil(pieces.length / columns));
+            const isDark = document.body.classList.contains('theme-dark');
 
-        for (let i = 0; i < pieces.length; i++) {
-            const x = (i % columns) * step;
-            const y = Math.floor(i / columns) * step;
+            canvas.width = columns * step;
+            canvas.height = rows * step;
+            context.clearRect(0, 0, canvas.width, canvas.height);
 
-            context.fillStyle = pieces[i] ? '#74a329' : isDark ? '#4b5563' : '#d1d5db';
-            context.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+            for (let i = 0; i < pieces.length; i++) {
+                const x = (i % columns) * step;
+                const y = Math.floor(i / columns) * step;
+
+                context.fillStyle = pieces[i] ? '#74a329' : isDark ? '#4b5563' : '#d1d5db';
+                context.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+            }
+        };
+
+        draw();
+
+        if (typeof ResizeObserver !== 'function') {
+            return;
         }
+
+        const observer = new ResizeObserver(() => {
+            draw();
+        });
+
+        observer.observe(parent);
+
+        return () => {
+            observer.disconnect();
+        };
     }, [bitField, pieceCount]);
 
     return <canvas ref={canvasRef} className="block max-w-full" />;
