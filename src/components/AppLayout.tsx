@@ -4,6 +4,7 @@ import AppFooter from './AppFooter';
 import BottomNav from './BottomNav';
 import NotificationContainer from './NotificationContainer';
 import SettingsToolbar from './SettingsToolbar';
+import TaskDetailToolbar from './TaskDetailToolbar';
 import TaskListToolbar from './TaskListToolbar';
 import {
     useBrowserNotificationEvents,
@@ -39,6 +40,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
     const headerContentByPattern: PatternedContent[] = [
         ...taskListPatterns.map((pattern) => ({ pattern, content: <TaskListToolbar /> })),
+        { pattern: '/task/detail/:gid', content: <TaskDetailToolbar /> },
         { pattern: '/settings/*', content: <SettingsToolbar /> },
     ];
 
@@ -55,7 +57,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 <header className="bg-[#3c4852] px-4 py-1.5 text-white sm:py-2">{headerContent}</header>
             ) : null}
 
-            <main className="min-h-0 flex-1 overflow-y-auto p-4 [scrollbar-gutter:stable_both-edges]">
+            <main
+                data-scroll-container
+                className="min-h-0 flex-1 overflow-y-auto p-4 [scrollbar-gutter:stable_both-edges]"
+            >
                 <div className="mx-auto w-full max-w-[1000px]">{children}</div>
             </main>
 

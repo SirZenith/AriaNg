@@ -15,6 +15,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { ArrowDown, ArrowUp, CheckCircle2, Clock, Download, type LucideIcon } from 'lucide-react';
 import ContextMenu, { type ContextMenuItem } from '@/components/ContextMenu';
 import { useTaskListPolling } from '@/hooks/useAria2';
+import { useScrollRestoration } from '@/hooks/useScrollRestoration';
 import { aria2TaskService } from '@/services/taskService';
 import { notifyInPage } from '@/services/notification';
 import { getAfterRetryingTask, getConfirmTaskRemoval, getDragAndDropTasks } from '@/services/settingService';
@@ -52,6 +53,7 @@ function buildMagnetLink(task: Aria2Task): string {
 
 export default function TaskListPage({ location }: { location: string }) {
     useTaskListPolling(location);
+    useScrollRestoration(location);
 
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -79,8 +81,8 @@ export default function TaskListPage({ location }: { location: string }) {
         ? location === 'waiting'
             ? options.waitingTaskListPageDisplayOrder
             : location === 'stopped'
-                ? options.stoppedTaskListPageDisplayOrder
-                : options.displayOrder
+              ? options.stoppedTaskListPageDisplayOrder
+              : options.displayOrder
         : options.displayOrder;
 
     const visibleTasks = orderTasks(
@@ -375,7 +377,7 @@ export default function TaskListPage({ location }: { location: string }) {
                             }
                         >
                             <Icon className="h-4 w-4" aria-hidden="true" />
-                            <span className="hidden md:inline" >{t(tab.label)}</span>
+                            <span className="hidden md:inline">{t(tab.label)}</span>
                             <span className="rounded-full bg-black/10 px-1.5 text-[10px] dark:bg-white/15">
                                 {taskCounts[tab.key] ?? 0}
                             </span>

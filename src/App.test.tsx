@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
 import { addNewRpcSetting, getAllRpcSettings, getOptions, updateRpcSetting } from './services/settingService';
@@ -103,6 +103,28 @@ describe('App', () => {
         for (const label of ['Start', 'Pause', 'Task Settings']) {
             expect(screen.getByLabelText(label).querySelector('span')?.className).toContain('hidden');
         }
+    });
+
+    it('shows the header with a back button on the task detail page', () => {
+        window.location.hash = '#/task/detail/gid123';
+        render(<App />);
+
+        expect(screen.getByRole('banner')).toBeTruthy();
+        expect(screen.getByLabelText('Back')).toBeTruthy();
+    });
+
+    it('navigates back from the task detail page', async () => {
+        window.location.hash = '#/downloading';
+        render(<App />);
+
+        window.location.hash = '#/task/detail/gid123';
+
+        await screen.findByLabelText('Back');
+        fireEvent.click(screen.getByLabelText('Back'));
+
+        await waitFor(() => {
+            expect(window.location.hash).toBe('#/downloading');
+        });
     });
 
     it('shows the footer only on task list routes', () => {
