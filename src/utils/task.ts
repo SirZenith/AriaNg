@@ -445,66 +445,108 @@ export function getTaskCardStatus(task: Aria2Task): TaskCardStatus | null {
     }
 }
 
+interface TaskStatusStyle {
+    bgClass: string;
+    textClass: string;
+    iconBgClass: string;
+    colorValue: string;
+}
+
+const taskStatusStyles: Record<TaskCardStatus, TaskStatusStyle> = {
+    verify_integrity_pending: {
+        bgClass: 'bg-orange-300',
+        textClass: 'text-orange-500 dark:text-orange-400',
+        iconBgClass: 'bg-orange-500/15 dark:bg-orange-400/25',
+        colorValue: 'var(--color-orange-500)',
+    },
+    verified_length: {
+        bgClass: 'bg-yellow-300',
+        textClass: 'text-amber-500 dark:text-amber-400',
+        iconBgClass: 'bg-amber-500/15 dark:bg-amber-400/25',
+        colorValue: 'var(--color-amber-500)',
+    },
+    seeding: {
+        bgClass: 'bg-green-600',
+        textClass: 'text-green-600 dark:text-green-500',
+        iconBgClass: 'bg-green-600/15 dark:bg-green-500/25',
+        colorValue: 'var(--color-green-600)',
+    },
+    downloading: {
+        bgClass: 'bg-blue-500',
+        textClass: 'text-blue-500 dark:text-blue-400',
+        iconBgClass: 'bg-blue-500/15 dark:bg-blue-500/25',
+        colorValue: 'var(--color-blue-500)',
+    },
+    waiting: {
+        bgClass: 'bg-blue-200',
+        textClass: 'text-blue-500 dark:text-blue-400',
+        iconBgClass: 'bg-blue-500/15 dark:bg-blue-500/25',
+        colorValue: 'var(--color-blue-500)',
+    },
+    paused: {
+        bgClass: 'bg-indigo-700',
+        textClass: 'text-indigo-700 dark:text-indigo-400',
+        iconBgClass: 'bg-indigo-700/15 dark:bg-indigo-500/25',
+        colorValue: 'var(--color-indigo-700)',
+    },
+    complete: {
+        bgClass: 'bg-green-600',
+        textClass: 'text-green-600 dark:text-green-500',
+        iconBgClass: 'bg-green-600/15 dark:bg-green-500/25',
+        colorValue: 'var(--color-green-600)',
+    },
+    error: {
+        bgClass: 'bg-red-500',
+        textClass: 'text-red-500 dark:text-red-400',
+        iconBgClass: 'bg-red-500/15 dark:bg-red-500/25',
+        colorValue: 'var(--color-red-500)',
+    },
+    removed: {
+        bgClass: 'bg-red-200',
+        textClass: 'text-red-500 dark:text-red-400',
+        iconBgClass: 'bg-red-500/15 dark:bg-red-500/25',
+        colorValue: 'var(--color-red-500)',
+    },
+};
+
 export function getTaskStatusBgClass(task: Aria2Task): string {
     if (!task) {
-        return 'bg-inherit'
+        return 'bg-inherit';
     }
 
     const status = getTaskCardStatus(task);
 
-    switch (status) {
-    case 'verify_integrity_pending':
-        return 'bg-orange-300';
-    case 'verified_length':
-        return 'bg-yellow-300';
-    case 'seeding':
-        return 'bg-green-600';
-    case 'downloading':
-        return 'bg-blue-500';
-    case 'waiting':
-        return 'bg-blue-200';
-    case 'paused':
-        return 'bg-indigo-700';
-    case 'complete':
-        return 'bg-green-600';
-    case 'error':
-        return 'bg-red-500';
-    case 'removed':
-        return 'bg-red-200';
-    default:
-        return 'bg-inherit'
-    }
+    return status ? taskStatusStyles[status].bgClass : 'bg-inherit';
 }
 
 export function getTaskStatusColorClass(task: Aria2Task): string {
     if (!task) {
-        return 'text-inherit'
+        return 'text-inherit';
     }
 
     const status = getTaskCardStatus(task);
 
-    switch (status) {
-    case 'verify_integrity_pending':
-        return 'text-orange-300';
-    case 'verified_length':
-        return 'text-yellow-300';
-    case 'seeding':
-        return 'text-green-600';
-    case 'downloading':
-        return 'text-blue-500';
-    case 'waiting':
-        return 'text-blue-200';
-    case 'paused':
-        return 'text-indigo-700';
-    case 'complete':
-        return 'text-green-600';
-    case 'error':
-        return 'text-red-500';
-    case 'removed':
-        return 'text-red-200';
-    default:
-        return 'text-inherit'
+    return status ? taskStatusStyles[status].textClass : 'text-inherit';
+}
+
+export function getTaskStatusIconBgClass(task: Aria2Task): string {
+    if (!task) {
+        return 'bg-transparent';
     }
+
+    const status = getTaskCardStatus(task);
+
+    return status ? taskStatusStyles[status].iconBgClass : 'bg-transparent';
+}
+
+export function getTaskStatusColorValue(task: Aria2Task): string {
+    if (!task) {
+        return 'var(--color-primary)';
+    }
+
+    const status = getTaskCardStatus(task);
+
+    return status ? taskStatusStyles[status].colorValue : 'var(--color-primary)';
 }
 
 export function getTaskStatusIcon(task: Aria2Task, simplify?: boolean): LucideIcon | null {

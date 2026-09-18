@@ -89,6 +89,18 @@ describe('TaskListPage task card', () => {
         expect(card?.firstElementChild?.contains(statusIcon ?? null)).toBe(true);
     });
 
+    it('gives the status icon a tinted background', () => {
+        useTaskStore.setState({ tasks: [createTask({ status: 'active' })] });
+
+        renderPage();
+
+        const card = screen.getByText('ubuntu.iso').closest('div.cursor-pointer');
+        const icon = card?.querySelector('svg.lucide-download');
+
+        expect(icon?.parentElement?.getAttribute('class')).toContain('bg-blue-500/15');
+        expect(icon?.getAttribute('class')).toContain('text-blue-500');
+    });
+
     it('shows the connection count in the status row', () => {
         useTaskStore.setState({ tasks: [createTask({ connections: 12 })] });
 
@@ -166,9 +178,23 @@ describe('TaskListPage task card', () => {
         expect(card?.className).toContain('card-selected');
     });
 
+    it('colors the selected card with the task status color', () => {
+        useTaskStore.setState({ tasks: [createTask({ status: 'error' })] });
+
+        renderPage();
+
+        const card = screen.getByText('ubuntu.iso').closest('div.cursor-pointer') as HTMLElement;
+
+        expect(card.style.getPropertyValue('--task-status-color')).toBe('var(--color-red-500)');
+
+        fireEvent.click(card);
+
+        expect(card.className).toContain('card-selected');
+    });
+
     it.each<[Aria2Task['status'], string, string]>([
-        ['active', 'bg-primary', 'text-primary'],
-        ['complete', 'bg-green-500', 'text-green-600'],
+        ['active', 'bg-blue-500', 'text-blue-500'],
+        ['complete', 'bg-green-600', 'text-green-600'],
         ['error', 'bg-red-500', 'text-red-500'],
     ])('colors the progress bar and percent text for %s tasks', (status, barClass, textClass) => {
         useTaskStore.setState({ tasks: [createTask({ status })] });
@@ -188,7 +214,7 @@ describe('TaskListPage task card', () => {
 
         const card = screen.getByText('ubuntu.iso').closest('div.cursor-pointer');
 
-        expect(card?.querySelector('.h-1 > div')?.className).toContain('bg-green-500');
+        expect(card?.querySelector('.h-1 > div')?.className).toContain('bg-green-600');
         expect(screen.getByText(/%$/).className).toContain('text-green-600');
     });
 

@@ -1,4 +1,4 @@
-import { type MouseEvent, type ReactNode } from 'react';
+import { type CSSProperties, type MouseEvent, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useSortable } from '@dnd-kit/sortable';
@@ -7,7 +7,14 @@ import { ArrowDown, ArrowUp, Eye, Files, Network } from 'lucide-react';
 import { useTaskStore } from '@/stores/taskStore';
 import type { Aria2Task } from '@/types/aria2';
 import { formatDuration, formatPercent, formatVolume } from '@/utils/format';
-import { getTaskStatusBgClass, getTaskStatusColorClass, getTaskStatusIcon, isTaskRetryable } from '@/utils/task';
+import {
+    getTaskStatusBgClass,
+    getTaskStatusColorClass,
+    getTaskStatusColorValue,
+    getTaskStatusIcon,
+    getTaskStatusIconBgClass,
+    isTaskRetryable,
+} from '@/utils/task';
 
 interface TaskCardProps {
     task: Aria2Task;
@@ -31,7 +38,7 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
     const statusTextClass = getTaskStatusColorClass(task);
 
     const statusIconClass = statusTextClass;
-    const statusIconBgClass = statusBgClass;
+    const statusIconBgClass = getTaskStatusIconBgClass(task);
 
     const progressTextClass = statusTextClass;
     const progressBarClass = statusBgClass;
@@ -44,13 +51,14 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
                         'card flex h-full cursor-pointer items-stretch gap-3 p-3 text-sm ' +
                         (isSelected ? 'card-selected' : 'card-interactive')
                     }
+                    style={{ '--task-status-color': getTaskStatusColorValue(task) } as CSSProperties}
                     onClick={() => toggleSelected(task.gid)}
                     onContextMenu={(event) => {
                         event.preventDefault();
                         onContextMenu(event, task);
                     }}
                 >
-                    <div className={`${statusIconBgClass} flex shrink-0 items-center rounded`}>
+                    <div className={`${statusIconBgClass} flex shrink-0 items-center rounded-lg p-1`}>
                         {StatusIcon ? <StatusIcon className={'h-6 w-6 ' + statusIconClass} aria-hidden="true" /> : null}
                     </div>
 

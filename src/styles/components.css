@@ -8,7 +8,14 @@
     }
 
     .card-selected {
-        @apply border-primary bg-primary/10 ring-2 ring-primary/40 dark:bg-primary/15 dark:ring-primary/50;
+        border-color: var(--task-status-color, var(--color-primary));
+        background-color: color-mix(in oklab, var(--task-status-color, var(--color-primary)) 10%, transparent);
+        outline: 2px solid color-mix(in oklab, var(--task-status-color, var(--color-primary)) 40%, transparent);
+    }
+
+    :where(.theme-dark, .theme-dark *) .card-selected {
+        background-color: color-mix(in oklab, var(--task-status-color, var(--color-primary)) 15%, transparent);
+        outline-color: color-mix(in oklab, var(--task-status-color, var(--color-primary)) 50%, transparent);
     }
 
     .panel {
