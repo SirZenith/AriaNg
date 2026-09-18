@@ -3,14 +3,15 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import ExportCommandApiDialog, { type ExportCommandData } from '@/components/ExportCommandApiDialog';
 import type { AriaNgRpcSetting } from '@/config/constants';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 import {
     addNewRpcSetting,
-    createRpcSetting,
     getAllRpcSettings,
     removeRpcSetting,
     setDefaultRpcSettingByIndex,
     updateRpcSetting,
 } from '@/services/settingService';
+import { createRpcDraft, useRpcDraftStore } from '@/stores/rpcDraftStore';
 import { reloadPage } from '@/utils/navigation';
 import RpcSettingFields from './RpcSettingFields';
 
@@ -28,15 +29,20 @@ const rpcSettingFields: (keyof AriaNgRpcSetting)[] = [
 export default function RpcSettingsEditor({ item }: { item: string }) {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const isMobile = useMediaQuery('(max-width: 1023px)');
     const isNew = item === 'new';
     const index = isNew ? -1 : Number(item);
 
     const existing = useMemo(() => (isNew ? undefined : getAllRpcSettings()[index]), [isNew, index]);
-    const [draft, setDraft] = useState<AriaNgRpcSetting>(() => (existing ? { ...existing } : createRpcSetting()));
+    const storedDraft = useRpcDraftStore((state) => state.drafts[item]);
+    const setDraftField = useRpcDraftStore((state) => state.setField);
+    const clearDraft = useRpcDraftStore((state) => state.clearDraft);
+    const fallbackDraft = useMemo(() => createRpcDraft(item), [item]);
+    const draft = storedDraft ?? fallbackDraft;
     const [exportOptions, setExportOptions] = useState<ExportCommandData | null>(null);
 
     const setField = (field: keyof AriaNgRpcSetting, value: string) => {
-        setDraft((current) => ({ ...current, [field]: value }));
+        setDraftField(item, field, value);
     };
 
     const save = () => {
@@ -48,11 +54,13 @@ export default function RpcSettingsEditor({ item }: { item: string }) {
             }
 
             setDefaultRpcSettingByIndex(newIndex);
+            clearDraft(item);
             reloadPage();
             return;
         }
 
         if (!existing) {
+            clearDraft(item);
             navigate('/settings/aria2/ariang/rpc');
             return;
         }
@@ -65,6 +73,7 @@ export default function RpcSettingsEditor({ item }: { item: string }) {
             setDefaultRpcSettingByIndex(index);
         }
 
+        clearDraft(item);
         reloadPage();
     };
 
@@ -79,30 +88,27 @@ export default function RpcSettingsEditor({ item }: { item: string }) {
             return;
         }
 
+        clearDraft(item);
         removeRpcSetting(index);
         navigate('/settings/aria2/ariang/rpc');
     };
 
     return (
         <div className="flex flex-col gap-3">
-            <RpcSettingFields setting={draft} onChange={setField} />
+            <RpcSettingFields setting={draft} mobile={isMobile} rpcItem={item} onChange={setField} />
 
             <div className="flex flex-wrap gap-2">
                 <button type="button" className="btn btn-primary btn-sm" onClick={save}>
                     {t('Save')}
                 </button>
                 {existing && !existing.isDefault ? (
-                    <button
-                        type="button"
-                        className="rounded bg-red-600 px-3 py-1.5 text-sm text-white"
-                        onClick={remove}
-                    >
+                    <button type="button" className="btn btn-danger btn-sm" onClick={remove}>
                         {t('Remove')}
                     </button>
                 ) : null}
                 <button
                     type="button"
-                    className="rounded bg-gray-500 px-3 py-1.5 text-sm text-white"
+                    className="btn btn-sm bg-gray-500 text-white hover:bg-gray-600"
                     onClick={() => setExportOptions({ type: 'setting', data: draft })}
                 >
                     {t('Export Command API')}

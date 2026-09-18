@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import Switch from './Switch';
 import type { Aria2OptionItem } from '@/services/aria2SettingService';
 import { getSettingHistory } from '@/services/settingService';
 
@@ -27,14 +28,23 @@ export default function OptionForm({ options, values, onChange }: OptionFormProp
                             {option.required ? ' *' : ''}
                         </label>
                         <div className="sm:col-span-2">
-                            {option.options && option.options.length > 0 ? (
+                            {option.type === 'boolean' ? (
+                                <Switch
+                                    checked={value === 'true'}
+                                    disabled={option.readonly}
+                                    onChange={(checked) => onChange(option.key, checked ? 'true' : 'false')}
+                                    aria-label={t(option.nameKey)}
+                                />
+                            ) : option.options && option.options.length > 0 ? (
                                 <select
                                     className={inputClass}
                                     value={value}
                                     disabled={option.readonly}
                                     onChange={(event) => onChange(option.key, event.target.value)}
                                 >
-                                    <option value="">--</option>
+                                    <option value="" disabled>
+                                        --
+                                    </option>
                                     {option.options.map((item) => (
                                         <option key={item.value} value={item.value}>
                                             {t(item.name)}

@@ -17,16 +17,16 @@ export default function SettingsMenu({ type }: { type?: string }) {
 
     const items: MenuItem[] = subItems
         ? subItems.map((item) => ({
-            key: item.key,
-            label: item.label,
-            to: '/settings/aria2/' + type + '/' + item.key,
-        }))
+              key: item.key,
+              label: item.label,
+              to: '/settings/aria2/' + type + '/' + item.key,
+          }))
         : settingsCategories.map((category) => ({
-            key: category.key,
-            label: category.label,
-            to: '/settings/aria2/' + category.key,
-            icon: category.icon,
-        }));
+              key: category.key,
+              label: category.label,
+              to: '/settings/aria2/' + category.key,
+              icon: category.icon,
+          }));
 
     return (
         <div className="overflow-hidden rounded-xl bg-white shadow dark:bg-gray-800">

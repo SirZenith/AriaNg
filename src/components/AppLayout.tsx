@@ -1,6 +1,5 @@
 import { type ReactNode } from 'react';
 import { matchPath, useLocation } from 'react-router-dom';
-import AppFooter from './AppFooter';
 import BottomNav from './BottomNav';
 import NotificationContainer from './NotificationContainer';
 import SettingsToolbar from './SettingsToolbar';
@@ -57,10 +56,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 <header className="bg-transparent px-4 py-1.5 text-black sm:py-2">{headerContent}</header>
             ) : null}
 
-            <main
-                data-scroll-container
-                className="min-h-0 flex-1 overflow-y-auto p-4 scrollbar-gutter-both"
-            >
+            <main data-scroll-container className="min-h-0 flex-1 overflow-y-auto p-4 scrollbar-gutter-both">
                 <div className="mx-auto w-full max-w-250">{children}</div>
             </main>
 

@@ -6,9 +6,13 @@ import StatusSection from '@/features/status/StatusSection';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { aria2SettingService } from '@/services/aria2SettingService';
 import { notifyInPage } from '@/services/notification';
+import Aria2OptionItemList from './Aria2OptionItemList';
+import Aria2OptionValuePage from './Aria2OptionValuePage';
+import AriaNgSettingValuePage from './AriaNgSettingValuePage';
 import AriaNgSettingsSection from './AriaNgSettingsSection';
 import { protocolCategories } from './protocolCategories';
 import ProtocolSettingsSection from './ProtocolSettingsSection';
+import RpcSettingFieldPage from './RpcSettingFieldPage';
 import RpcSettingsEditor from './RpcSettingsEditor';
 import RpcSettingsMenu from './RpcSettingsMenu';
 import SettingsMenu from './SettingsMenu';
@@ -16,19 +20,20 @@ import { settingsCategories, settingsSubItems } from './settingsCategories';
 
 export default function Aria2SettingsPage() {
     const { t } = useTranslation();
-    const { type, sub, item } = useParams();
+    const { type, sub, item, field } = useParams();
     const isMobile = useMediaQuery('(max-width: 1023px)');
     const [globalOptions, setGlobalOptions] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(true);
 
     const protocolType = type ? protocolCategories.find((category) => category.key === type)?.key : undefined;
     const showProtocolSettings = type === 'protocol' || !!protocolType;
+    const optionCategory = type === 'protocol' ? sub : type;
 
     const optionItems = useMemo(() => {
-        const keys = type ? aria2SettingService.getAvailableGlobalOptionsKeys(type) : false;
+        const keys = optionCategory ? aria2SettingService.getAvailableGlobalOptionsKeys(optionCategory) : false;
 
         return Array.isArray(keys) ? aria2SettingService.getSpecifiedOptions(keys) : [];
-    }, [type]);
+    }, [optionCategory]);
 
     useEffect(() => {
         if (!type || type === 'ariang' || type === 'status') {
@@ -74,6 +79,10 @@ export default function Aria2SettingsPage() {
     }
 
     if (isMobile && type === 'ariang' && sub === 'rpc') {
+        if (item && field) {
+            return <RpcSettingFieldPage rpcItem={item} field={field} />;
+        }
+
         if (item) {
             return (
                 <section className="rounded bg-white p-4 shadow dark:bg-gray-800">
@@ -83,6 +92,44 @@ export default function Aria2SettingsPage() {
         }
 
         return <RpcSettingsMenu />;
+    }
+
+    const renderOptionValuePage = (optionKey: string) => {
+        const option = optionItems.find((entry) => entry.key === optionKey);
+
+        if (!option || !option.options || option.options.length < 1) {
+            return null;
+        }
+
+        return (
+            <Aria2OptionValuePage
+                option={option}
+                value={globalOptions[option.key] ?? option.defaultValue ?? ''}
+                onChange={(key, value) => void changeOption(key, value)}
+            />
+        );
+    };
+
+    if (isMobile) {
+        if (type === 'ariang' && sub === 'settings') {
+            return item ? <AriaNgSettingValuePage settingKey={item} /> : <AriaNgSettingsSection mobile />;
+        }
+
+        if ((type === 'basic' || type === 'advanced') && sub) {
+            const page = renderOptionValuePage(sub);
+
+            if (page) {
+                return page;
+            }
+        }
+
+        if (type === 'protocol' && sub && item) {
+            const page = renderOptionValuePage(item);
+
+            if (page) {
+                return page;
+            }
+        }
     }
 
     const renderContent = () => {
@@ -101,12 +148,34 @@ export default function Aria2SettingsPage() {
         if (showProtocolSettings) {
             const initialType = sub || protocolType || protocolCategories[0].key;
 
+            if (isMobile) {
+                return (
+                    <Aria2OptionItemList
+                        routeBase={'/settings/aria2/protocol/' + initialType}
+                        options={optionItems}
+                        values={globalOptions}
+                        onChange={(key, value) => void changeOption(key, value)}
+                    />
+                );
+            }
+
             return (
                 <ProtocolSettingsSection
                     key={initialType}
                     hideTabs={isMobile}
                     initialType={initialType}
                     options={globalOptions}
+                    onChange={(key, value) => void changeOption(key, value)}
+                />
+            );
+        }
+
+        if (isMobile) {
+            return (
+                <Aria2OptionItemList
+                    routeBase={'/settings/aria2/' + (type || '')}
+                    options={optionItems}
+                    values={globalOptions}
                     onChange={(key, value) => void changeOption(key, value)}
                 />
             );

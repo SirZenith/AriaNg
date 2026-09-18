@@ -106,4 +106,20 @@
     .modal-header {
         @apply flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-700;
     }
+
+    .switch {
+        @apply relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full bg-gray-300 transition-colors focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-600;
+    }
+
+    .switch-thumb {
+        @apply pointer-events-none inline-block h-5 w-5 translate-x-0.5 rounded-full bg-white shadow transition-transform;
+    }
+
+    .switch-on {
+        @apply bg-primary dark:bg-primary;
+    }
+
+    .switch-on .switch-thumb {
+        @apply translate-x-[22px];
+    }
 }

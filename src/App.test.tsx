@@ -1,7 +1,10 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
+import { ariaNgDefaultOptions } from './config/constants';
 import { addNewRpcSetting, getAllRpcSettings, getOptions, updateRpcSetting } from './services/settingService';
+import { useRpcDraftStore } from './stores/rpcDraftStore';
+import { useSettingStore } from './stores/settingStore';
 import { reloadPage } from './utils/navigation';
 
 vi.mock('./utils/navigation', () => ({ reloadPage: vi.fn() }));
@@ -36,6 +39,8 @@ afterEach(() => {
     Reflect.deleteProperty(window.navigator, 'registerProtocolHandler');
     window.localStorage.clear();
     window.location.hash = '';
+    useSettingStore.setState({ options: ariaNgDefaultOptions });
+    useRpcDraftStore.setState({ drafts: {} });
 });
 
 describe('App', () => {
@@ -125,20 +130,6 @@ describe('App', () => {
         await waitFor(() => {
             expect(window.location.hash).toBe('#/downloading');
         });
-    });
-
-    it('shows the footer only on task list routes', () => {
-        window.location.hash = '#/settings/aria2/basic';
-        const view = render(<App />);
-
-        expect(screen.queryByText('Global Rate Limit')).toBeNull();
-
-        view.unmount();
-
-        window.location.hash = '#/downloading';
-        render(<App />);
-
-        expect(screen.getByText('Global Rate Limit')).toBeTruthy();
     });
 
     it('hides the header on routes without mapped content', () => {
@@ -269,5 +260,36 @@ describe('App', () => {
         fireEvent.click(screen.getByLabelText('Back'));
 
         expect(await screen.findByText('Basic Settings')).toBeTruthy();
+    });
+
+    it('opens a setting value page and keeps the selection on small screens', async () => {
+        stubMatchMedia({ mobile: true });
+        window.location.hash = '#/settings/aria2/ariang/settings';
+        render(<App />);
+
+        fireEvent.click(screen.getByRole('link', { name: /Theme/ }));
+
+        fireEvent.click(await screen.findByRole('option', { name: 'Dark' }));
+
+        expect(screen.getByRole('option', { name: 'Dark', selected: true })).toBeTruthy();
+        expect(getOptions().theme).toBe('dark');
+
+        fireEvent.click(screen.getByLabelText('Back'));
+
+        expect((await screen.findByRole('link', { name: /Theme/ })).textContent).toContain('Dark');
+    });
+
+    it('opens the rpc protocol choice page from the editor on small screens', async () => {
+        stubMatchMedia({ mobile: true });
+        window.location.hash = '#/settings/aria2/ariang/rpc/0';
+        render(<App />);
+
+        fireEvent.click(screen.getByRole('link', { name: 'http' }));
+
+        fireEvent.click(await screen.findByRole('option', { name: 'wss' }));
+
+        fireEvent.click(screen.getByLabelText('Back'));
+
+        expect(await screen.findByRole('link', { name: 'wss' })).toBeTruthy();
     });
 });
