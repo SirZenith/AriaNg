@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 
 interface ModalProps {
     title: string;
@@ -9,14 +10,15 @@ interface ModalProps {
 }
 
 export default function Modal({ title, onClose, children, footer, wide }: ModalProps) {
-    return (
+    return createPortal(
         <div
             className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 p-4"
             onClick={onClose}
         >
             <div
                 className={
-                    'mt-16 mb-8 w-full rounded bg-white shadow-xl dark:bg-gray-800 ' + (wide ? 'max-w-3xl' : 'max-w-xl')
+                    'mt-16 mb-8 w-full rounded bg-white text-gray-800 shadow-xl dark:bg-gray-800 dark:text-gray-100 ' +
+                    (wide ? 'max-w-3xl' : 'max-w-xl')
                 }
                 onClick={(event) => event.stopPropagation()}
             >
@@ -37,6 +39,7 @@ export default function Modal({ title, onClose, children, footer, wide }: ModalP
                     </div>
                 ) : null}
             </div>
-        </div>
+        </div>,
+        document.body,
     );
 }
