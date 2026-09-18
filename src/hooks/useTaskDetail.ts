@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useMonitorStore } from '@/services/monitor';
 import { getDownloadTaskRefreshInterval } from '@/services/settingService';
 import { aria2TaskService } from '@/services/taskService';
+import { useTaskDetailStore } from '@/stores/taskDetailStore';
 import type { Aria2Peer, Aria2Task, TaskResponse } from '@/types/aria2';
 
 interface TaskDetailResult {
@@ -19,6 +20,7 @@ export function useTaskDetail(gid: string | undefined): TaskDetailResult {
     const [peers, setPeers] = useState<Aria2Peer[]>([]);
     const [loading, setLoading] = useState(true);
     const recordTaskStat = useMonitorStore((state) => state.recordTaskStat);
+    const setTaskName = useTaskDetailStore((state) => state.setTaskName);
 
     useEffect(() => {
         if (!gid) {
@@ -31,6 +33,7 @@ export function useTaskDetail(gid: string | undefined): TaskDetailResult {
         const applyTask = (nextTask: Aria2Task) => {
             latestTask = nextTask;
             setTask(nextTask);
+            setTaskName(gid, nextTask.taskName || '');
             recordTaskStat(gid, {
                 downloadSpeed: Number(nextTask.downloadSpeed || 0),
                 uploadSpeed: Number(nextTask.uploadSpeed || 0),
@@ -99,7 +102,7 @@ export function useTaskDetail(gid: string | undefined): TaskDetailResult {
                 window.clearInterval(timer);
             }
         };
-    }, [gid, recordTaskStat]);
+    }, [gid, recordTaskStat, setTaskName]);
 
     return { task, peers, loading };
 }
