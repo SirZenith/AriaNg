@@ -10,7 +10,7 @@ interface VersionInfo {
     enabledFeatures?: string[];
 }
 
-export default function StatusPage() {
+export default function StatusSection() {
     const { t } = useTranslation();
     const [versionInfo, setVersionInfo] = useState<VersionInfo | null>(null);
     const globalStat = useTaskStore((state) => state.globalStat);
@@ -51,9 +51,7 @@ export default function StatusPage() {
     };
 
     return (
-        <section className="rounded bg-white p-4 shadow dark:bg-gray-800">
-            <h2 className="mb-4 text-lg font-semibold">{t('Aria2 Status')}</h2>
-
+        <>
             <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 <div className="rounded border border-gray-200 p-3 dark:border-gray-700">
                     <dt className="text-xs text-gray-500">{t('Connection Status')}</dt>
@@ -117,6 +115,6 @@ export default function StatusPage() {
                     {t('Shutdown')}
                 </button>
             </div>
-        </section>
+        </>
     );
 }

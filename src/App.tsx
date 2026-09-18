@@ -4,7 +4,6 @@ import CommandHandler from '@/features/command/CommandHandler';
 import DebugPage from '@/features/debug/DebugPage';
 import NewTaskPage from '@/features/new-task/NewTaskPage';
 import Aria2SettingsPage from '@/features/settings/Aria2SettingsPage';
-import StatusPage from '@/features/status/StatusPage';
 import TaskDetailPage from '@/features/task-detail/TaskDetailPage';
 import TaskListPage from '@/features/task-list/TaskListPage';
 
@@ -23,7 +22,7 @@ export default function App() {
                     <Route path="/settings/aria2" element={<Navigate to="/settings/aria2/basic" replace />} />
                     <Route path="/settings/aria2/:type" element={<Aria2SettingsPage />} />
                     <Route path="/settings/rpc/set/*" element={<CommandHandler />} />
-                    <Route path="/status" element={<StatusPage />} />
+                    <Route path="/status" element={<Navigate to="/settings/aria2/status" replace />} />
                     <Route path="/debug" element={<DebugPage />} />
                     <Route path="*" element={<Navigate to="/downloading" replace />} />
                 </Routes>

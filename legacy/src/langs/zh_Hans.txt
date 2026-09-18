@@ -84,6 +84,7 @@ BitTorrent Settings=BitTorrent 设置
 Metalink Settings=Metalink 设置
 RPC Settings=RPC 设置
 Advanced Settings=高级设置
+Protocol Settings=协议设置
 AriaNg Debug Console=AriaNg 调试控制台
 Aria2 Status=Aria2 状态
 File Name=文件名

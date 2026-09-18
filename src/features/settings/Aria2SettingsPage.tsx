@@ -1,33 +1,22 @@
-import {
-    Cloud,
-    FileText,
-    Folder,
-    Globe,
-    Network,
-    Settings,
-    Settings2,
-    Share2,
-    Wrench,
-    type LucideIcon,
-} from 'lucide-react';
+import { Globe, Network, Server, Settings, Settings2, Wrench, type LucideIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, useParams } from 'react-router-dom';
 import OptionForm from '@/components/OptionForm';
+import StatusSection from '@/features/status/StatusSection';
 import { aria2SettingService } from '@/services/aria2SettingService';
 import { notifyInPage } from '@/services/notification';
 import AriaNgSettingsSection from './AriaNgSettingsSection';
+import { protocolCategories } from './protocolCategories';
+import ProtocolSettingsSection from './ProtocolSettingsSection';
 
 const categories: { key: string; label: string; icon: LucideIcon }[] = [
     { key: 'ariang', label: 'AriaNg Settings', icon: Settings },
     { key: 'basic', label: 'Basic Settings', icon: Settings2 },
-    { key: 'http-ftp-sftp', label: 'HTTP/FTP/SFTP Settings', icon: Globe },
-    { key: 'http', label: 'HTTP Settings', icon: Cloud },
-    { key: 'ftp-sftp', label: 'FTP/SFTP Settings', icon: Folder },
-    { key: 'bt', label: 'BitTorrent Settings', icon: Share2 },
-    { key: 'metalink', label: 'Metalink Settings', icon: FileText },
+    { key: 'protocol', label: 'Protocol Settings', icon: Globe },
     { key: 'rpc', label: 'RPC Settings', icon: Network },
     { key: 'advanced', label: 'Advanced Settings', icon: Wrench },
+    { key: 'status', label: 'Aria2 Status', icon: Server },
 ];
 
 export default function Aria2SettingsPage() {
@@ -36,6 +25,9 @@ export default function Aria2SettingsPage() {
     const [globalOptions, setGlobalOptions] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(true);
 
+    const protocolType = protocolCategories.find((category) => category.key === type)?.key;
+    const showProtocolSettings = type === 'protocol' || !!protocolType;
+
     const optionItems = useMemo(() => {
         const keys = aria2SettingService.getAvailableGlobalOptionsKeys(type);
 
@@ -43,7 +35,7 @@ export default function Aria2SettingsPage() {
     }, [type]);
 
     useEffect(() => {
-        if (type === 'ariang') {
+        if (type === 'ariang' || type === 'status') {
             return;
         }
 
@@ -77,6 +69,41 @@ export default function Aria2SettingsPage() {
         }
     };
 
+    const renderContent = () => {
+        if (type === 'ariang') {
+            return <AriaNgSettingsSection />;
+        }
+
+        if (type === 'status') {
+            return <StatusSection />;
+        }
+
+        if (loading) {
+            return <div className="p-6 text-center text-sm text-gray-500">{t('Loading')}</div>;
+        }
+
+        if (showProtocolSettings) {
+            const initialType = protocolType || protocolCategories[0].key;
+
+            return (
+                <ProtocolSettingsSection
+                    key={initialType}
+                    initialType={initialType}
+                    options={globalOptions}
+                    onChange={(key, value) => void changeOption(key, value)}
+                />
+            );
+        }
+
+        return (
+            <OptionForm
+                options={optionItems}
+                values={globalOptions}
+                onChange={(key, value) => void changeOption(key, value)}
+            />
+        );
+    };
+
     return (
         <section className="rounded bg-white p-4 shadow dark:bg-gray-800">
             <h2 className="mb-3 text-lg font-semibold">{t('Aria2 Settings')}</h2>
@@ -89,12 +116,16 @@ export default function Aria2SettingsPage() {
                         <NavLink
                             key={category.key}
                             to={'/settings/aria2/' + category.key}
-                            className={({ isActive }) =>
-                                'flex items-center gap-1 rounded px-2 py-1 text-sm ' +
-                                (isActive
-                                    ? 'bg-[#3c8dbc] text-white'
-                                    : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300')
-                            }
+                            className={({ isActive }) => {
+                                const active = category.key === 'protocol' ? showProtocolSettings : isActive;
+
+                                return (
+                                    'flex items-center gap-1 rounded px-2 py-1 text-sm ' +
+                                    (active
+                                        ? 'bg-[#3c8dbc] text-white'
+                                        : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300')
+                                );
+                            }}
                         >
                             <Icon className="h-4 w-4" aria-hidden="true" />
                             {t(category.label)}
@@ -103,17 +134,7 @@ export default function Aria2SettingsPage() {
                 })}
             </div>
 
-            {type === 'ariang' ? (
-                <AriaNgSettingsSection />
-            ) : loading ? (
-                <div className="p-6 text-center text-sm text-gray-500">{t('Loading')}</div>
-            ) : (
-                <OptionForm
-                    options={optionItems}
-                    values={globalOptions}
-                    onChange={(key, value) => void changeOption(key, value)}
-                />
-            )}
+            {renderContent()}
         </section>
     );
 }

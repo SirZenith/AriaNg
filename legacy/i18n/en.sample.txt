@@ -84,6 +84,7 @@ BitTorrent Settings=BitTorrent Settings
 Metalink Settings=Metalink Settings
 RPC Settings=RPC Settings
 Advanced Settings=Advanced Settings
+Protocol Settings=Protocol Settings
 AriaNg Debug Console=AriaNg Debug Console
 Aria2 Status=Aria2 Status
 File Name=File Name

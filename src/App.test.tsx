@@ -16,6 +16,6 @@ describe('App', () => {
         expect(screen.getAllByText('AriaNg').length).toBeGreaterThan(0);
         expect(screen.getByText('Downloading')).toBeTruthy();
         expect(screen.getByText('Waiting')).toBeTruthy();
-        expect(screen.getAllByText('Aria2 Status').length).toBeGreaterThan(0);
+        expect(screen.getAllByText('Aria2 Settings').length).toBeGreaterThan(0);
     });
 });

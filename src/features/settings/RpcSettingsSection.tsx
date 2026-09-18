@@ -79,8 +79,6 @@ export default function RpcSettingsSection() {
 
     return (
         <div>
-            <h3 className="mb-3 text-base font-semibold">{t('RPC Settings')}</h3>
-
             <div className="mb-3 flex flex-wrap items-center gap-2">
                 {settings.map((setting, index) => (
                     <button

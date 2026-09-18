@@ -1,4 +1,4 @@
-import { CheckCircle2, Clock, Download, Plus, Server, SlidersHorizontal, Wrench, type LucideIcon } from 'lucide-react';
+import { CheckCircle2, Clock, Download, Plus, SlidersHorizontal, Wrench, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 
@@ -33,7 +33,6 @@ export default function BottomNav({ counts, debugMode }: BottomNavProps) {
         { to: '/stopped', icon: CheckCircle2, label: t('Finished / Stopped'), badge: counts.stopped },
         { to: '/new', icon: Plus, label: t('New') },
         { to: '/settings/aria2', icon: SlidersHorizontal, label: t('Aria2 Settings') },
-        { to: '/status', icon: Server, label: t('Aria2 Status') },
         ...(debugMode ? [{ to: '/debug', icon: Wrench, label: t('Debug') }] : []),
     ];
 

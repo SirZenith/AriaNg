@@ -82,8 +82,6 @@ export default function ImportExportSection() {
 
     return (
         <div>
-            <h3 className="mb-3 text-base font-semibold">{t('Import / Export AriaNg Settings')}</h3>
-
             <div className="flex flex-wrap gap-2">
                 <button
                     type="button"
