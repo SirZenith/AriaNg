@@ -86,17 +86,6 @@ export default function TaskOverview({ task, healthPercent, showPiecesInfo }: Ta
                 {task.bittorrent?.mode ? <Row label={t('BitTorrent Mode')}>{task.bittorrent.mode}</Row> : null}
                 {task.infoHash ? <Row label={t('Info Hash')}>{task.infoHash}</Row> : null}
                 {task.singleUrl ? <Row label={t('Download Url')}>{task.singleUrl}</Row> : null}
-                {task.bittorrent?.announceList && task.bittorrent.announceList.length > 0 ? (
-                    <Row label={t('Tracker')}>
-                        <span className="block max-h-32 overflow-y-auto">
-                            {task.bittorrent.announceList.map((trackers, index) => (
-                                <span key={index} className="block truncate">
-                                    {trackers.join(' | ')}
-                                </span>
-                            ))}
-                        </span>
-                    </Row>
-                ) : null}
             </dl>
 
             {showPiecesInfo && numPieces > 0 ? (

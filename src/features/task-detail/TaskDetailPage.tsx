@@ -1,4 +1,4 @@
-import { FileText, LayoutDashboard, LayoutGrid, Settings, Users, type LucideIcon } from 'lucide-react';
+import { FileText, LayoutDashboard, LayoutGrid, Radio, Settings, Users, type LucideIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -12,6 +12,7 @@ import TaskFileList from './TaskFileList';
 import TaskOptionSettings from './TaskOptionSettings';
 import TaskOverview from './TaskOverview';
 import TaskPeerList from './TaskPeerList';
+import TaskTrackerList from './TaskTrackerList';
 
 function isShowPiecesInfo(task: Aria2Task | null): boolean {
     const setting = getShowPiecesInfoInTaskDetailPage();
@@ -64,11 +65,14 @@ export default function TaskDetailPage() {
         return <div className="p-6 text-sm text-gray-500">{t('There is no task')}</div>;
     }
 
+    const showTrackers = !!task.bittorrent?.announceList?.length;
+
     const tabs: { key: string; label: string; icon: LucideIcon }[] = [
         { key: 'overview', label: 'Overview', icon: LayoutDashboard },
         ...(showPiecesInfo ? [{ key: 'pieces', label: 'Pieces', icon: LayoutGrid }] : []),
         { key: 'filelist', label: 'Files', icon: FileText },
         ...(showPeers ? [{ key: 'btpeers', label: 'Peers', icon: Users }] : []),
+        ...(showTrackers ? [{ key: 'trackers', label: 'Tracker', icon: Radio }] : []),
         ...(showSettings ? [{ key: 'settings', label: 'Settings', icon: Settings }] : []),
     ];
 
@@ -91,7 +95,7 @@ export default function TaskDetailPage() {
                             onClick={() => setCurrentTab(item.key)}
                         >
                             <Icon className="h-4 w-4" aria-hidden="true" />
-                            {t(item.label)}
+                            <span className="hidden md:inline">{t(item.label)}</span>
                         </button>
                     );
                 })}
@@ -115,6 +119,8 @@ export default function TaskDetailPage() {
             ) : null}
 
             {currentTab === 'btpeers' ? <TaskPeerList peers={peers} /> : null}
+
+            {currentTab === 'trackers' && showTrackers ? <TaskTrackerList task={task} /> : null}
 
             {currentTab === 'settings' ? <TaskOptionSettings task={task} /> : null}
         </section>
