@@ -728,6 +728,9 @@
   "Back": "Back",
   "Select File": "Select File",
   "Task Settings": "Task Settings",
+  "This browser does not support registering a magnet handler": "This browser does not support registering a magnet handler",
+  "Failed to register a magnet handler": "Failed to register a magnet handler",
+  "Magnet handler registration requested": "Magnet handler registration requested",
   "Register as Magnet Handler": "Register as Magnet Handler",
   "Register": "Register"
 }

@@ -33,6 +33,7 @@ afterEach(() => {
     vi.restoreAllMocks();
     vi.clearAllMocks();
     vi.unstubAllGlobals();
+    Reflect.deleteProperty(window.navigator, 'registerProtocolHandler');
     window.localStorage.clear();
     window.location.hash = '';
 });
@@ -65,6 +66,22 @@ describe('App', () => {
         expect(screen.getByTitle('RPC Settings')).toBeTruthy();
     });
 
+    it('registers the magnet handler from the settings page', () => {
+        const register = vi.fn();
+
+        Object.defineProperty(window.navigator, 'registerProtocolHandler', {
+            value: register,
+            configurable: true,
+        });
+
+        window.location.hash = '#/settings/aria2/ariang';
+        render(<App />);
+
+        fireEvent.click(screen.getByText('Register as Magnet Handler'));
+
+        expect(register).toHaveBeenCalledWith('magnet', expect.stringContaining('#/new?uri=%s'));
+    });
+
     it('opens the task settings panel on the new task page', () => {
         window.location.hash = '#/new';
         render(<App />);
@@ -86,6 +103,20 @@ describe('App', () => {
         for (const label of ['Start', 'Pause', 'Task Settings']) {
             expect(screen.getByLabelText(label).querySelector('span')?.className).toContain('hidden');
         }
+    });
+
+    it('shows the footer only on task list routes', () => {
+        window.location.hash = '#/settings/aria2/basic';
+        const view = render(<App />);
+
+        expect(screen.queryByText('Global Rate Limit')).toBeNull();
+
+        view.unmount();
+
+        window.location.hash = '#/downloading';
+        render(<App />);
+
+        expect(screen.getByText('Global Rate Limit')).toBeTruthy();
     });
 
     it('hides the header on routes without mapped content', () => {

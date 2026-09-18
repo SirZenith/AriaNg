@@ -16,6 +16,13 @@ import {
 import { isEnableDebugMode } from '@/services/settingService';
 import { useTaskStore } from '@/stores/taskStore';
 
+interface PatternedContent {
+    pattern: string;
+    content: ReactNode;
+}
+
+const taskListPatterns = ['/downloading', '/waiting', '/stopped'];
+
 export default function AppLayout({ children }: { children: ReactNode }) {
     const location = useLocation();
 
@@ -30,14 +37,17 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
     const debugMode = isEnableDebugMode();
 
-    const headerContentByPattern: { pattern: string; content: ReactNode }[] = [
-        { pattern: '/downloading', content: <TaskListToolbar /> },
-        { pattern: '/waiting', content: <TaskListToolbar /> },
-        { pattern: '/stopped', content: <TaskListToolbar /> },
+    const headerContentByPattern: PatternedContent[] = [
+        ...taskListPatterns.map((pattern) => ({ pattern, content: <TaskListToolbar /> })),
         { pattern: '/settings/*', content: <SettingsToolbar /> },
     ];
 
+    const footerContentByPattern: PatternedContent[] = [
+        ...taskListPatterns.map((pattern) => ({ pattern, content: <AppFooter /> })),
+    ];
+
     const headerContent = headerContentByPattern.find(({ pattern }) => matchPath(pattern, location.pathname))?.content;
+    const footerContent = footerContentByPattern.find(({ pattern }) => matchPath(pattern, location.pathname))?.content;
 
     return (
         <div className="flex h-full flex-col">
@@ -49,7 +59,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 <div className="mx-auto w-full max-w-[1000px]">{children}</div>
             </main>
 
-            <AppFooter />
+            {footerContent ? (
+                <footer className="bg-[#3c4852] px-4 py-1 text-xs text-white">{footerContent}</footer>
+            ) : null}
 
             <BottomNav
                 counts={{

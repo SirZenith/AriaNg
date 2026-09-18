@@ -12,7 +12,6 @@ import {
     getSettingHistory,
     isCurrentRpcUseWebSocket,
 } from './settingService';
-import { log } from './log';
 import { aria2RpcService, type RpcInvokeContext } from './rpc';
 import type { TaskResponse } from '@/types/aria2';
 
@@ -242,16 +241,11 @@ export const aria2SettingService = {
         return aria2RpcService.getGlobalStat({
             silent: !!silent,
             callback: (response: TaskResponse) => {
-                if (!callback) {
-                    log.warn('[aria2SettingService.getGlobalStat] callback is null');
-                    return;
-                }
-
                 if (response.success && response.data) {
                     processStatResult(response.data as Aria2GlobalStatResult);
                 }
 
-                callback(response);
+                callback?.(response);
             },
         });
     },

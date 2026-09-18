@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { AriaNgOptions } from '@/config/constants';
 import { ariaNgLanguages } from '@/config/languages';
 import { hasBrowserPermission, requestBrowserPermission } from '@/services/browserNotification';
+import { notifyInPage } from '@/services/notification';
 import { isEnableDebugMode, resetOptions, setDebugMode } from '@/services/settingService';
 import { getBuildCommit, getBuildVersion } from '@/services/version';
 import { useSettingStore } from '@/stores/settingStore';
@@ -45,6 +46,22 @@ export default function AriaNgSettingsSection({ hideTabs = false, activeTab }: A
 
         resetOptions();
         window.location.reload();
+    };
+
+    const registerMagnetHandler = () => {
+        if (typeof navigator.registerProtocolHandler !== 'function') {
+            notifyInPage('Error', t('This browser does not support registering a magnet handler'), { type: 'error' });
+            return;
+        }
+
+        const templateUrl = window.location.origin + window.location.pathname + '#/new?uri=%s';
+
+        try {
+            navigator.registerProtocolHandler('magnet', templateUrl);
+            notifyInPage('', t('Magnet handler registration requested'), { type: 'success' });
+        } catch {
+            notifyInPage('Error', t('Failed to register a magnet handler'), { type: 'error' });
+        }
     };
 
     return (
@@ -340,6 +357,14 @@ export default function AriaNgSettingsSection({ hideTabs = false, activeTab }: A
                             }}
                         />
                     </Field>
+
+                    <button
+                        type="button"
+                        className="self-start rounded bg-gray-500 px-3 py-1.5 text-sm text-white hover:bg-gray-600"
+                        onClick={registerMagnetHandler}
+                    >
+                        {t('Register as Magnet Handler')}
+                    </button>
                 </div>
             ) : null}
 

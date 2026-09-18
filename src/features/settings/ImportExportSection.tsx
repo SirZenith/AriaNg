@@ -62,15 +62,6 @@ export default function ImportExportSection() {
         window.location.reload();
     };
 
-    const registerMagnetHandler = () => {
-        if (typeof navigator.registerProtocolHandler !== 'function') {
-            return;
-        }
-
-        const templateUrl = window.location.origin + window.location.pathname + '#/new?uri=%s';
-        navigator.registerProtocolHandler('magnet', templateUrl);
-    };
-
     const clearHistory = () => {
         if (!window.confirm(t('Are you sure you want to clear all settings history?'))) {
             return;
@@ -99,13 +90,6 @@ export default function ImportExportSection() {
                         onChange={(event) => void openImportFile(event.target.files?.[0])}
                     />
                 </label>
-                <button
-                    type="button"
-                    className="rounded bg-gray-500 px-3 py-1.5 text-sm text-white"
-                    onClick={registerMagnetHandler}
-                >
-                    {t('Register as Magnet Handler')}
-                </button>
                 <button
                     type="button"
                     className="rounded bg-amber-600 px-3 py-1.5 text-sm text-white"
