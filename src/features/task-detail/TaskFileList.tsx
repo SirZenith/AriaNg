@@ -1,12 +1,11 @@
-import { Folder, FolderOpen } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ariaNgFileTypes } from '@/config/fileTypes';
 import { aria2TaskService } from '@/services/taskService';
 import type { Aria2File, Aria2Task } from '@/types/aria2';
 import { getFileExtension } from '@/utils/common';
-import { getFileTypeIcon } from '@/utils/fileIcon';
-import { formatDuration, formatPercent, formatVolume } from '@/utils/format';
+import { formatDuration } from '@/utils/format';
+import TaskFileRow, { type TaskFileDirSelection } from './TaskFileRow';
 
 interface TaskFileListProps {
     task: Aria2Task;
@@ -206,23 +205,17 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
         }
     };
 
-    const renderDirCheckbox = (file: Aria2File) => {
-        const targets = files.filter((item) => isUnderDir(item, file.nodePath || ''));
-        const selectedCount = targets.filter((item) => selected[String(item.index)]).length;
-        const allSelected = targets.length > 0 && selectedCount === targets.length;
+    const getDirSelection = (file: Aria2File): TaskFileDirSelection | undefined => {
+        if (!choosing || !file.isDir) {
+            return undefined;
+        }
 
-        return (
-            <input
-                type="checkbox"
-                checked={allSelected}
-                ref={(element) => {
-                    if (element) {
-                        element.indeterminate = selectedCount > 0 && !allSelected;
-                    }
-                }}
-                onChange={(event) => toggleDir(file, event.target.checked)}
-            />
-        );
+        const targets = files.filter((item) => isUnderDir(item, file.nodePath || ''));
+
+        return {
+            selectedCount: targets.filter((item) => selected[String(item.index)]).length,
+            totalCount: targets.length,
+        };
     };
 
     return (
@@ -326,81 +319,24 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
                         return null;
                     }
 
-                    const percent = Number(file.completePercent || 0);
                     const isSelected = file.isDir ? false : choosing ? !!selected[String(file.index)] : !!file.selected;
-                    const indent = isMultiDir ? Number(file.level || 0) * 16 : 0;
-                    const isCollapsed = collapsed.has(file.nodePath || '');
-                    const showDirButton = isMultiDir && !choosing;
-                    const FileIcon = file.isDir ? null : getFileTypeIcon(file.fileName || '');
 
                     return (
-                        <div
+                        <TaskFileRow
                             key={(file.isDir ? 'dir-' : 'file-') + String(file.nodePath || '') + String(file.index)}
-                            className="grid grid-cols-12 items-center gap-2 border-b border-gray-100 px-2 py-1.5 text-sm last:border-0 dark:border-gray-700"
-                        >
-                            <div
-                                className="col-span-12 flex min-w-0 items-center gap-2 sm:col-span-6"
-                                style={{ paddingLeft: indent }}
-                            >
-                                {choosing && !file.isDir ? (
-                                    <input
-                                        type="checkbox"
-                                        checked={isSelected}
-                                        onChange={(event) =>
-                                            setSelected((current) => ({
-                                                ...current,
-                                                [String(file.index)]: event.target.checked,
-                                            }))
-                                        }
-                                    />
-                                ) : choosing && file.isDir ? (
-                                    renderDirCheckbox(file)
-                                ) : showDirButton && file.isDir ? (
-                                    <button
-                                        type="button"
-                                        className="flex items-center text-gray-500"
-                                        aria-label={isCollapsed ? t('Expand') : t('Collapse')}
-                                        onClick={() => toggleCollapse(file)}
-                                    >
-                                        {isCollapsed ? (
-                                            <Folder className="h-4 w-4" aria-hidden="true" />
-                                        ) : (
-                                            <FolderOpen className="h-4 w-4" aria-hidden="true" />
-                                        )}
-                                    </button>
-                                ) : null}
-
-                                {FileIcon ? (
-                                    <FileIcon className="h-4 w-4 shrink-0 text-gray-500" aria-hidden="true" />
-                                ) : file.isDir && !showDirButton ? (
-                                    isCollapsed ? (
-                                        <Folder className="h-4 w-4 shrink-0 text-gray-500" aria-hidden="true" />
-                                    ) : (
-                                        <FolderOpen className="h-4 w-4 shrink-0 text-gray-500" aria-hidden="true" />
-                                    )
-                                ) : null}
-
-                                <span className="truncate" title={file.path}>
-                                    {file.isDir ? file.nodeName : file.fileName || file.path}
-                                </span>
-                            </div>
-                            <div className="col-span-8 sm:col-span-3">
-                                {!file.isDir ? (
-                                    <>
-                                        <div className="h-2 w-full overflow-hidden bg-gray-200 dark:bg-gray-700">
-                                            <div
-                                                className="h-full bg-[#3c8dbc]"
-                                                style={{ width: Math.min(100, percent) + '%' }}
-                                            />
-                                        </div>
-                                        <span className="text-xs">{formatPercent(percent, 2) + '%'}</span>
-                                    </>
-                                ) : null}
-                            </div>
-                            <div className="col-span-4 text-right text-xs sm:col-span-3">
-                                {formatVolume(Number(file.length))}
-                            </div>
-                        </div>
+                            file={file}
+                            indent={isMultiDir ? Number(file.level || 0) * 16 : 0}
+                            isMultiDir={isMultiDir}
+                            choosing={choosing}
+                            selected={isSelected}
+                            collapsed={collapsed.has(file.nodePath || '')}
+                            dirSelection={getDirSelection(file)}
+                            onToggleCollapse={() => toggleCollapse(file)}
+                            onToggleSelected={(checked) =>
+                                setSelected((current) => ({ ...current, [String(file.index)]: checked }))
+                            }
+                            onToggleDir={(checked) => toggleDir(file, checked)}
+                        />
                     );
                 })}
 

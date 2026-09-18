@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import type { Aria2File, Aria2Task } from '@/types/aria2';
 import TaskFileList from './TaskFileList';
@@ -49,5 +49,33 @@ describe('TaskFileList', () => {
 
         const fileRow = screen.getByText('movie.mkv').closest('div');
         expect(fileRow?.querySelector('button')).toBeNull();
+    });
+
+    it('does not render a progress bar for directories and widens the name column', () => {
+        render(<TaskFileList task={createTask()} onChanged={vi.fn()} />);
+
+        const dirName = screen.getByText('Media').closest('div');
+        expect(dirName?.className).toContain('sm:col-span-9');
+
+        const dirRow = screen.getByText('Media').closest('div[class*="grid-cols-12"]');
+        expect(dirRow?.textContent).not.toContain('%');
+
+        const fileRow = screen.getByText('movie.mkv').closest('div[class*="grid-cols-12"]');
+        expect(fileRow?.textContent).toContain('50.00%');
+    });
+
+    it('toggles the directory when clicking anywhere on the row', () => {
+        render(<TaskFileList task={createTask()} onChanged={vi.fn()} />);
+
+        expect(screen.getByText('movie.mkv')).toBeTruthy();
+
+        fireEvent.click(screen.getByText('Media'));
+
+        expect(screen.queryByText('movie.mkv')).toBeNull();
+        expect(screen.getByText('manual.pdf')).toBeTruthy();
+
+        fireEvent.click(screen.getByText('Media'));
+
+        expect(screen.getByText('movie.mkv')).toBeTruthy();
     });
 });
