@@ -1,4 +1,4 @@
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link, matchPath, useLocation } from 'react-router-dom';
 import { getSettingsCategory, getSettingsSubItem } from '@/features/settings/settingsCategories';
@@ -66,7 +66,7 @@ export default function SettingsToolbar() {
 
     if (!isMobile) {
         return (
-            <div className="mx-auto flex w-full max-w-[1000px] flex-wrap items-center gap-x-2 gap-y-1 sm:gap-x-3">
+            <div className="mx-auto flex w-full max-w-250 flex-wrap items-center gap-x-2 gap-y-1 sm:gap-x-3">
                 <RpcSelector />
             </div>
         );
@@ -75,12 +75,11 @@ export default function SettingsToolbar() {
     const { title, backTo } = resolveSettingsLocation(location.pathname);
 
     return (
-        <div className="mx-auto flex w-full max-w-[1000px] items-center gap-x-1">
+        <div className="mx-auto flex w-full max-w-250 items-center gap-x-1.5">
             <Link to={backTo} className="toolbar-icon-btn" title={t('Back')} aria-label={t('Back')}>
-                <ArrowLeft className="h-5 w-5" aria-hidden="true" />
+                <ChevronLeft className="h-7 w-7" aria-hidden="true" />
             </Link>
-            <span className="min-w-0 flex-1 truncate text-sm font-medium">{t(title)}</span>
-            <RpcSelector compact />
+            <span className="min-w-0 flex-1 truncate text-lg font-medium">{t(title)}</span>
         </div>
     );
 }

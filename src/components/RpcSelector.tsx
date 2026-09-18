@@ -32,8 +32,8 @@ export default function RpcSelector({ compact = false }: { compact?: boolean }) 
             )}
             <select
                 className={
-                    'truncate rounded border border-white/30 bg-[#3c4852] px-1 py-0.5 text-xs ' +
-                    (compact ? 'max-w-[8rem]' : 'max-w-[5.5rem] sm:max-w-[14rem]')
+                    'truncate rounded border border-white/30 bg-white px-1 py-0.5 text-xs ' +
+                    (compact ? 'max-w-32' : 'max-w-22 sm:max-w-56')
                 }
                 value={rpcSettings.findIndex((item) => item.isDefault)}
                 onChange={(event) => changeRpc(Number(event.target.value))}
