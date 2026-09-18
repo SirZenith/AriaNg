@@ -45,5 +45,5 @@ export default function PieceBar({ bitField, pieceCount, color = '#74a329' }: Pi
         }
     }, [bitField, pieceCount, color]);
 
-    return <canvas ref={canvasRef} className="block h-2 w-full rounded bg-gray-300 dark:bg-gray-600" />;
+    return <canvas ref={canvasRef} className="block h-2 w-full bg-gray-300 dark:bg-gray-600" />;
 }

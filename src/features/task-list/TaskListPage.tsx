@@ -323,7 +323,7 @@ export default function TaskListPage({ location }: { location: string }) {
                         </div>
 
                         <div>
-                            <div className="h-2 w-full overflow-hidden rounded bg-gray-200 dark:bg-gray-700">
+                            <div className="h-2 w-full overflow-hidden bg-gray-200 dark:bg-gray-700">
                                 <div
                                     className={isError ? 'h-full bg-amber-500' : 'h-full bg-[#3c8dbc]'}
                                     style={{ width: Math.min(100, completePercent) + '%' }}

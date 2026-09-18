@@ -118,7 +118,7 @@ export default function TaskDetailPage() {
                 <TaskFileList key={refreshKey} task={task} onChanged={() => setRefreshKey((value) => value + 1)} />
             ) : null}
 
-            {currentTab === 'btpeers' ? <TaskPeerList peers={peers} /> : null}
+            {currentTab === 'btpeers' ? <TaskPeerList peers={peers} pieceCount={Number(task.numPieces || 0)} /> : null}
 
             {currentTab === 'trackers' && showTrackers ? <TaskTrackerList task={task} /> : null}
 

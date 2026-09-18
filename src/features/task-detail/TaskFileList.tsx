@@ -366,7 +366,7 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
                             <div className="col-span-8 sm:col-span-3">
                                 {!file.isDir ? (
                                     <>
-                                        <div className="h-2 w-full overflow-hidden rounded bg-gray-200 dark:bg-gray-700">
+                                        <div className="h-2 w-full overflow-hidden bg-gray-200 dark:bg-gray-700">
                                             <div
                                                 className="h-full bg-[#3c8dbc]"
                                                 style={{ width: Math.min(100, percent) + '%' }}

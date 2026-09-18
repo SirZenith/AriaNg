@@ -1,6 +1,7 @@
 import { ArrowDown, ArrowUp, Copy } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import PieceBar from '@/components/PieceBar';
 import { notifyInPage } from '@/services/notification';
 import type { Aria2Peer } from '@/types/aria2';
 import { copyText } from '@/utils/clipboard';
@@ -10,6 +11,7 @@ import { orderPeers } from '@/utils/task';
 
 interface TaskPeerListProps {
     peers: Aria2Peer[];
+    pieceCount: number;
 }
 
 const ipMaxLength = 25;
@@ -25,7 +27,7 @@ function middleEllipsis(value: string, maxLength: number): string {
     return value.slice(0, head) + '…' + value.slice(value.length - tail);
 }
 
-export default function TaskPeerList({ peers }: TaskPeerListProps) {
+export default function TaskPeerList({ peers, pieceCount }: TaskPeerListProps) {
     const { t } = useTranslation();
     const [orderType, setOrderType] = useState('default:asc');
     const orderedPeers = useMemo(() => orderPeers(peers, orderType), [peers, orderType]);
@@ -96,11 +98,8 @@ export default function TaskPeerList({ peers }: TaskPeerListProps) {
                             </div>
 
                             <div className="flex items-center gap-2">
-                                <div className="h-2 min-w-0 flex-1 overflow-hidden rounded bg-gray-200 dark:bg-gray-700">
-                                    <div
-                                        className="h-full bg-[#3c8dbc]"
-                                        style={{ width: Math.min(100, Number(peer.completePercent || 0)) + '%' }}
-                                    />
+                                <div className="min-w-0 flex-1">
+                                    <PieceBar bitField={peer.bitfield} pieceCount={pieceCount} color="#208fe5" />
                                 </div>
                                 <span className="shrink-0 text-xs">
                                     {formatPercent(Number(peer.completePercent || 0), 2) + '%'}
