@@ -160,7 +160,7 @@ export default function NewTaskPage() {
         'w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800';
 
     return (
-        <section className="max-w-4xl rounded bg-white p-4 shadow dark:bg-gray-800">
+        <section className="rounded bg-white p-4 shadow dark:bg-gray-800">
             <h2 className="mb-3 text-lg font-semibold">{t('New')}</h2>
 
             <div className="mb-4 flex gap-2 border-b border-gray-200 dark:border-gray-700">

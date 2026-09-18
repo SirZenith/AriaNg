@@ -51,7 +51,7 @@ export default function StatusPage() {
     };
 
     return (
-        <section className="max-w-3xl rounded bg-white p-4 shadow dark:bg-gray-800">
+        <section className="rounded bg-white p-4 shadow dark:bg-gray-800">
             <h2 className="mb-4 text-lg font-semibold">{t('Aria2 Status')}</h2>
 
             <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2">

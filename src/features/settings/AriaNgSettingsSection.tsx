@@ -23,7 +23,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     );
 }
 
-export default function AriaNgSettingsPage() {
+export default function AriaNgSettingsSection() {
     const { t, i18n } = useTranslation();
     const options = useSettingStore((state) => state.options);
     const setOption = useSettingStore((state) => state.setOption);
@@ -40,9 +40,7 @@ export default function AriaNgSettingsPage() {
     };
 
     return (
-        <section className="max-w-4xl rounded bg-white p-4 shadow dark:bg-gray-800">
-            <h2 className="mb-4 text-lg font-semibold">{t('AriaNg Settings')}</h2>
-
+        <>
             <div className="flex flex-col gap-3">
                 <Field label={t('Language')}>
                     <select
@@ -332,6 +330,6 @@ export default function AriaNgSettingsPage() {
             <p className="mt-4 text-xs text-gray-500 dark:text-gray-400">
                 {t('AriaNg Version')}: {getBuildVersion()} ({getBuildCommit()})
             </p>
-        </section>
+        </>
     );
 }

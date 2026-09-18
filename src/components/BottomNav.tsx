@@ -1,14 +1,4 @@
-import {
-    CheckCircle2,
-    Clock,
-    Download,
-    Plus,
-    Server,
-    Settings,
-    SlidersHorizontal,
-    Wrench,
-    type LucideIcon,
-} from 'lucide-react';
+import { CheckCircle2, Clock, Download, Plus, Server, SlidersHorizontal, Wrench, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 
@@ -42,37 +32,38 @@ export default function BottomNav({ counts, debugMode }: BottomNavProps) {
         { to: '/waiting', icon: Clock, label: t('Waiting'), badge: counts.waiting },
         { to: '/stopped', icon: CheckCircle2, label: t('Finished / Stopped'), badge: counts.stopped },
         { to: '/new', icon: Plus, label: t('New') },
-        { to: '/settings/ariang', icon: Settings, label: t('Settings') },
-        { to: '/settings/aria2/basic', icon: SlidersHorizontal, label: t('Aria2 Settings') },
+        { to: '/settings/aria2', icon: SlidersHorizontal, label: t('Aria2 Settings') },
         { to: '/status', icon: Server, label: t('Aria2 Status') },
         ...(debugMode ? [{ to: '/debug', icon: Wrench, label: t('Debug') }] : []),
     ];
 
     return (
-        <nav className="flex shrink-0 border-t border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
-            {items.map((item) => {
-                const Icon = item.icon;
+        <nav className="shrink-0 border-t border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+            <div className="mx-auto flex w-full max-w-[1000px]">
+                {items.map((item) => {
+                    const Icon = item.icon;
 
-                return (
-                    <NavLink
-                        key={item.to}
-                        to={item.to}
-                        className={navItemClass}
-                        title={item.label}
-                        aria-label={item.label}
-                    >
-                        <span className="relative">
-                            <Icon className="h-5 w-5" aria-hidden="true" />
-                            {item.badge && item.badge > 0 ? (
-                                <span className="absolute -top-1.5 -right-2 min-w-4 rounded-full bg-red-500 px-1 text-center text-[10px] leading-4 text-white">
-                                    {item.badge}
-                                </span>
-                            ) : null}
-                        </span>
-                        <span className="w-full truncate text-center">{item.label}</span>
-                    </NavLink>
-                );
-            })}
+                    return (
+                        <NavLink
+                            key={item.to}
+                            to={item.to}
+                            className={navItemClass}
+                            title={item.label}
+                            aria-label={item.label}
+                        >
+                            <span className="relative">
+                                <Icon className="h-5 w-5" aria-hidden="true" />
+                                {item.badge && item.badge > 0 ? (
+                                    <span className="absolute -top-1.5 -right-2 min-w-4 rounded-full bg-red-500 px-1 text-center text-[10px] leading-4 text-white">
+                                        {item.badge}
+                                    </span>
+                                ) : null}
+                            </span>
+                            <span className="w-full truncate text-center">{item.label}</span>
+                        </NavLink>
+                    );
+                })}
+            </div>
         </nav>
     );
 }

@@ -125,159 +125,165 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
     return (
         <div className="flex h-full flex-col">
-            <header className="flex flex-wrap items-center gap-x-2 gap-y-1 bg-[#3c4852] px-2 py-1.5 text-white sm:gap-x-3 sm:px-3 sm:py-2">
-                <div className="flex min-w-0 items-center gap-2">
-                    <span className="text-base font-semibold sm:text-lg" title={'AriaNg ' + getBuildVersion()}>
-                        AriaNg
-                    </span>
-                    <select
-                        className="max-w-[5.5rem] truncate rounded border border-white/30 bg-[#3c4852] px-1 py-0.5 text-xs sm:max-w-[14rem]"
-                        value={rpcSettings.findIndex((item) => item.isDefault)}
-                        onChange={(event) => changeRpc(Number(event.target.value))}
-                        title={t('RPC Settings')}
-                    >
-                        {rpcSettings.map((item, index) => (
-                            <option key={index} value={index}>
-                                {item.rpcAlias || item.rpcHost + ':' + item.rpcPort}
-                                {item.protocol === 'ws' || item.protocol === 'wss' ? ' (WS)' : ''}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+            <header className="bg-[#3c4852] px-2 py-1.5 text-white sm:px-3 sm:py-2">
+                <div className="mx-auto flex w-full max-w-[1000px] flex-wrap items-center gap-x-2 gap-y-1 sm:gap-x-3">
+                    <div className="flex min-w-0 items-center gap-2">
+                        <span className="text-base font-semibold sm:text-lg" title={'AriaNg ' + getBuildVersion()}>
+                            AriaNg
+                        </span>
+                        <select
+                            className="max-w-[5.5rem] truncate rounded border border-white/30 bg-[#3c4852] px-1 py-0.5 text-xs sm:max-w-[14rem]"
+                            value={rpcSettings.findIndex((item) => item.isDefault)}
+                            onChange={(event) => changeRpc(Number(event.target.value))}
+                            title={t('RPC Settings')}
+                        >
+                            {rpcSettings.map((item, index) => (
+                                <option key={index} value={index}>
+                                    {item.rpcAlias || item.rpcHost + ':' + item.rpcPort}
+                                    {item.protocol === 'ws' || item.protocol === 'wss' ? ' (WS)' : ''}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
-                <div className="flex items-center gap-0.5 sm:gap-1">
-                    <Link to="/new" className={toolbarButtonClass} title={t('New')} aria-label={t('New')}>
-                        <Plus className="h-4 w-4" aria-hidden="true" />
-                        <span className="hidden md:inline">{t('New')}</span>
-                    </Link>
-                    <button
-                        type="button"
-                        className={toolbarButtonClass}
-                        disabled={selectedTasks.length < 1}
-                        title={t('Start')}
-                        aria-label={t('Start')}
-                        onClick={() => void changeTasksState('start')}
-                    >
-                        <Play className="h-4 w-4" aria-hidden="true" />
-                        <span className="hidden md:inline">{t('Start')}</span>
-                    </button>
-                    <button
-                        type="button"
-                        className={toolbarButtonClass}
-                        disabled={selectedTasks.length < 1}
-                        title={t('Pause')}
-                        aria-label={t('Pause')}
-                        onClick={() => void changeTasksState('pause')}
-                    >
-                        <Pause className="h-4 w-4" aria-hidden="true" />
-                        <span className="hidden md:inline">{t('Pause')}</span>
-                    </button>
-                    <button
-                        type="button"
-                        className={toolbarButtonClass}
-                        disabled={selectedTasks.length < 1}
-                        title={t('Delete')}
-                        aria-label={t('Delete')}
-                        onClick={() => void removeTasks()}
-                    >
-                        <Trash2 className="h-4 w-4" aria-hidden="true" />
-                        <span className="hidden md:inline">{t('Delete')}</span>
-                    </button>
-                    <button
-                        type="button"
-                        className={toolbarButtonClass + ' hidden min-[420px]:flex'}
-                        disabled={tasks.length < 1}
-                        title={t('Select All')}
-                        aria-label={t('Select All')}
-                        onClick={() => selectAll()}
-                    >
-                        <CheckSquare className="h-4 w-4" aria-hidden="true" />
-                        <span className="hidden md:inline">{t('Select All')}</span>
-                    </button>
-                </div>
+                    <div className="flex items-center gap-0.5 sm:gap-1">
+                        <Link to="/new" className={toolbarButtonClass} title={t('New')} aria-label={t('New')}>
+                            <Plus className="h-4 w-4" aria-hidden="true" />
+                            <span className="hidden md:inline">{t('New')}</span>
+                        </Link>
+                        <button
+                            type="button"
+                            className={toolbarButtonClass}
+                            disabled={selectedTasks.length < 1}
+                            title={t('Start')}
+                            aria-label={t('Start')}
+                            onClick={() => void changeTasksState('start')}
+                        >
+                            <Play className="h-4 w-4" aria-hidden="true" />
+                            <span className="hidden md:inline">{t('Start')}</span>
+                        </button>
+                        <button
+                            type="button"
+                            className={toolbarButtonClass}
+                            disabled={selectedTasks.length < 1}
+                            title={t('Pause')}
+                            aria-label={t('Pause')}
+                            onClick={() => void changeTasksState('pause')}
+                        >
+                            <Pause className="h-4 w-4" aria-hidden="true" />
+                            <span className="hidden md:inline">{t('Pause')}</span>
+                        </button>
+                        <button
+                            type="button"
+                            className={toolbarButtonClass}
+                            disabled={selectedTasks.length < 1}
+                            title={t('Delete')}
+                            aria-label={t('Delete')}
+                            onClick={() => void removeTasks()}
+                        >
+                            <Trash2 className="h-4 w-4" aria-hidden="true" />
+                            <span className="hidden md:inline">{t('Delete')}</span>
+                        </button>
+                        <button
+                            type="button"
+                            className={toolbarButtonClass + ' hidden min-[420px]:flex'}
+                            disabled={tasks.length < 1}
+                            title={t('Select All')}
+                            aria-label={t('Select All')}
+                            onClick={() => selectAll()}
+                        >
+                            <CheckSquare className="h-4 w-4" aria-hidden="true" />
+                            <span className="hidden md:inline">{t('Select All')}</span>
+                        </button>
+                    </div>
 
-                <div className="ml-auto hidden items-center gap-2 sm:flex">
-                    <input
-                        ref={desktopSearchRef}
-                        type="text"
-                        className="w-40 rounded border border-white/20 bg-white/10 px-2 py-1 text-sm placeholder-white/60 focus:outline-none lg:w-56"
-                        placeholder={t('Search')}
-                        value={searchKeyword}
-                        onChange={(event) => setSearchKeyword(event.target.value)}
-                    />
-                </div>
-
-                <button
-                    type="button"
-                    className={toolbarButtonClass + ' ml-auto sm:hidden'}
-                    title={t('Search')}
-                    aria-label={t('Search')}
-                    aria-expanded={showMobileSearch}
-                    onClick={() => setShowMobileSearch((value) => !value)}
-                >
-                    <Search className="h-4 w-4" aria-hidden="true" />
-                </button>
-
-                {showMobileSearch ? (
-                    <div className="flex w-full items-center gap-1 sm:hidden">
+                    <div className="ml-auto hidden items-center gap-2 sm:flex">
                         <input
-                            ref={mobileSearchRef}
+                            ref={desktopSearchRef}
                             type="text"
-                            className="min-w-0 flex-1 rounded border border-white/20 bg-white/10 px-2 py-1 text-sm placeholder-white/60 focus:outline-none"
+                            className="w-40 rounded border border-white/20 bg-white/10 px-2 py-1 text-sm placeholder-white/60 focus:outline-none lg:w-56"
                             placeholder={t('Search')}
                             value={searchKeyword}
                             onChange={(event) => setSearchKeyword(event.target.value)}
                         />
-                        <button
-                            type="button"
-                            className="flex items-center rounded px-2 py-1 hover:bg-white/10"
-                            title={t('Close')}
-                            aria-label={t('Close')}
-                            onClick={() => setShowMobileSearch(false)}
-                        >
-                            <X className="h-4 w-4" aria-hidden="true" />
-                        </button>
                     </div>
-                ) : null}
-            </header>
 
-            <main className="min-h-0 flex-1 overflow-y-auto p-4">{children}</main>
-
-            <footer className="relative flex items-center justify-between bg-[#3c4852] px-3 py-1 text-xs text-white">
-                <div className="flex items-center gap-2">
-                    <span className={`rounded px-2 py-0.5 ${statusLabelClass[rpcStatus] || 'bg-gray-500'}`}>
-                        {t(rpcStatus)}
-                    </span>
                     <button
                         type="button"
-                        className="rounded px-2 py-0.5 hover:bg-white/10"
-                        title={t('Global Rate Limit')}
-                        onClick={() => setQuickSetting(true)}
+                        className={toolbarButtonClass + ' ml-auto sm:hidden'}
+                        title={t('Search')}
+                        aria-label={t('Search')}
+                        aria-expanded={showMobileSearch}
+                        onClick={() => setShowMobileSearch((value) => !value)}
                     >
-                        {t('Global Rate Limit')}
+                        <Search className="h-4 w-4" aria-hidden="true" />
                     </button>
-                </div>
-                <button
-                    type="button"
-                    className="flex items-center gap-4 rounded px-2 py-0.5 hover:bg-white/10"
-                    title={t('Click to pin')}
-                    onClick={() => setShowChart((value) => !value)}
-                >
-                    <span>
-                        <span className="mr-1 text-green-400">&#8595;</span>
-                        {formatVolume(globalStat.downloadSpeed) + '/s'}
-                    </span>
-                    <span>
-                        <span className="mr-1 text-blue-300">&#8593;</span>
-                        {formatVolume(globalStat.uploadSpeed) + '/s'}
-                    </span>
-                </button>
 
-                {showChart ? (
-                    <div className="absolute bottom-full right-2 z-40 w-80 rounded border border-gray-300 bg-white p-2 shadow dark:border-gray-600 dark:bg-gray-800">
-                        <SpeedChart data={globalStats} height={120} />
+                    {showMobileSearch ? (
+                        <div className="flex w-full items-center gap-1 sm:hidden">
+                            <input
+                                ref={mobileSearchRef}
+                                type="text"
+                                className="min-w-0 flex-1 rounded border border-white/20 bg-white/10 px-2 py-1 text-sm placeholder-white/60 focus:outline-none"
+                                placeholder={t('Search')}
+                                value={searchKeyword}
+                                onChange={(event) => setSearchKeyword(event.target.value)}
+                            />
+                            <button
+                                type="button"
+                                className="flex items-center rounded px-2 py-1 hover:bg-white/10"
+                                title={t('Close')}
+                                aria-label={t('Close')}
+                                onClick={() => setShowMobileSearch(false)}
+                            >
+                                <X className="h-4 w-4" aria-hidden="true" />
+                            </button>
+                        </div>
+                    ) : null}
+                </div>
+            </header>
+
+            <main className="min-h-0 flex-1 overflow-y-auto p-4">
+                <div className="mx-auto w-full max-w-[1000px]">{children}</div>
+            </main>
+
+            <footer className="bg-[#3c4852] px-3 py-1 text-xs text-white">
+                <div className="relative mx-auto flex w-full max-w-[1000px] items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <span className={`rounded px-2 py-0.5 ${statusLabelClass[rpcStatus] || 'bg-gray-500'}`}>
+                            {t(rpcStatus)}
+                        </span>
+                        <button
+                            type="button"
+                            className="rounded px-2 py-0.5 hover:bg-white/10"
+                            title={t('Global Rate Limit')}
+                            onClick={() => setQuickSetting(true)}
+                        >
+                            {t('Global Rate Limit')}
+                        </button>
                     </div>
-                ) : null}
+                    <button
+                        type="button"
+                        className="flex items-center gap-4 rounded px-2 py-0.5 hover:bg-white/10"
+                        title={t('Click to pin')}
+                        onClick={() => setShowChart((value) => !value)}
+                    >
+                        <span>
+                            <span className="mr-1 text-green-400">&#8595;</span>
+                            {formatVolume(globalStat.downloadSpeed) + '/s'}
+                        </span>
+                        <span>
+                            <span className="mr-1 text-blue-300">&#8593;</span>
+                            {formatVolume(globalStat.uploadSpeed) + '/s'}
+                        </span>
+                    </button>
+
+                    {showChart ? (
+                        <div className="absolute bottom-full right-2 z-40 w-80 rounded border border-gray-300 bg-white p-2 shadow dark:border-gray-600 dark:bg-gray-800">
+                            <SpeedChart data={globalStats} height={120} />
+                        </div>
+                    ) : null}
+                </div>
             </footer>
 
             <BottomNav

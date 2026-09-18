@@ -67,7 +67,7 @@ export default function ImportExportSection() {
             return;
         }
 
-        const templateUrl = window.location.href.replace('/settings/ariang', '/new?uri=%s');
+        const templateUrl = window.location.origin + window.location.pathname + '#/new?uri=%s';
         navigator.registerProtocolHandler('magnet', templateUrl);
     };
 

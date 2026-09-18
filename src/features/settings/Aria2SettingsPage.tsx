@@ -1,10 +1,22 @@
-import { Cloud, FileText, Folder, Globe, Network, Settings2, Share2, Wrench, type LucideIcon } from 'lucide-react';
+import {
+    Cloud,
+    FileText,
+    Folder,
+    Globe,
+    Network,
+    Settings,
+    Settings2,
+    Share2,
+    Wrench,
+    type LucideIcon,
+} from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, useParams } from 'react-router-dom';
 import OptionForm from '@/components/OptionForm';
 import { aria2SettingService } from '@/services/aria2SettingService';
 import { notifyInPage } from '@/services/notification';
+import AriaNgSettingsSection from './AriaNgSettingsSection';
 
 const categories: { key: string; label: string; icon: LucideIcon }[] = [
     { key: 'basic', label: 'Basic Settings', icon: Settings2 },
@@ -15,6 +27,7 @@ const categories: { key: string; label: string; icon: LucideIcon }[] = [
     { key: 'metalink', label: 'Metalink Settings', icon: FileText },
     { key: 'rpc', label: 'RPC Settings', icon: Network },
     { key: 'advanced', label: 'Advanced Settings', icon: Wrench },
+    { key: 'ariang', label: 'AriaNg Settings', icon: Settings },
 ];
 
 export default function Aria2SettingsPage() {
@@ -30,6 +43,10 @@ export default function Aria2SettingsPage() {
     }, [type]);
 
     useEffect(() => {
+        if (type === 'ariang') {
+            return;
+        }
+
         let cancelled = false;
 
         void (async () => {
@@ -86,7 +103,9 @@ export default function Aria2SettingsPage() {
                 })}
             </div>
 
-            {loading ? (
+            {type === 'ariang' ? (
+                <AriaNgSettingsSection />
+            ) : loading ? (
                 <div className="p-6 text-center text-sm text-gray-500">{t('Loading')}</div>
             ) : (
                 <OptionForm
