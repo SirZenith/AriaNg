@@ -11,6 +11,7 @@
     --color-success: #00a65a;
     --color-warning: #f39c12;
     --color-chrome: #3c4852;
+    --color-page: #ecf0f5;
 }
 
 html,
@@ -30,13 +31,14 @@ body {
         Arial,
         sans-serif;
     font-size: 14px;
-    background-color: #ecf0f5;
+    background-color: var(--color-page);
     color: #333;
     color-scheme: light;
 }
 
 body.theme-dark {
-    background-color: #1e282c;
+    --color-page: #1e282c;
+    background-color: var(--color-page);
     color: #d2d6de;
     color-scheme: dark;
 }

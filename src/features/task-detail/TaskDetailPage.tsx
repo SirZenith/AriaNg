@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import PieceBar from '@/components/PieceBar';
 import PieceMap from '@/components/PieceMap';
 import TaskDetailToolbar from '@/components/TaskDetailToolbar';
+import TopBar from '@/components/TopBar';
 import { useTaskDetail } from '@/hooks/useTaskDetail';
 import { getShowPiecesInfoInTaskDetailPage } from '@/services/settingService';
 import type { Aria2Task } from '@/types/aria2';
@@ -38,7 +39,9 @@ function isShowPiecesInfo(task: Aria2Task | null): boolean {
 function TaskDetailPanel({ children }: { children: ReactNode }) {
     return (
         <div className="space-y-3">
-            <TaskDetailToolbar />
+            <TopBar>
+                <TaskDetailToolbar />
+            </TopBar>
             {children}
         </div>
     );
