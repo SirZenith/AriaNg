@@ -726,6 +726,8 @@
   "Server:": "Server:",
   "Tasks": "Tasks",
   "Back": "Back",
+  "Select File": "Select File",
+  "Task Settings": "Task Settings",
   "Register as Magnet Handler": "Register as Magnet Handler",
   "Register": "Register"
 }

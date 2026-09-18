@@ -65,6 +65,29 @@ describe('App', () => {
         expect(screen.getByTitle('RPC Settings')).toBeTruthy();
     });
 
+    it('opens the task settings panel on the new task page', () => {
+        window.location.hash = '#/new';
+        render(<App />);
+
+        fireEvent.click(screen.getByText('Task Settings'));
+
+        expect(screen.getByLabelText('Back')).toBeTruthy();
+        expect(screen.getByText('Confirm')).toBeTruthy();
+
+        fireEvent.click(screen.getByText('Confirm'));
+
+        expect(screen.queryByText('Confirm')).toBeNull();
+    });
+
+    it('hides the new task action button labels on small screens', () => {
+        window.location.hash = '#/new';
+        render(<App />);
+
+        for (const label of ['Start', 'Pause', 'Task Settings']) {
+            expect(screen.getByLabelText(label).querySelector('span')?.className).toContain('hidden');
+        }
+    });
+
     it('hides the header on routes without mapped content', () => {
         window.location.hash = '#/new';
         render(<App />);

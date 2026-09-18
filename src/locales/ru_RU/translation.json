@@ -88,6 +88,8 @@
   "Server:": "Сервер:",
   "Tasks": "Задачи",
   "Back": "Назад",
+  "Select File": "Выбрать файл",
+  "Task Settings": "Настройки задачи",
   "AriaNg Debug Console": "Консоль отладки AriaNg",
   "Aria2 Status": "Статус Aria2",
   "File Name": "Имя файла",

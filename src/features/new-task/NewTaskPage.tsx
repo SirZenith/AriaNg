@@ -1,12 +1,13 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FileUp, Pause, Play, Settings2 } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import OptionForm from '@/components/OptionForm';
 import { aria2SettingService } from '@/services/aria2SettingService';
 import { aria2TaskService } from '@/services/taskService';
 import { notifyInPage } from '@/services/notification';
 import { addSettingHistory, getAfterCreatingNewTask } from '@/services/settingService';
 import { parseUrlsFromOriginInput } from '@/utils/common';
+import TaskSettingsPanel from './TaskSettingsPanel';
 
 type TaskType = 'urls' | 'torrent' | 'metalink';
 
@@ -53,6 +54,7 @@ export default function NewTaskPage() {
     const [fileName, setFileName] = useState('');
     const [options, setOptions] = useState<Record<string, string>>({});
     const [submitting, setSubmitting] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
 
     const availableOptions = useMemo(
         () =>
@@ -61,20 +63,6 @@ export default function NewTaskPage() {
             }),
         [],
     );
-
-    const setOptionValue = (key: string, value: string) => {
-        setOptions((current) => {
-            const next = { ...current };
-
-            if (value === '' && !aria2SettingService.isOptionKeyRequired(key)) {
-                delete next[key];
-            } else {
-                next[key] = value;
-            }
-
-            return next;
-        });
-    };
 
     const gotoAfterCreated = (paused: boolean, response: unknown) => {
         const afterCreating = getAfterCreatingNewTask();
@@ -198,42 +186,66 @@ export default function NewTaskPage() {
                 ) : (
                     <div>
                         <label className="mb-1 block text-sm font-medium">
-                            {taskType === 'torrent' ? 'Torrent File' : 'Metalink File'}
+                            {t(taskType === 'torrent' ? 'Torrent File' : 'Metalink File')}
                         </label>
-                        <input
-                            type="file"
-                            accept={taskType === 'torrent' ? '.torrent' : '.meta4,.metalink'}
-                            className="text-sm"
-                            onChange={(event) => void openFile(taskType, event.target.files?.[0])}
-                        />
+                        <label className="inline-flex cursor-pointer items-center gap-1 rounded bg-[#3c8dbc] px-3 py-1.5 text-sm text-white hover:bg-[#367fa9]">
+                            <FileUp className="h-4 w-4" aria-hidden="true" />
+                            {t('Select File')}
+                            <input
+                                type="file"
+                                accept={taskType === 'torrent' ? '.torrent' : '.meta4,.metalink'}
+                                className="hidden"
+                                onChange={(event) => void openFile(taskType, event.target.files?.[0])}
+                            />
+                        </label>
                         {fileName ? <div className="mt-1 text-xs text-gray-500">{fileName}</div> : null}
                     </div>
                 )}
             </div>
 
-            <div className="mb-4">
-                <h3 className="mb-2 text-sm font-semibold">{t('Options')}</h3>
-                <OptionForm options={availableOptions} values={options} onChange={setOptionValue} />
-            </div>
-
             <div className="flex gap-2">
                 <button
                     type="button"
-                    disabled={submitting}
-                    className="rounded bg-[#3c8dbc] px-4 py-2 text-sm text-white hover:bg-[#367fa9] disabled:opacity-50"
-                    onClick={() => void startDownload(false)}
+                    className="flex items-center gap-1 rounded border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
+                    title={t('Task Settings')}
+                    aria-label={t('Task Settings')}
+                    onClick={() => setShowSettings(true)}
                 >
-                    {t('Start')}
+                    <Settings2 className="h-4 w-4" aria-hidden="true" />
+                    <span className="hidden md:inline">{t('Task Settings')}</span>
                 </button>
                 <button
                     type="button"
                     disabled={submitting}
-                    className="rounded bg-gray-500 px-4 py-2 text-sm text-white hover:bg-gray-600 disabled:opacity-50"
+                    className="ml-auto flex items-center gap-1 rounded bg-[#3c8dbc] px-4 py-2 text-sm text-white hover:bg-[#367fa9] disabled:opacity-50"
+                    title={t('Start')}
+                    aria-label={t('Start')}
+                    onClick={() => void startDownload(false)}
+                >
+                    <Play className="h-4 w-4" aria-hidden="true" />
+                    <span className="hidden md:inline">{t('Start')}</span>
+                </button>
+                <button
+                    type="button"
+                    disabled={submitting}
+                    className="flex items-center gap-1 rounded bg-gray-500 px-4 py-2 text-sm text-white hover:bg-gray-600 disabled:opacity-50"
+                    title={t('Pause')}
+                    aria-label={t('Pause')}
                     onClick={() => void startDownload(true)}
                 >
-                    {t('Pause')}
+                    <Pause className="h-4 w-4" aria-hidden="true" />
+                    <span className="hidden md:inline">{t('Pause')}</span>
                 </button>
             </div>
+
+            {showSettings ? (
+                <TaskSettingsPanel
+                    options={availableOptions}
+                    values={options}
+                    onConfirm={(values) => setOptions(values)}
+                    onClose={() => setShowSettings(false)}
+                />
+            ) : null}
         </section>
     );
 }
