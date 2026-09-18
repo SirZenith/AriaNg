@@ -35,7 +35,7 @@ interface ContextMenuState {
 
 const cardGridClass = 'grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4';
 
-const taskListTabs: { key: string; label: string; icon: LucideIcon }[] = [
+const taskListTabs: { key: string; label: string; icon: LucideIcon; }[] = [
     { key: 'downloading', label: 'Downloading', icon: Download },
     { key: 'waiting', label: 'Waiting', icon: Clock },
     { key: 'stopped', label: 'Finished / Stopped', icon: CheckCircle2 },
@@ -52,7 +52,7 @@ function buildMagnetLink(task: Aria2Task): string {
     return 'magnet:?xt=urn:btih:' + infoHash + (name ? '&dn=' + encodeURIComponent(name) : '');
 }
 
-export default function TaskListPage({ location }: { location: string }) {
+export default function TaskListPage({ location }: { location: string; }) {
     useTaskListPolling(location);
     useScrollRestoration(location);
 
@@ -81,8 +81,8 @@ export default function TaskListPage({ location }: { location: string }) {
         ? location === 'waiting'
             ? options.waitingTaskListPageDisplayOrder
             : location === 'stopped'
-              ? options.stoppedTaskListPageDisplayOrder
-              : options.displayOrder
+                ? options.stoppedTaskListPageDisplayOrder
+                : options.displayOrder
         : options.displayOrder;
 
     const visibleTasks = orderTasks(
@@ -257,51 +257,51 @@ export default function TaskListPage({ location }: { location: string }) {
     return (
         <section className="space-y-3">
             <TopBar>
+                <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-2 dark:border-gray-700">
+                    {taskListTabs.map((tab) => {
+                        const Icon = tab.icon;
+
+                        return (
+                            <NavLink
+                                key={tab.key}
+                                to={'/' + tab.key}
+                                className={'nav-tab ' + (location === tab.key ? 'nav-tab-active' : 'nav-tab-inactive')}
+                            >
+                                <Icon className="h-4 w-4" aria-hidden="true" />
+                                <span className="hidden md:inline">{t(tab.label)}</span>
+                                <span className="rounded-full bg-black/10 px-1.5 text-[10px] dark:bg-white/15">
+                                    {taskCounts[tab.key] ?? 0}
+                                </span>
+                            </NavLink>
+                        );
+                    })}
+                </div>
+
                 <TaskListToolbar />
+
+                <div className="panel flex flex-wrap items-center gap-2 px-3 py-2">
+                    <span className="text-sm font-semibold">{t('Display Order')}</span>
+                    <select
+                        className="input w-auto"
+                        value={orderType}
+                        onChange={(event) => changeDisplayOrder(event.target.value)}
+                    >
+                        <option value="default:asc">{t('Default')}</option>
+                        <option value="name:asc">{t('By File Name')}</option>
+                        <option value="size:asc">{t('By File Size')}</option>
+                        <option value="percent:desc">{t('By Progress')}</option>
+                        <option value="remain:asc">{t('By Remaining')}</option>
+                        <option value="dspeed:desc">{t('By Download Speed')}</option>
+                        <option value="uspeed:desc">{t('By Upload Speed')}</option>
+                    </select>
+
+                    {location === 'stopped' ? (
+                        <button type="button" className="btn btn-danger btn-sm" onClick={() => void clearStoppedTasks()}>
+                            {t('Clear Stopped Tasks')}
+                        </button>
+                    ) : null}
+                </div>
             </TopBar>
-
-            <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-2 dark:border-gray-700">
-                {taskListTabs.map((tab) => {
-                    const Icon = tab.icon;
-
-                    return (
-                        <NavLink
-                            key={tab.key}
-                            to={'/' + tab.key}
-                            className={'nav-tab ' + (location === tab.key ? 'nav-tab-active' : 'nav-tab-inactive')}
-                        >
-                            <Icon className="h-4 w-4" aria-hidden="true" />
-                            <span className="hidden md:inline">{t(tab.label)}</span>
-                            <span className="rounded-full bg-black/10 px-1.5 text-[10px] dark:bg-white/15">
-                                {taskCounts[tab.key] ?? 0}
-                            </span>
-                        </NavLink>
-                    );
-                })}
-            </div>
-
-            <div className="panel flex flex-wrap items-center gap-2 px-3 py-2">
-                <span className="text-sm font-semibold">{t('Display Order')}</span>
-                <select
-                    className="input w-auto"
-                    value={orderType}
-                    onChange={(event) => changeDisplayOrder(event.target.value)}
-                >
-                    <option value="default:asc">{t('Default')}</option>
-                    <option value="name:asc">{t('By File Name')}</option>
-                    <option value="size:asc">{t('By File Size')}</option>
-                    <option value="percent:desc">{t('By Progress')}</option>
-                    <option value="remain:asc">{t('By Remaining')}</option>
-                    <option value="dspeed:desc">{t('By Download Speed')}</option>
-                    <option value="uspeed:desc">{t('By Upload Speed')}</option>
-                </select>
-
-                {location === 'stopped' ? (
-                    <button type="button" className="btn btn-danger btn-sm" onClick={() => void clearStoppedTasks()}>
-                        {t('Clear Stopped Tasks')}
-                    </button>
-                ) : null}
-            </div>
 
             {visibleTasks.length > 0 ? (
                 isDraggable ? (
