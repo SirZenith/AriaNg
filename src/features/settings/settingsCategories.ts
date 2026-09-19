@@ -1,8 +1,7 @@
-import { Globe, Network, Server, Settings, Settings2, Wrench, type LucideIcon } from 'lucide-react';
+import { Globe, Network, Server, Settings2, Wrench, type LucideIcon } from 'lucide-react';
 import { ariaNgSettingsTabs } from './ariaNgSettingsTabs';
 
 export const settingsCategories: { key: string; label: string; icon: LucideIcon }[] = [
-    { key: 'ariang', label: 'AriaNg Settings', icon: Settings },
     { key: 'basic', label: 'Basic Settings', icon: Settings2 },
     { key: 'protocol', label: 'Protocol Settings', icon: Globe },
     { key: 'rpc', label: 'RPC Settings', icon: Network },

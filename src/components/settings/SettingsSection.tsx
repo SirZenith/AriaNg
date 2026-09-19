@@ -8,7 +8,7 @@ interface SettingsSectionProps {
 
 export default function SettingsSection({ title, children }: SettingsSectionProps) {
     return (
-        <section>
+        <section className="settings-section">
             {title ? <h2 className="settings-section-title">{title}</h2> : null}
             <SettingsCard>{children}</SettingsCard>
         </section>
