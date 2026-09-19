@@ -27,6 +27,7 @@ import { copyText } from '@/utils/clipboard';
 import { filterTask, isTaskRetryable, orderTasks } from '@/utils/task';
 import TaskCard from './TaskCard';
 import BottomBar from '@/components/BottomBar';
+import ReturnToolbar from '@/components/ReturnToolbar';
 
 interface ContextMenuState {
     x: number;
@@ -258,6 +259,8 @@ export default function TaskListPage({ location }: { location: string; }) {
     return (
         <section className="space-y-3">
             <TopBar>
+                <ReturnToolbar title={t('Tasks')} to="/home"></ReturnToolbar>
+
                 <TaskListToolbar />
 
                 <div className="panel flex flex-wrap items-center gap-2 px-3 py-2">
@@ -319,7 +322,7 @@ export default function TaskListPage({ location }: { location: string; }) {
             ) : null}
 
             <BottomBar>
-                <div className="flex gap-4 items-center justify-center">
+                <div className="mb-2 flex gap-4 items-center justify-center">
                     <div className="bottom-bar flex flex-wrap gap-2 border-b border-gray-200 pb-2 dark:border-gray-700">
                         {taskListTabs.map((tab) => {
                             const Icon = tab.icon;
@@ -330,7 +333,7 @@ export default function TaskListPage({ location }: { location: string; }) {
                                     to={'/tasks/' + tab.key}
                                     className={'nav-tab ' + (location === tab.key ? 'nav-tab-active' : 'nav-tab-inactive')}
                                 >
-                                    <Icon className="h-4 w-4" aria-hidden="true" />
+                                    <Icon className="h-5 w-5" aria-hidden="true" />
                                     <span className="rounded-full bg-black/10 px-1.5 text-[10px] dark:bg-white/15">
                                         {taskCounts[tab.key] ?? 0}
                                     </span>
