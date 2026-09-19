@@ -105,7 +105,7 @@ jsdom 无法覆盖视觉效果时，可在 `npm run dev` 后用无头浏览器�
 
 - `src/locales/**`、`dist/**` 为生成/构建产物，不要手工修改。
 - `legacy/**` 为归档实现；转换脚本会读取其中的语言文件，其余内容保持不变。
-- 应用不注册 Service Worker、不做离线缓存（`public/manifest.json` 仅提供 PWA 元数据与 magnet 协议注册）。
+- `public/sw.js` 提供最小 Service Worker（仅生产环境在 `src/main.tsx` 注册）：缓存应用外壳（`index.html`）以支持 PWA 安装与离线打开，导航请求网络优先、静态资源 stale-while-revalidate；显式跳过 `manifest.json`、`sw.js` 与所有跨域（aria2 RPC）请求，不做数据缓存。`public/manifest.json` 提供 PWA 元数据与 magnet 协议注册。
 - TypeScript 为双版本方案：`@typescript/native`（别名到 `typescript@^7.0.2`）提供原生 `tsc`；包名 `typescript` 是 `@typescript/typescript6` 的别名（提供 `tsc6` 与 TS 6 API），供 typescript-eslint 使用。TS 7 不带 JS API，待 typescript-eslint 支持后方可移除别名；升级 CLI 只需升级 `@typescript/native`。
 - `tsconfig.json` 不使用 `baseUrl`（TS 7 已移除该选项），`paths` 直接相对项目根书写。
 - PLAN.md 记录重写阶段与决策，可作为历史背景参考。

@@ -55,7 +55,7 @@ CI 的 `build-web` 任务会执行 `npm run format:check`。
 - 若部署在子路径下，请在 `vite.config.ts` 中设置 `base` 为对应子路径。
 - 构建产物包含 `manifest.json` 与 PWA 图标，浏览器可将应用「安装」为 PWA；同时通过 `protocol_handlers` 注册 `magnet:` 协议（需 HTTPS 或 localhost）。
 - manifest 仅声明**不透明的 8-bit PNG 图标**（144/192/512），不提供 SVG 图标；`purpose` 的 `any` 与 `maskable` 分开声明。这是为了兼容 **Firefox for Android** 的「添加到主屏幕」：它不识别 manifest 中的 SVG 图标，且对 `any maskable` 组合与带透明通道的 16-bit PNG 支持不稳定。`<link rel="manifest">` 也不使用 `crossorigin`，避免 Firefox 因凭证请求而获取 manifest 失败。
-- **不注册 Service Worker，不提供离线缓存**；离线时仅受浏览器普通 HTTP 缓存影响。
+- 注册最小 Service Worker（`public/sw.js`，仅生产环境）：缓存应用外壳（`index.html`）以支持 PWA 安装与离线打开，导航请求网络优先；`manifest.json`、`sw.js` 及所有跨域 RPC 请求不缓存，不做数据缓存。
 - 兼容旧版 URL 命令（`#!/...` 会在启动时重写为 `#/...`），包括 `#!/new/:url` 与 `#!/settings/rpc/set/...`。
 
 ## CI 与发布
