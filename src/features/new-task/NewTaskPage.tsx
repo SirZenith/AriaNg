@@ -220,7 +220,7 @@ export default function NewTaskPage() {
                         aria-label={t('Task Settings')}
                         onClick={() => navigate('/new/settings', { state: { from } })}
                     >
-                        <Settings2 className="h-4 w-4" aria-hidden="true" />
+                        <Settings2 className="h-4 w-4 text-primary dark:text-primary-light" aria-hidden="true" />
                         <span className="hidden md:inline">{t('Task Settings')}</span>
                     </button>
                 }
@@ -234,7 +234,7 @@ export default function NewTaskPage() {
                             aria-label={t('Pause')}
                             onClick={() => void startDownload(true)}
                         >
-                            <Pause className="h-4 w-4" aria-hidden="true" />
+                            <Pause className="h-4 w-4 text-amber-600 dark:text-amber-400" aria-hidden="true" />
                             <span className="hidden md:inline">{t('Pause')}</span>
                         </button>
                         <button
@@ -245,7 +245,7 @@ export default function NewTaskPage() {
                             aria-label={t('Start')}
                             onClick={() => void startDownload(false)}
                         >
-                            <Play className="h-4 w-4" aria-hidden="true" />
+                            <Play className="h-4 w-4 text-green-600 dark:text-green-500" aria-hidden="true" />
                             <span className="hidden md:inline">{t('Start')}</span>
                         </button>
                     </>

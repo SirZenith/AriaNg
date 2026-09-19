@@ -82,7 +82,7 @@ export default function TaskListToolbar() {
                         title={t('New')}
                         aria-label={t('New')}
                     >
-                        <Plus className="h-4 w-4" aria-hidden="true" />
+                        <Plus className="h-4 w-4 text-primary dark:text-primary-light" aria-hidden="true" />
                         <span className="hidden md:inline">{t('New')}</span>
                     </Link>
                     <button
@@ -93,7 +93,7 @@ export default function TaskListToolbar() {
                         aria-label={t('Start')}
                         onClick={() => void changeTasksState('start')}
                     >
-                        <Play className="h-4 w-4" aria-hidden="true" />
+                        <Play className="h-4 w-4 text-green-600 dark:text-green-500" aria-hidden="true" />
                         <span className="hidden md:inline">{t('Start')}</span>
                     </button>
                     <button
@@ -104,7 +104,7 @@ export default function TaskListToolbar() {
                         aria-label={t('Pause')}
                         onClick={() => void changeTasksState('pause')}
                     >
-                        <Pause className="h-4 w-4" aria-hidden="true" />
+                        <Pause className="h-4 w-4 text-amber-600 dark:text-amber-400" aria-hidden="true" />
                         <span className="hidden md:inline">{t('Pause')}</span>
                     </button>
                     <button
@@ -115,7 +115,7 @@ export default function TaskListToolbar() {
                         aria-label={t('Delete')}
                         onClick={() => void removeTasks()}
                     >
-                        <Trash2 className="h-4 w-4" aria-hidden="true" />
+                        <Trash2 className="h-4 w-4 text-red-600 dark:text-red-400" aria-hidden="true" />
                         <span className="hidden md:inline">{t('Delete')}</span>
                     </button>
                     <button
@@ -126,7 +126,7 @@ export default function TaskListToolbar() {
                         aria-label={t('Select All')}
                         onClick={() => selectAll()}
                     >
-                        <CheckSquare className="h-4 w-4" aria-hidden="true" />
+                        <CheckSquare className="h-4 w-4 text-primary dark:text-primary-light" aria-hidden="true" />
                         <span className="hidden md:inline">{t('Select All')}</span>
                     </button>
                 </>
@@ -141,7 +141,7 @@ export default function TaskListToolbar() {
                         aria-expanded={searchVisible}
                         onClick={openSearch}
                     >
-                        <Search className="h-4 w-4" aria-hidden="true" />
+                        <Search className="h-4 w-4 text-primary dark:text-primary-light" aria-hidden="true" />
                     </button>
                     <div
                         className={
