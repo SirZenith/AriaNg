@@ -29,7 +29,7 @@ function readFileAsBase64(file: File): Promise<string> {
 }
 
 function extractFirstGid(response: unknown): string | null {
-    const result = response as { data?: unknown; results?: { data?: unknown; }[]; };
+    const result = response as { data?: unknown; results?: { data?: unknown }[] };
 
     if (typeof result?.data === 'string') {
         return result.data;

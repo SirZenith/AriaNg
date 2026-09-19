@@ -5,7 +5,7 @@ import SettingsSection from '@/components/settings/SettingsSection';
 export default function AriaNgGeneralSettingsPage() {
     return (
         <SettingsPage>
-            <SettingsSection >
+            <SettingsSection>
                 <AriaNgGeneralSettingsItemList />
             </SettingsSection>
         </SettingsPage>

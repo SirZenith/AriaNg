@@ -18,11 +18,11 @@ export default function ReturnToolbar({ title, to }: ReturnToolbarArgs) {
                 className="toolbar-icon-btn"
                 title={t('Back')}
                 aria-label={t('Back')}
-                onClick={() => to ? navigate(to) : navigate(-1) }
+                onClick={() => (to ? navigate(to) : navigate(-1))}
             >
                 <ChevronLeft className="h-7 w-7" aria-hidden="true" />
             </button>
             <span className="toolbar-title-text">{t(title)}</span>
-        </div >
+        </div>
     );
 }

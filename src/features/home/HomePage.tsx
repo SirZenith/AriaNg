@@ -1,4 +1,4 @@
-import { ListTodo, Home } from 'lucide-react';
+import { ListTodo, Home, CirclePlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import SettingsItem from '@/components/settings/SettingsItem';
 import AriaNgRpcSettingsMenu from '@/features/settings/AriaNgRpcSettingsMenu';
@@ -42,6 +42,7 @@ export default function HomePage() {
                         indicator={{ type: 'navigate' }}
                         to="/tasks/downloading"
                     />
+                    <SettingsItem icon={CirclePlus} label={t('New')} indicator={{ type: 'navigate' }} to="/new" />
                 </SettingsSection>
 
                 <SettingsSection title={t('AriaNg Settings')}>

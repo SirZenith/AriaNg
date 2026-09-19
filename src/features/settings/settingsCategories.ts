@@ -1,22 +1,32 @@
-import { Globe, Network, Server, Settings2, Wrench, type LucideIcon } from 'lucide-react';
-import { ariaNgSettingsTabs } from './ariaNgSettingsTabs';
+import { Globe, Network, Server, Info, Settings2, Wrench, Blocks, Save, type LucideIcon } from 'lucide-react';
 
-export const settingsCategories: { key: string; label: string; icon: LucideIcon }[] = [
-    { key: 'basic', label: 'Basic Settings', icon: Settings2 },
-    { key: 'protocol', label: 'Protocol Settings', icon: Globe },
-    { key: 'rpc', label: 'RPC Settings', icon: Network },
-    { key: 'advanced', label: 'Advanced Settings', icon: Wrench },
-    { key: 'status', label: 'Aria2 Status', icon: Server },
-];
+export interface SettingEntry {
+    key: string;
+    label: string;
+    icon?: LucideIcon;
+}
 
-export const settingsSubItems: Record<string, { key: string; label: string, icon?: LucideIcon }[]> = {
-    ariang: ariaNgSettingsTabs,
+export type SettingCategory = 'system' | 'ariang';
+
+export const settingsSubItems: Record<SettingCategory, SettingEntry[]> = {
+    system: [
+        { key: 'basic', label: 'Basic Settings', icon: Settings2 },
+        { key: 'protocol', label: 'Protocol Settings', icon: Globe },
+        { key: 'rpc', label: 'RPC Settings', icon: Network },
+        { key: 'advanced', label: 'Advanced Settings', icon: Wrench },
+        { key: 'status', label: 'Aria2 Status', icon: Info },
+    ],
+    ariang: [
+        { key: 'general', label: 'Settings', icon: Blocks },
+        { key: 'rpc', label: 'RPC Settings', icon: Server },
+        { key: 'importExport', label: 'Import / Export AriaNg Settings', icon: Save },
+    ],
 };
 
 export function getSettingsCategory(key: string) {
-    return settingsCategories.find((category) => category.key === key);
+    return settingsSubItems.system.find((category) => category.key === key);
 }
 
 export function getSettingsSubItem(type: string, sub: string) {
-    return settingsSubItems[type]?.find((item) => item.key === sub);
+    return settingsSubItems[type as SettingCategory]?.find((item) => item.key === sub);
 }
