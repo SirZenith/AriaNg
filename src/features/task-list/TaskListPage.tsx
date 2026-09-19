@@ -111,7 +111,7 @@ export default function TaskListPage({ location }: { location: string }) {
         if (afterRetrying === 'task-detail' && response.success && typeof response.data === 'string') {
             navigate('/task/detail/' + response.data);
         } else if (afterRetrying === 'task-list-downloading') {
-            navigate('/downloading');
+            navigate('/tasks/downloading');
         }
     };
 
@@ -264,7 +264,7 @@ export default function TaskListPage({ location }: { location: string }) {
                         return (
                             <NavLink
                                 key={tab.key}
-                                to={'/' + tab.key}
+                                to={'/tasks/' + tab.key}
                                 className={'nav-tab ' + (location === tab.key ? 'nav-tab-active' : 'nav-tab-inactive')}
                             >
                                 <Icon className="h-4 w-4" aria-hidden="true" />

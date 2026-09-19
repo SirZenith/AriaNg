@@ -80,7 +80,7 @@ export default function NewTaskPage() {
             }
         }
 
-        navigate(paused ? '/waiting' : '/downloading');
+        navigate(paused ? '/tasks/waiting' : '/tasks/downloading');
     };
 
     const startDownload = async (pauseOnAdded: boolean) => {

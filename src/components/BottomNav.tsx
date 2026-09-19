@@ -31,11 +31,11 @@ export default function BottomNav({ counts, debugMode }: BottomNavProps) {
 
     const items: NavItem[] = [
         {
-            to: '/downloading',
+            to: '/tasks/downloading',
             icon: ListTodo,
             label: t('Tasks'),
             badge: counts.active + counts.waiting,
-            paths: ['/downloading', '/waiting', '/stopped'],
+            paths: ['/tasks/downloading', '/tasks/waiting', '/tasks/stopped'],
         },
         { to: '/new', icon: Plus, label: t('New') },
         { to: '/settings', icon: SlidersHorizontal, label: t('Aria2 Settings') },

@@ -54,7 +54,7 @@
   "shortcuts": [
     {
       "name": "Dashboard",
-      "url": "#/downloading"
+      "url": "#/tasks/downloading"
     },
     {
       "name": "New Task",

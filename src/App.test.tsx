@@ -56,7 +56,7 @@ describe('App', () => {
     });
 
     it('shows the task list toolbar on task list routes', () => {
-        window.location.hash = '#/waiting';
+        window.location.hash = '#/tasks/waiting';
         render(<App />);
 
         expect(screen.getByPlaceholderText('Search')).toBeTruthy();
@@ -131,7 +131,7 @@ describe('App', () => {
     });
 
     it('navigates back from the task detail page', async () => {
-        window.location.hash = '#/downloading';
+        window.location.hash = '#/tasks/downloading';
         render(<App />);
 
         window.location.hash = '#/task/detail/gid123';
@@ -140,7 +140,7 @@ describe('App', () => {
         fireEvent.click(screen.getByLabelText('Back'));
 
         await waitFor(() => {
-            expect(window.location.hash).toBe('#/downloading');
+            expect(window.location.hash).toBe('#/tasks/downloading');
         });
     });
 
@@ -188,7 +188,7 @@ describe('App', () => {
 
     it('keeps the select all button visible on small screens', () => {
         stubMatchMedia({ mobile: true });
-        window.location.hash = '#/downloading';
+        window.location.hash = '#/tasks/downloading';
         render(<App />);
 
         expect(screen.getByLabelText('Select All').className).not.toContain('hidden');

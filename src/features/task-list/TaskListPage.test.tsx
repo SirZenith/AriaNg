@@ -40,7 +40,7 @@ function createTask(overrides: Partial<Aria2Task> = {}): Aria2Task {
 
 function renderPage() {
     return renderWithPanelBars(
-        <MemoryRouter initialEntries={['/downloading']}>
+        <MemoryRouter initialEntries={['/tasks/downloading']}>
             <TaskListPage location="downloading" />
         </MemoryRouter>,
     );

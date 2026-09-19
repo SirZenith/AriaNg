@@ -122,7 +122,7 @@ export default function TaskDetailPage() {
         if (afterRetrying === 'task-detail' && response.success && typeof response.data === 'string') {
             navigate('/task/detail/' + response.data);
         } else if (afterRetrying === 'task-list-downloading') {
-            navigate('/downloading');
+            navigate('/tasks/downloading');
         }
     };
 
@@ -132,7 +132,7 @@ export default function TaskDetailPage() {
         }
 
         await aria2TaskService.removeTasks([target]);
-        navigate('/downloading');
+        navigate('/tasks/downloading');
     };
 
     const tabs: { key: string; label: string; icon: LucideIcon }[] = [
@@ -221,11 +221,7 @@ export default function TaskDetailPage() {
                     ) : null}
 
                     {isTaskRetryable(task) ? (
-                        <button
-                            type="button"
-                            className="btn btn-secondary btn-sm"
-                            onClick={() => void retryTask(task)}
-                        >
+                        <button type="button" className="btn btn-secondary btn-sm" onClick={() => void retryTask(task)}>
                             <RotateCcw className="h-4 w-4" aria-hidden="true" />
                             <span>{t('Retry')}</span>
                         </button>

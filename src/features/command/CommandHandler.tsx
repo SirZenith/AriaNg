@@ -39,7 +39,7 @@ export default function CommandHandler() {
                     }
                 } catch {
                     notifyInPage('Error', i18n.t('URL is not base64 encoded!'), { type: 'error', delay: false });
-                    navigate('/downloading', { replace: true });
+                    navigate('/tasks/downloading', { replace: true });
                     return;
                 }
 
@@ -53,7 +53,7 @@ export default function CommandHandler() {
 
                 const paused = params.get('pause') === 'true';
                 await aria2TaskService.newUriTask({ urls: [url], options }, paused);
-                navigate(paused ? '/waiting' : '/downloading', { replace: true });
+                navigate(paused ? '/tasks/waiting' : '/tasks/downloading', { replace: true });
                 return;
             }
 
@@ -69,13 +69,13 @@ export default function CommandHandler() {
 
                 if (!protocol || !['http', 'https', 'ws', 'wss'].includes(protocol)) {
                     notifyInPage('Error', i18n.t('Protocol is invalid!'), { type: 'error', delay: false });
-                    navigate('/downloading', { replace: true });
+                    navigate('/tasks/downloading', { replace: true });
                     return;
                 }
 
                 if (!host) {
                     notifyInPage('Error', i18n.t('RPC host cannot be empty!'), { type: 'error', delay: false });
-                    navigate('/downloading', { replace: true });
+                    navigate('/tasks/downloading', { replace: true });
                     return;
                 }
 
@@ -87,7 +87,7 @@ export default function CommandHandler() {
                             type: 'error',
                             delay: false,
                         });
-                        navigate('/downloading', { replace: true });
+                        navigate('/tasks/downloading', { replace: true });
                         return;
                     }
                 }
@@ -110,7 +110,7 @@ export default function CommandHandler() {
                 return;
             }
 
-            navigate('/downloading', { replace: true });
+            navigate('/tasks/downloading', { replace: true });
         };
 
         void run();

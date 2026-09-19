@@ -106,7 +106,7 @@ function resolveSettingsLocation(pathname: string): { title: string; backTo: str
         return { title: category?.label || 'Aria2 Settings', backTo: settingsBase };
     }
 
-    return { title: 'Aria2 Settings', backTo: '/downloading' };
+    return { title: 'Aria2 Settings', backTo: '/tasks/downloading' };
 }
 
 export default function SettingsToolbar() {

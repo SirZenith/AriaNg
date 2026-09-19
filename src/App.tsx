@@ -28,9 +28,9 @@ export default function App() {
         <HashRouter>
             <AppLayout>
                 <Routes>
-                    <Route path="/downloading" element={<TaskListPage location="downloading" />} />
-                    <Route path="/waiting" element={<TaskListPage location="waiting" />} />
-                    <Route path="/stopped" element={<TaskListPage location="stopped" />} />
+                    <Route path="/tasks/downloading" element={<TaskListPage location="downloading" />} />
+                    <Route path="/tasks/waiting" element={<TaskListPage location="waiting" />} />
+                    <Route path="/tasks/stopped" element={<TaskListPage location="stopped" />} />
                     <Route path="/new" element={<NewTaskPage />} />
                     <Route path="/new/*" element={<CommandHandler />} />
                     <Route path="/task/detail/:gid" element={<TaskDetailPage />} />
@@ -61,7 +61,7 @@ export default function App() {
                     <Route path="/status" element={<Navigate to="/settings/status" replace />} />
                     <Route path="/debug" element={<DebugPage />} />
                     <Route path="/settings/*" element={<Navigate to="/settings" replace />} />
-                    <Route path="*" element={<Navigate to="/downloading" replace />} />
+                    <Route path="*" element={<Navigate to="/tasks/downloading" replace />} />
                 </Routes>
             </AppLayout>
         </HashRouter>
