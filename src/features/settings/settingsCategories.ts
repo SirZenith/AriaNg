@@ -9,7 +9,7 @@ export const settingsCategories: { key: string; label: string; icon: LucideIcon 
     { key: 'status', label: 'Aria2 Status', icon: Server },
 ];
 
-export const settingsSubItems: Record<string, { key: string; label: string }[]> = {
+export const settingsSubItems: Record<string, { key: string; label: string, icon?: LucideIcon }[]> = {
     ariang: ariaNgSettingsTabs,
 };
 

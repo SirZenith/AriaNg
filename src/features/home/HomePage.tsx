@@ -8,6 +8,7 @@ import BottomBar from '@/components/BottomBar';
 import TopBar from '@/components/TopBar';
 import SettingsSection from '@/components/settings/SettingsSection';
 import SettingsMenu from '@/features/settings/SettingsMenu';
+import AriaNgSettingsMenu from '@/features/settings/AriaNgSettingsMenu';
 
 export default function HomePage() {
     const { t } = useTranslation();
@@ -45,7 +46,7 @@ export default function HomePage() {
                 </SettingsSection>
 
                 <SettingsSection title={t('AriaNg Settings')}>
-                    <SettingsMenu type="ariang" />
+                    <AriaNgSettingsMenu />
                 </SettingsSection>
 
                 <SettingsSection title={t('Settings')}>
