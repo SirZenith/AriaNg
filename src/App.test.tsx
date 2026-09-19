@@ -46,7 +46,7 @@ afterEach(() => {
     useSettingStore.setState({ options: ariaNgDefaultOptions });
     useRpcDraftStore.setState({ drafts: {} });
     useNewTaskStore.getState().reset();
-    useTaskStore.setState({ tasks: [], rpcStatus: 'Connecting' });
+    useTaskStore.setState({ tasks: [], rpcStatus: 'Connecting', searchKeyword: '' });
 });
 
 describe('App', () => {
@@ -71,6 +71,35 @@ describe('App', () => {
         render(<App />);
 
         expect(screen.getByPlaceholderText('Search')).toBeTruthy();
+    });
+
+    it('reveals and focuses the search box from the task list bottom bar', () => {
+        window.location.hash = '#/tasks/downloading';
+        render(<App />);
+
+        fireEvent.click(screen.getByLabelText('Search'));
+
+        expect(document.activeElement).toBe(screen.getByPlaceholderText('Search'));
+    });
+
+    it('keeps the search box visible while it has content', () => {
+        window.location.hash = '#/tasks/downloading';
+        render(<App />);
+
+        fireEvent.click(screen.getByLabelText('Search'));
+
+        const input = screen.getByPlaceholderText('Search');
+        const container = input.parentElement;
+
+        fireEvent.change(input, { target: { value: 'ubuntu' } });
+        fireEvent.blur(input);
+
+        expect(container?.className).toContain('opacity-100');
+
+        fireEvent.change(input, { target: { value: '' } });
+        fireEvent.blur(input);
+
+        expect(container?.className).toContain('opacity-0');
     });
 
     it('shows the settings header with a back button on settings routes', () => {

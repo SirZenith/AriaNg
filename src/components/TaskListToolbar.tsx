@@ -1,19 +1,17 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CheckSquare, Pause, Play, Plus, Search, Trash2, X } from 'lucide-react';
+import { CheckSquare, Pause, Play, Plus, Search, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SplitBottomBar from './SplitBottomBar';
 import { useKeyboardShortcuts } from '@/hooks/useAria2';
 import { aria2TaskService } from '@/services/taskService';
 import { useSettingStore } from '@/stores/settingStore';
 import { useTaskStore } from '@/stores/taskStore';
 
-const toolbarButtonClass = 'toolbar-btn';
-
 export default function TaskListToolbar() {
     const { t } = useTranslation();
-    const desktopSearchRef = useRef<HTMLInputElement>(null);
-    const mobileSearchRef = useRef<HTMLInputElement>(null);
-    const [showMobileSearch, setShowMobileSearch] = useState(false);
+    const searchInputRef = useRef<HTMLInputElement>(null);
+    const [searchVisible, setSearchVisible] = useState(false);
 
     const options = useSettingStore((state) => state.options);
     const tasks = useTaskStore((state) => state.tasks);
@@ -54,120 +52,113 @@ export default function TaskListToolbar() {
         clearSelected();
     };
 
-    const focusSearchBox = () => {
-        if (window.matchMedia('(min-width: 640px)').matches) {
-            desktopSearchRef.current?.focus();
-            return;
-        }
-
-        setShowMobileSearch(true);
-        window.setTimeout(() => mobileSearchRef.current?.focus(), 0);
+    const openSearch = () => {
+        setSearchVisible(true);
     };
+
+    useEffect(() => {
+        if (searchVisible) {
+            searchInputRef.current?.focus();
+        }
+    }, [searchVisible]);
 
     useKeyboardShortcuts({
         selectAll: () => selectAll(),
         delete: () => {
             void removeTasks();
         },
-        find: focusSearchBox,
+        find: openSearch,
     });
 
     return (
-        <div className="mx-auto flex w-full max-w-[1000px] flex-wrap items-center gap-x-2 gap-y-1 sm:gap-x-3">
-            <div className="flex items-center gap-0.5 sm:gap-1">
-                <Link to="/new" className={toolbarButtonClass} title={t('New')} aria-label={t('New')}>
-                    <Plus className="h-4 w-4" aria-hidden="true" />
-                    <span className="hidden md:inline">{t('New')}</span>
-                </Link>
-                <button
-                    type="button"
-                    className={toolbarButtonClass}
-                    disabled={selectedTasks.length < 1}
-                    title={t('Start')}
-                    aria-label={t('Start')}
-                    onClick={() => void changeTasksState('start')}
-                >
-                    <Play className="h-4 w-4" aria-hidden="true" />
-                    <span className="hidden md:inline">{t('Start')}</span>
-                </button>
-                <button
-                    type="button"
-                    className={toolbarButtonClass}
-                    disabled={selectedTasks.length < 1}
-                    title={t('Pause')}
-                    aria-label={t('Pause')}
-                    onClick={() => void changeTasksState('pause')}
-                >
-                    <Pause className="h-4 w-4" aria-hidden="true" />
-                    <span className="hidden md:inline">{t('Pause')}</span>
-                </button>
-                <button
-                    type="button"
-                    className={toolbarButtonClass}
-                    disabled={selectedTasks.length < 1}
-                    title={t('Delete')}
-                    aria-label={t('Delete')}
-                    onClick={() => void removeTasks()}
-                >
-                    <Trash2 className="h-4 w-4" aria-hidden="true" />
-                    <span className="hidden md:inline">{t('Delete')}</span>
-                </button>
-                <button
-                    type="button"
-                    className={toolbarButtonClass}
-                    disabled={tasks.length < 1}
-                    title={t('Select All')}
-                    aria-label={t('Select All')}
-                    onClick={() => selectAll()}
-                >
-                    <CheckSquare className="h-4 w-4" aria-hidden="true" />
-                    <span className="hidden md:inline">{t('Select All')}</span>
-                </button>
-            </div>
-
-            <div className="ml-auto hidden items-center gap-2 sm:flex">
-                <input
-                    ref={desktopSearchRef}
-                    type="text"
-                    className="toolbar-input w-40 lg:w-56"
-                    placeholder={t('Search')}
-                    value={searchKeyword}
-                    onChange={(event) => setSearchKeyword(event.target.value)}
-                />
-            </div>
-
-            <button
-                type="button"
-                className={toolbarButtonClass + ' ml-auto sm:hidden'}
-                title={t('Search')}
-                aria-label={t('Search')}
-                aria-expanded={showMobileSearch}
-                onClick={() => setShowMobileSearch((value) => !value)}
-            >
-                <Search className="h-4 w-4" aria-hidden="true" />
-            </button>
-
-            {showMobileSearch ? (
-                <div className="flex w-full items-center gap-1 sm:hidden">
-                    <input
-                        ref={mobileSearchRef}
-                        type="text"
-                        className="toolbar-input min-w-0 flex-1"
-                        placeholder={t('Search')}
-                        value={searchKeyword}
-                        onChange={(event) => setSearchKeyword(event.target.value)}
-                    />
+        <SplitBottomBar
+            leading={
+                <>
+                    <Link to="/new" className="bottom-bar-item" title={t('New')} aria-label={t('New')}>
+                        <Plus className="h-4 w-4" aria-hidden="true" />
+                        <span className="hidden md:inline">{t('New')}</span>
+                    </Link>
                     <button
                         type="button"
-                        className="toolbar-btn"
-                        title={t('Close')}
-                        aria-label={t('Close')}
-                        onClick={() => setShowMobileSearch(false)}
+                        className="bottom-bar-item"
+                        disabled={selectedTasks.length < 1}
+                        title={t('Start')}
+                        aria-label={t('Start')}
+                        onClick={() => void changeTasksState('start')}
                     >
-                        <X className="h-4 w-4" aria-hidden="true" />
+                        <Play className="h-4 w-4" aria-hidden="true" />
+                        <span className="hidden md:inline">{t('Start')}</span>
                     </button>
+                    <button
+                        type="button"
+                        className="bottom-bar-item"
+                        disabled={selectedTasks.length < 1}
+                        title={t('Pause')}
+                        aria-label={t('Pause')}
+                        onClick={() => void changeTasksState('pause')}
+                    >
+                        <Pause className="h-4 w-4" aria-hidden="true" />
+                        <span className="hidden md:inline">{t('Pause')}</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="bottom-bar-item"
+                        disabled={selectedTasks.length < 1}
+                        title={t('Delete')}
+                        aria-label={t('Delete')}
+                        onClick={() => void removeTasks()}
+                    >
+                        <Trash2 className="h-4 w-4" aria-hidden="true" />
+                        <span className="hidden md:inline">{t('Delete')}</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="bottom-bar-item"
+                        disabled={tasks.length < 1}
+                        title={t('Select All')}
+                        aria-label={t('Select All')}
+                        onClick={() => selectAll()}
+                    >
+                        <CheckSquare className="h-4 w-4" aria-hidden="true" />
+                        <span className="hidden md:inline">{t('Select All')}</span>
+                    </button>
+                </>
+            }
+            trailing={
+                <div className="relative">
+                    <button
+                        type="button"
+                        className="bottom-bar-item h-10 w-10 p-0"
+                        title={t('Search')}
+                        aria-label={t('Search')}
+                        aria-expanded={searchVisible}
+                        onClick={openSearch}
+                    >
+                        <Search className="h-4 w-4" aria-hidden="true" />
+                    </button>
+                    <div
+                        className={
+                            'absolute right-0 bottom-full mb-3 w-64 max-w-[80vw] transition-opacity duration-300 ' +
+                            (searchVisible ? 'opacity-100' : 'pointer-events-none opacity-0')
+                        }
+                    >
+                        <input
+                            ref={searchInputRef}
+                            type="text"
+                            tabIndex={searchVisible ? 0 : -1}
+                            className="input bg-white/90 shadow-lg backdrop-blur dark:bg-gray-800/90"
+                            placeholder={t('Search')}
+                            value={searchKeyword}
+                            onBlur={() => {
+                                if (!searchKeyword) {
+                                    setSearchVisible(false);
+                                }
+                            }}
+                            onChange={(event) => setSearchKeyword(event.target.value)}
+                        />
+                    </div>
                 </div>
-            ) : null}
-        </div>
+            }
+        />
     );
 }

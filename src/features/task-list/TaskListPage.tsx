@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { NavLink, useNavigate, Link } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
     closestCenter,
     DndContext,
@@ -11,7 +11,7 @@ import {
     type DragStartEvent,
 } from '@dnd-kit/core';
 import { arrayMove, rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
-import { CheckCircle2, Clock, Download, Plus, type LucideIcon } from 'lucide-react';
+import { CheckCircle2, Clock, Download, type LucideIcon } from 'lucide-react';
 import ContextMenu, { type ContextMenuItem } from '@/components/ContextMenu';
 import TaskListToolbar from '@/components/TaskListToolbar';
 import TopBar from '@/components/TopBar';
@@ -26,7 +26,6 @@ import type { Aria2Task } from '@/types/aria2';
 import { copyText } from '@/utils/clipboard';
 import { filterTask, isTaskRetryable, orderTasks } from '@/utils/task';
 import TaskCard from './TaskCard';
-import BottomBar from '@/components/BottomBar';
 import ReturnToolbar from '@/components/ReturnToolbar';
 
 interface ContextMenuState {
@@ -37,7 +36,7 @@ interface ContextMenuState {
 
 const cardGridClass = 'grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4';
 
-const taskListTabs: { key: string; label: string; icon: LucideIcon }[] = [
+const taskListTabs: { key: string; label: string; icon: LucideIcon; }[] = [
     { key: 'downloading', label: 'Downloading', icon: Download },
     { key: 'waiting', label: 'Waiting', icon: Clock },
     { key: 'stopped', label: 'Finished / Stopped', icon: CheckCircle2 },
@@ -54,7 +53,7 @@ function buildMagnetLink(task: Aria2Task): string {
     return 'magnet:?xt=urn:btih:' + infoHash + (name ? '&dn=' + encodeURIComponent(name) : '');
 }
 
-export default function TaskListPage({ location }: { location: string }) {
+export default function TaskListPage({ location }: { location: string; }) {
     useTaskListPolling(location);
     useScrollRestoration(location);
 
@@ -83,8 +82,8 @@ export default function TaskListPage({ location }: { location: string }) {
         ? location === 'waiting'
             ? options.waitingTaskListPageDisplayOrder
             : location === 'stopped'
-              ? options.stoppedTaskListPageDisplayOrder
-              : options.displayOrder
+                ? options.stoppedTaskListPageDisplayOrder
+                : options.displayOrder
         : options.displayOrder;
 
     const visibleTasks = orderTasks(
@@ -261,9 +260,34 @@ export default function TaskListPage({ location }: { location: string }) {
             <TopBar>
                 <ReturnToolbar title={t('Tasks')} to="/home"></ReturnToolbar>
 
-                <TaskListToolbar />
+                <div className="mx-auto mt-2 w-full max-w-250">
+                    <div className="flex items-center gap-1 overflow-x-auto rounded-xl bg-black/5 p-1 dark:bg-white/10">
+                        {taskListTabs.map((tab) => {
+                            const Icon = tab.icon;
 
-                <div className="panel flex flex-wrap items-center gap-2 px-3 py-2">
+                            return (
+                                <NavLink
+                                    key={tab.key}
+                                    to={'/tasks/' + tab.key}
+                                    className={
+                                        'flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm transition-colors ' +
+                                        (location === tab.key
+                                            ? 'bg-white font-medium text-primary shadow-sm dark:bg-gray-700 dark:text-primary-light'
+                                            : 'text-gray-600 hover:bg-white/60 dark:text-gray-300 dark:hover:bg-white/10')
+                                    }
+                                >
+                                    <Icon className="h-4 w-4" aria-hidden="true" />
+                                    <span>{t(tab.label)}</span>
+                                    <span className="rounded-full bg-black/10 px-1.5 text-[10px] dark:bg-white/15">
+                                        {taskCounts[tab.key] ?? 0}
+                                    </span>
+                                </NavLink>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                <div className="panel mt-2 flex flex-wrap items-center gap-2 px-3 py-2">
                     <span className="text-sm font-semibold">{t('Display Order')}</span>
                     <select
                         className="input w-auto"
@@ -321,38 +345,7 @@ export default function TaskListPage({ location }: { location: string }) {
                 />
             ) : null}
 
-            <BottomBar>
-                <div className="mb-2 flex gap-4 items-center justify-center">
-                    <div className="bottom-bar flex flex-wrap gap-2 border-b border-gray-200 pb-2 dark:border-gray-700">
-                        {taskListTabs.map((tab) => {
-                            const Icon = tab.icon;
-
-                            return (
-                                <NavLink
-                                    key={tab.key}
-                                    to={'/tasks/' + tab.key}
-                                    className={
-                                        'nav-tab ' + (location === tab.key ? 'nav-tab-active' : 'nav-tab-inactive')
-                                    }
-                                >
-                                    <Icon className="h-5 w-5" aria-hidden="true" />
-                                    <span className="rounded-full bg-black/10 px-1.5 text-[10px] dark:bg-white/15">
-                                        {taskCounts[tab.key] ?? 0}
-                                    </span>
-                                </NavLink>
-                            );
-                        })}
-                    </div>
-                    <Link
-                        to="/new"
-                        className="bottom-bar flex h-10 w-10 shrink-0 items-center justify-center p-0"
-                        title={t('New')}
-                        aria-label={t('New')}
-                    >
-                        <Plus className="h-5 w-5" aria-hidden="true" />
-                    </Link>
-                </div>
-            </BottomBar>
+            <TaskListToolbar />
         </section>
     );
 }
