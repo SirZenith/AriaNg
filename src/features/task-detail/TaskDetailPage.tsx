@@ -197,7 +197,7 @@ export default function TaskDetailPage() {
             </section>
 
             <BottomBar>
-                <div className="mx-auto flex w-full max-w-[1000px] items-center gap-2">
+                <div className="bottom-bar mx-auto mb-2 flex items-center justify-center w-[90%] max-w-250 gap-2 px-4 py-3 rounded-full">
                     {task.status === 'active' ? (
                         <button
                             type="button"

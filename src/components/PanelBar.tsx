@@ -1,14 +1,9 @@
 import { useCallback, useMemo, useState, type ReactNode } from 'react';
-import {
-    PanelBarContext,
-    usePanelBarHost,
-    type PanelBarContextValue,
-    type PanelBarSlot,
-} from './panelBarContext';
+import { PanelBarContext, usePanelBarHost, type PanelBarContextValue, type PanelBarSlot } from './panelBarContext';
 
 const slotClassName: Record<PanelBarSlot, string> = {
     top: 'bg-page px-4 pt-2 pb-2',
-    bottom: 'bottom-nav px-4',
+    bottom: 'bottom-bar-container',
 };
 
 export function PanelBarProvider({ children }: { children: ReactNode }) {
