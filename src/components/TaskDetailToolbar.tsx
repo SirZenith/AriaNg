@@ -1,4 +1,4 @@
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import { useTaskDetailStore } from '@/stores/taskDetailStore';
@@ -19,7 +19,7 @@ export default function TaskDetailToolbar() {
                 aria-label={t('Back')}
                 onClick={() => navigate(-1)}
             >
-                <ArrowLeft className="h-5 w-5" aria-hidden="true" />
+                <ChevronLeft className="h-7 w-7" aria-hidden="true" />
             </button>
             {taskName ? (
                 <span className="min-w-0 flex-1 truncate text-sm font-medium" title={taskName}>
