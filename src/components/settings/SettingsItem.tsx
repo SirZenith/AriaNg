@@ -23,6 +23,7 @@ export interface SettingsItemProps {
     description?: ReactNode;
     indicator: SettingsIndicator;
     to?: string;
+    state?: unknown;
     onClick?: () => void;
     disabled?: boolean;
     role?: string;
@@ -42,6 +43,7 @@ export default function SettingsItem({
     description,
     indicator,
     to,
+    state,
     onClick,
     disabled = false,
     role,
@@ -168,6 +170,7 @@ export default function SettingsItem({
             <Link
                 ref={setItemRef}
                 to={to}
+                state={state}
                 className={className}
                 role={role}
                 aria-selected={ariaSelected}

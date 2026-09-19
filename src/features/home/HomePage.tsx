@@ -42,7 +42,13 @@ export default function HomePage() {
                         indicator={{ type: 'navigate' }}
                         to="/tasks/downloading"
                     />
-                    <SettingsItem icon={CirclePlus} label={t('New')} indicator={{ type: 'navigate' }} to="/new" />
+                    <SettingsItem
+                        icon={CirclePlus}
+                        label={t('New')}
+                        indicator={{ type: 'navigate' }}
+                        to="/new"
+                        state={{ from: '/home' }}
+                    />
                 </SettingsSection>
 
                 <SettingsSection title={t('AriaNg Settings')}>

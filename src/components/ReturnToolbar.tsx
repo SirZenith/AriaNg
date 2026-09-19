@@ -5,9 +5,10 @@ import { useNavigate } from 'react-router-dom';
 interface ReturnToolbarArgs {
     title: string;
     to?: string;
+    state?: unknown;
 }
 
-export default function ReturnToolbar({ title, to }: ReturnToolbarArgs) {
+export default function ReturnToolbar({ title, to, state }: ReturnToolbarArgs) {
     const { t } = useTranslation();
     const navigate = useNavigate();
 
@@ -18,7 +19,7 @@ export default function ReturnToolbar({ title, to }: ReturnToolbarArgs) {
                 className="toolbar-icon-btn"
                 title={t('Back')}
                 aria-label={t('Back')}
-                onClick={() => (to ? navigate(to) : navigate(-1))}
+                onClick={() => (to ? navigate(to, state === undefined ? undefined : { state }) : navigate(-1))}
             >
                 <ChevronLeft className="h-7 w-7" aria-hidden="true" />
             </button>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FileUp, Pause, Play, Settings2 } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { aria2TaskService } from '@/services/taskService';
 import { notifyInPage } from '@/services/notification';
 import { addSettingHistory, getAfterCreatingNewTask } from '@/services/settingService';
@@ -26,7 +26,7 @@ function readFileAsBase64(file: File): Promise<string> {
 }
 
 function extractFirstGid(response: unknown): string | null {
-    const result = response as { data?: unknown; results?: { data?: unknown; }[]; };
+    const result = response as { data?: unknown; results?: { data?: unknown }[] };
 
     if (typeof result?.data === 'string') {
         return result.data;
@@ -46,7 +46,9 @@ function extractFirstGid(response: unknown): string | null {
 export default function NewTaskPage() {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const location = useLocation();
     const [searchParams] = useSearchParams();
+    const from = (location.state as { from?: string } | null)?.from || '/tasks/downloading';
 
     const taskType = useNewTaskStore((state) => state.taskType);
     const urls = useNewTaskStore((state) => state.urls);
@@ -155,7 +157,7 @@ export default function NewTaskPage() {
     return (
         <>
             <TopBar>
-                <ReturnToolbar title={t('New')} to="/tasks/downloading"></ReturnToolbar>
+                <ReturnToolbar title={t('New')} to={from}></ReturnToolbar>
             </TopBar>
 
             <section className="mt-4 rounded-xl bg-white p-4 shadow dark:bg-gray-800">
@@ -219,7 +221,7 @@ export default function NewTaskPage() {
                         className="bottom-bar-item"
                         title={t('Task Settings')}
                         aria-label={t('Task Settings')}
-                        onClick={() => navigate('/new/settings')}
+                        onClick={() => navigate('/new/settings', { state: { from } })}
                     >
                         <Settings2 className="h-4 w-4" aria-hidden="true" />
                         <span className="hidden md:inline">{t('Task Settings')}</span>

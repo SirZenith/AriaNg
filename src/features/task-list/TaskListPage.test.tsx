@@ -114,6 +114,21 @@ describe('TaskListPage task card', () => {
         expect(useTaskStore.getState().selected['gid123']).toBe(true);
     });
 
+    it('selects the task card without a selection checkbox', () => {
+        useTaskStore.setState({ tasks: [createTask()] });
+
+        renderPage();
+
+        const card = screen.getByText('ubuntu.iso').closest('div.cursor-pointer');
+
+        expect(card?.querySelector('input[type="checkbox"]')).toBeNull();
+
+        fireEvent.click(card as HTMLElement);
+
+        expect(useTaskStore.getState().selected['gid123']).toBe(true);
+        expect(card?.className).toContain('card-selected');
+    });
+
     it('renders evenly sized task list tabs with visible boundaries', () => {
         renderPage();
 

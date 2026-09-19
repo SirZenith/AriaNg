@@ -8,7 +8,7 @@
     }
 
     .card-selected {
-        @apply border-primary ring-1 ring-primary/40;
+        @apply border-primary bg-primary/10 ring-2 ring-primary/40 dark:bg-primary/15 dark:ring-primary/50;
     }
 
     .panel {

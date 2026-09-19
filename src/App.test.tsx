@@ -190,6 +190,70 @@ describe('App', () => {
         expect(screen.getByDisplayValue('https://example.com/a.iso')).toBeTruthy();
     });
 
+    it('returns to the task list page that opened the new task page', async () => {
+        window.location.hash = '#/tasks/waiting';
+        render(<App />);
+
+        fireEvent.click(screen.getByLabelText('New'));
+
+        await waitFor(() => {
+            expect(window.location.hash).toBe('#/new');
+        });
+
+        fireEvent.click(screen.getByLabelText('Back'));
+
+        await waitFor(() => {
+            expect(window.location.hash).toBe('#/tasks/waiting');
+        });
+    });
+
+    it('returns to home when the new task page was opened from home', async () => {
+        useTaskStore.setState({ rpcStatus: 'Connected' });
+        window.location.hash = '#/home';
+        render(<App />);
+
+        fireEvent.click(screen.getByRole('link', { name: 'New' }));
+
+        await waitFor(() => {
+            expect(window.location.hash).toBe('#/new');
+        });
+
+        fireEvent.click(screen.getByLabelText('Back'));
+
+        await waitFor(() => {
+            expect(window.location.hash).toBe('#/home');
+        });
+    });
+
+    it('keeps the source page after visiting the task settings page', async () => {
+        window.location.hash = '#/tasks/stopped';
+        render(<App />);
+
+        fireEvent.click(screen.getByLabelText('New'));
+
+        await waitFor(() => {
+            expect(window.location.hash).toBe('#/new');
+        });
+
+        fireEvent.click(screen.getByText('Task Settings'));
+
+        await waitFor(() => {
+            expect(window.location.hash).toBe('#/new/settings');
+        });
+
+        fireEvent.click(screen.getByText('Confirm'));
+
+        await waitFor(() => {
+            expect(window.location.hash).toBe('#/new');
+        });
+
+        fireEvent.click(screen.getByLabelText('Back'));
+
+        await waitFor(() => {
+            expect(window.location.hash).toBe('#/tasks/stopped');
+        });
+    });
+
     it('hides the new task action button labels on small screens', () => {
         window.location.hash = '#/new';
         render(<App />);

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CheckSquare, Pause, Play, Plus, Search, Trash2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import SplitBottomBar from './SplitBottomBar';
 import { useKeyboardShortcuts } from '@/hooks/useAria2';
 import { aria2TaskService } from '@/services/taskService';
@@ -10,6 +10,7 @@ import { useTaskStore } from '@/stores/taskStore';
 
 export default function TaskListToolbar() {
     const { t } = useTranslation();
+    const location = useLocation();
     const searchInputRef = useRef<HTMLInputElement>(null);
     const [searchVisible, setSearchVisible] = useState(false);
 
@@ -74,7 +75,13 @@ export default function TaskListToolbar() {
         <SplitBottomBar
             leading={
                 <>
-                    <Link to="/new" className="bottom-bar-item" title={t('New')} aria-label={t('New')}>
+                    <Link
+                        to="/new"
+                        state={{ from: location.pathname }}
+                        className="bottom-bar-item"
+                        title={t('New')}
+                        aria-label={t('New')}
+                    >
                         <Plus className="h-4 w-4" aria-hidden="true" />
                         <span className="hidden md:inline">{t('New')}</span>
                     </Link>

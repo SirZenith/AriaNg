@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CenteredBottomBar from '@/components/CenteredBottomBar';
 import ReturnToolbar from '@/components/ReturnToolbar';
 import SettingsCard from '@/components/settings/SettingsCard';
@@ -12,6 +12,8 @@ import { useNewTaskStore } from '@/stores/newTaskStore';
 export default function NewTaskSettingsPage() {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const location = useLocation();
+    const returnState = location.state ?? undefined;
     const storedOptions = useNewTaskStore((state) => state.options);
     const setOptions = useNewTaskStore((state) => state.setOptions);
     const [draft, setDraft] = useState<Record<string, string>>(() => ({ ...storedOptions }));
@@ -40,13 +42,13 @@ export default function NewTaskSettingsPage() {
 
     const confirm = () => {
         setOptions(draft);
-        navigate('/new');
+        navigate('/new', { state: returnState });
     };
 
     return (
         <>
             <TopBar>
-                <ReturnToolbar title="Task Settings" to="/new" />
+                <ReturnToolbar title="Task Settings" to="/new" state={returnState} />
             </TopBar>
 
             <SettingsCard>

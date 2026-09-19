@@ -43,14 +43,6 @@ export default function TaskCard({ task, isDraggable, onRetry, onCopyDownloadUrl
                     }}
                 >
                     <div className="flex items-start gap-2">
-                        <input
-                            type="checkbox"
-                            className="mt-0.5"
-                            checked={isSelected}
-                            onClick={(event) => event.stopPropagation()}
-                            onChange={() => toggleSelected(task.gid)}
-                        />
-
                         <div className="min-w-0 flex-1">
                             <span className="line-clamp-2 font-medium" title={task.taskName}>
                                 {task.taskName}
