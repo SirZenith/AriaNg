@@ -155,7 +155,7 @@ export default function NewTaskPage() {
     return (
         <>
             <TopBar>
-                <ReturnToolbar title={t('New')}></ReturnToolbar>
+                <ReturnToolbar title={t('New')} to="/tasks/downloading"></ReturnToolbar>
             </TopBar>
 
             <section className="mt-4 rounded-xl bg-white p-4 shadow dark:bg-gray-800">
