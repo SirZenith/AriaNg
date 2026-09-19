@@ -4,6 +4,7 @@ import CommandHandler from '@/features/command/CommandHandler';
 import DebugPage from '@/features/debug/DebugPage';
 import HomePage from '@/features/home/HomePage';
 import NewTaskPage from '@/features/new-task/NewTaskPage';
+import NewTaskSettingsPage from '@/features/new-task/NewTaskSettingsPage';
 import AdvancedOptionValuePage from '@/features/settings/AdvancedOptionValuePage';
 import AdvancedSettingsPage from '@/features/settings/AdvancedSettingsPage';
 import AriaNgGeneralSettingsPage from '@/features/settings/AriaNgGeneralSettingsPage';
@@ -32,6 +33,7 @@ export default function App() {
                     <Route path="/tasks/waiting" element={<TaskListPage location="waiting" />} />
                     <Route path="/tasks/stopped" element={<TaskListPage location="stopped" />} />
                     <Route path="/new" element={<NewTaskPage />} />
+                    <Route path="/new/settings" element={<NewTaskSettingsPage />} />
                     <Route path="/new/*" element={<CommandHandler />} />
                     <Route path="/task/detail/:gid" element={<TaskDetailPage />} />
                     <Route path="/ariang" element={<Navigate to="/home" replace />} />

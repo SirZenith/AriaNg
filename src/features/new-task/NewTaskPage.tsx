@@ -1,18 +1,15 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FileUp, Pause, Play, Settings2 } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { aria2SettingService } from '@/services/aria2SettingService';
 import { aria2TaskService } from '@/services/taskService';
 import { notifyInPage } from '@/services/notification';
 import { addSettingHistory, getAfterCreatingNewTask } from '@/services/settingService';
 import { parseUrlsFromOriginInput } from '@/utils/common';
-import TaskSettingsPanel from './TaskSettingsPanel';
 import TopBar from '@/components/TopBar';
 import ReturnToolbar from '@/components/ReturnToolbar';
-import BottomBar from '@/components/BottomBar';
-
-type TaskType = 'urls' | 'torrent' | 'metalink';
+import SplitBottomBar from '@/components/SplitBottomBar';
+import { useNewTaskStore, type TaskType } from '@/stores/newTaskStore';
 
 function readFileAsBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -29,7 +26,7 @@ function readFileAsBase64(file: File): Promise<string> {
 }
 
 function extractFirstGid(response: unknown): string | null {
-    const result = response as { data?: unknown; results?: { data?: unknown }[] };
+    const result = response as { data?: unknown; results?: { data?: unknown; }[]; };
 
     if (typeof result?.data === 'string') {
         return result.data;
@@ -51,21 +48,25 @@ export default function NewTaskPage() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
-    const [taskType, setTaskType] = useState<TaskType>('urls');
-    const [urls, setUrls] = useState(() => searchParams.get('uri') || '');
-    const [fileContent, setFileContent] = useState<string | null>(null);
-    const [fileName, setFileName] = useState('');
-    const [options, setOptions] = useState<Record<string, string>>({});
+    const taskType = useNewTaskStore((state) => state.taskType);
+    const urls = useNewTaskStore((state) => state.urls);
+    const fileContent = useNewTaskStore((state) => state.fileContent);
+    const fileName = useNewTaskStore((state) => state.fileName);
+    const options = useNewTaskStore((state) => state.options);
+    const setTaskType = useNewTaskStore((state) => state.setTaskType);
+    const setUrls = useNewTaskStore((state) => state.setUrls);
+    const setFileContent = useNewTaskStore((state) => state.setFileContent);
+    const setFileName = useNewTaskStore((state) => state.setFileName);
+    const reset = useNewTaskStore((state) => state.reset);
     const [submitting, setSubmitting] = useState(false);
-    const [showSettings, setShowSettings] = useState(false);
 
-    const availableOptions = useMemo(
-        () =>
-            aria2SettingService.getSpecifiedOptions(aria2SettingService.getNewTaskOptionKeys(), {
-                disableRequired: true,
-            }),
-        [],
-    );
+    useEffect(() => {
+        const uri = searchParams.get('uri');
+
+        if (uri) {
+            setUrls(uri);
+        }
+    }, [searchParams, setUrls]);
 
     const gotoAfterCreated = (paused: boolean, response: unknown) => {
         const afterCreating = getAfterCreatingNewTask();
@@ -127,6 +128,7 @@ export default function NewTaskPage() {
             }
 
             gotoAfterCreated(pauseOnAdded, response);
+            reset();
         } finally {
             setSubmitting(false);
         }
@@ -208,55 +210,48 @@ export default function NewTaskPage() {
                         </div>
                     )}
                 </div>
+            </section>
 
-                <div className="flex gap-2">
+            <SplitBottomBar
+                leading={
+                    <>
+                        <button
+                            type="button"
+                            disabled={submitting}
+                            className="bottom-bar-item bottom-bar-item-active"
+                            title={t('Start')}
+                            aria-label={t('Start')}
+                            onClick={() => void startDownload(false)}
+                        >
+                            <Play className="h-4 w-4" aria-hidden="true" />
+                            <span className="hidden md:inline">{t('Start')}</span>
+                        </button>
+                        <button
+                            type="button"
+                            disabled={submitting}
+                            className="bottom-bar-item"
+                            title={t('Pause')}
+                            aria-label={t('Pause')}
+                            onClick={() => void startDownload(true)}
+                        >
+                            <Pause className="h-4 w-4" aria-hidden="true" />
+                            <span className="hidden md:inline">{t('Pause')}</span>
+                        </button>
+                    </>
+                }
+                trailing={
                     <button
                         type="button"
-                        className="flex items-center gap-1 rounded border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
+                        className="bottom-bar-item"
                         title={t('Task Settings')}
                         aria-label={t('Task Settings')}
-                        onClick={() => setShowSettings(true)}
+                        onClick={() => navigate('/new/settings')}
                     >
                         <Settings2 className="h-4 w-4" aria-hidden="true" />
                         <span className="hidden md:inline">{t('Task Settings')}</span>
                     </button>
-                    <button
-                        type="button"
-                        disabled={submitting}
-                        className="btn btn-primary ml-auto px-4 py-2"
-                        title={t('Start')}
-                        aria-label={t('Start')}
-                        onClick={() => void startDownload(false)}
-                    >
-                        <Play className="h-4 w-4" aria-hidden="true" />
-                        <span className="hidden md:inline">{t('Start')}</span>
-                    </button>
-                    <button
-                        type="button"
-                        disabled={submitting}
-                        className="flex items-center gap-1 rounded bg-gray-500 px-4 py-2 text-sm text-white hover:bg-gray-600 disabled:opacity-50"
-                        title={t('Pause')}
-                        aria-label={t('Pause')}
-                        onClick={() => void startDownload(true)}
-                    >
-                        <Pause className="h-4 w-4" aria-hidden="true" />
-                        <span className="hidden md:inline">{t('Pause')}</span>
-                    </button>
-                </div>
-
-                {showSettings ? (
-                    <TaskSettingsPanel
-                        options={availableOptions}
-                        values={options}
-                        onConfirm={(values) => setOptions(values)}
-                        onClose={() => setShowSettings(false)}
-                    />
-                ) : null}
-            </section>
-
-            <BottomBar>
-                <div></div>
-            </BottomBar>
+                }
+            />
         </>
     );
 }

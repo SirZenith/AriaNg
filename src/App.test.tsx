@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
 import { ariaNgDefaultOptions } from './config/constants';
 import { addNewRpcSetting, getAllRpcSettings, getOptions, updateRpcSetting } from './services/settingService';
+import { useNewTaskStore } from './stores/newTaskStore';
 import { useRpcDraftStore } from './stores/rpcDraftStore';
 import { useSettingStore } from './stores/settingStore';
 import { useTaskStore } from './stores/taskStore';
@@ -44,6 +45,7 @@ afterEach(() => {
     window.location.hash = '';
     useSettingStore.setState({ options: ariaNgDefaultOptions });
     useRpcDraftStore.setState({ drafts: {} });
+    useNewTaskStore.getState().reset();
     useTaskStore.setState({ tasks: [], rpcStatus: 'Connecting' });
 });
 
@@ -119,18 +121,44 @@ describe('App', () => {
         expect(useSettingStore.getState().options.registerMagnetHandler).toBe(false);
     });
 
-    it('opens the task settings panel on the new task page', () => {
+    it('opens the task settings page from the new task page', async () => {
         window.location.hash = '#/new';
         render(<App />);
 
         fireEvent.click(screen.getByText('Task Settings'));
 
-        expect(screen.getAllByLabelText('Back').length).toBeGreaterThan(0);
+        await waitFor(() => {
+            expect(window.location.hash).toBe('#/new/settings');
+        });
+
         expect(screen.getByText('Confirm')).toBeTruthy();
 
         fireEvent.click(screen.getByText('Confirm'));
 
-        expect(screen.queryByText('Confirm')).toBeNull();
+        await waitFor(() => {
+            expect(window.location.hash).toBe('#/new');
+        });
+    });
+
+    it('keeps the new task form state after visiting the task settings page', async () => {
+        window.location.hash = '#/new';
+        render(<App />);
+
+        fireEvent.change(screen.getByRole('textbox'), { target: { value: 'https://example.com/a.iso' } });
+
+        fireEvent.click(screen.getByText('Task Settings'));
+
+        await waitFor(() => {
+            expect(window.location.hash).toBe('#/new/settings');
+        });
+
+        fireEvent.click(screen.getByText('Confirm'));
+
+        await waitFor(() => {
+            expect(window.location.hash).toBe('#/new');
+        });
+
+        expect(screen.getByDisplayValue('https://example.com/a.iso')).toBeTruthy();
     });
 
     it('hides the new task action button labels on small screens', () => {

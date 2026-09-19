@@ -131,6 +131,22 @@
         @apply pointer-events-auto rounded-full px-4 py-2 border-gray-200 bg-white/80 dark:border-gray-700/80 backdrop-blur-md;
     }
 
+    .bottom-bar-split {
+        @apply pointer-events-none mb-2 flex w-full items-center gap-3 px-4;
+    }
+
+    .bottom-bar-group {
+        @apply pointer-events-auto flex items-center gap-1 rounded-full border border-white/60 bg-white/70 p-1 shadow-lg backdrop-blur-xl dark:border-white/10 dark:bg-gray-800/70;
+    }
+
+    .bottom-bar-item {
+        @apply flex items-center justify-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-white/70 disabled:pointer-events-none disabled:opacity-50 dark:text-gray-200 dark:hover:bg-white/10;
+    }
+
+    .bottom-bar-item-active {
+        @apply bg-white text-primary shadow-sm hover:bg-white dark:bg-gray-700 dark:text-primary-light dark:hover:bg-gray-700;
+    }
+
     .app-scroll-container {
         padding-bottom: calc(var(--bottom-bar-height, 0px) + 1rem);
     }
