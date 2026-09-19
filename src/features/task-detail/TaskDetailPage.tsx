@@ -57,11 +57,12 @@ function isShowPiecesInfo(task: Aria2Task | null): boolean {
     return true;
 }
 
-function TaskDetailPanel({ children }: { children: ReactNode }) {
+function TaskDetailPanel({ children, tabs }: { children: ReactNode; tabs?: ReactNode }) {
     return (
         <div className="space-y-3">
             <TopBar>
                 <TaskDetailToolbar />
+                {tabs}
             </TopBar>
             {children}
         </div>
@@ -79,6 +80,7 @@ export default function TaskDetailPage() {
     const showPiecesInfo = useMemo(() => isShowPiecesInfo(task), [task]);
     const showPeers = !!task && !!task.bittorrent && task.status === 'active';
     const showSettings = !!task && (task.status === 'active' || task.status === 'waiting' || task.status === 'paused');
+    const showTrackers = !!task?.bittorrent?.announceList?.length;
 
     const healthPercent = useMemo(() => {
         if (!task) {
@@ -91,6 +93,40 @@ export default function TaskDetailPage() {
 
         return Number(task.completePercent || 0);
     }, [task, peers]);
+
+    const tabs: { key: string; label: string; icon: LucideIcon }[] = [
+        { key: 'overview', label: 'Overview', icon: LayoutDashboard },
+        ...(showPiecesInfo ? [{ key: 'pieces', label: 'Pieces', icon: LayoutGrid }] : []),
+        { key: 'filelist', label: 'Files', icon: FileText },
+        ...(showPeers ? [{ key: 'btpeers', label: 'Peers', icon: Users }] : []),
+        ...(showTrackers ? [{ key: 'trackers', label: 'Tracker', icon: Radio }] : []),
+        ...(showSettings ? [{ key: 'settings', label: 'Settings', icon: Settings }] : []),
+    ];
+
+    const tabList = (
+        <div className="mx-auto mt-1 flex w-full max-w-[1000px] flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700">
+            {tabs.map((item) => {
+                const Icon = item.icon;
+
+                return (
+                    <button
+                        key={item.key}
+                        type="button"
+                        className={
+                            'flex items-center gap-1 px-3 py-2 text-sm ' +
+                            (currentTab === item.key
+                                ? 'border-b-2 border-primary text-primary'
+                                : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300')
+                        }
+                        onClick={() => setCurrentTab(item.key)}
+                    >
+                        <Icon className="h-4 w-4" aria-hidden="true" />
+                        <span className="hidden md:inline">{t(item.label)}</span>
+                    </button>
+                );
+            })}
+        </div>
+    );
 
     if (loading && !task) {
         return (
@@ -107,8 +143,6 @@ export default function TaskDetailPage() {
             </TaskDetailPanel>
         );
     }
-
-    const showTrackers = !!task.bittorrent?.announceList?.length;
 
     const changeTaskState = async (state: 'start' | 'pause') => {
         if (state === 'start') {
@@ -151,41 +185,9 @@ export default function TaskDetailPage() {
         }
     };
 
-    const tabs: { key: string; label: string; icon: LucideIcon }[] = [
-        { key: 'overview', label: 'Overview', icon: LayoutDashboard },
-        ...(showPiecesInfo ? [{ key: 'pieces', label: 'Pieces', icon: LayoutGrid }] : []),
-        { key: 'filelist', label: 'Files', icon: FileText },
-        ...(showPeers ? [{ key: 'btpeers', label: 'Peers', icon: Users }] : []),
-        ...(showTrackers ? [{ key: 'trackers', label: 'Tracker', icon: Radio }] : []),
-        ...(showSettings ? [{ key: 'settings', label: 'Settings', icon: Settings }] : []),
-    ];
-
     return (
-        <TaskDetailPanel>
+        <TaskDetailPanel tabs={tabList}>
             <section className="rounded bg-white p-4 shadow dark:bg-gray-800">
-                <div className="mb-3 flex flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700">
-                    {tabs.map((item) => {
-                        const Icon = item.icon;
-
-                        return (
-                            <button
-                                key={item.key}
-                                type="button"
-                                className={
-                                    'flex items-center gap-1 px-3 py-2 text-sm ' +
-                                    (currentTab === item.key
-                                        ? 'border-b-2 border-primary text-primary'
-                                        : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300')
-                                }
-                                onClick={() => setCurrentTab(item.key)}
-                            >
-                                <Icon className="h-4 w-4" aria-hidden="true" />
-                                <span className="hidden md:inline">{t(item.label)}</span>
-                            </button>
-                        );
-                    })}
-                </div>
-
                 {currentTab === 'overview' ? (
                     <TaskOverview task={task} healthPercent={healthPercent} showPiecesInfo={showPiecesInfo} />
                 ) : null}

@@ -269,7 +269,7 @@ describe('TaskListPage task card', () => {
             </MemoryRouter>,
         );
 
-        expect(screen.getByText('Clear Stopped Tasks').className).toContain('btn-danger-soft');
+        expect(screen.getByText('Clear Stopped Tasks').closest('button')?.className).toContain('btn-danger-soft');
     });
 
     it('renders evenly sized task list tabs with visible boundaries', () => {
