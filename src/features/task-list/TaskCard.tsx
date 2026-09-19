@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ArrowDown, ArrowUp, ReceiptText, Files, Network, RotateCcw, Info } from 'lucide-react';
+import { ArrowDown, ArrowUp, Maximize2, Files, Network, RotateCcw, Info } from 'lucide-react';
 import { useTaskStore } from '@/stores/taskStore';
 import type { Aria2Task } from '@/types/aria2';
 import { formatDuration, formatPercent, formatVolume } from '@/utils/format';
@@ -73,12 +73,12 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
 
                             <Link
                                 to={'/task/detail/' + task.gid}
-                                className="icon-btn"
+                                className="icon-btn-outline"
                                 title={t('Click to view task detail')}
                                 aria-label={t('Click to view task detail')}
                                 onClick={(event) => event.stopPropagation()}
                             >
-                                <ReceiptText className="h-4 w-4" aria-hidden="true" />
+                                <Maximize2 className="h-4 w-4" aria-hidden="true" />
                             </Link>
 
                             {isDraggable ? (
@@ -182,7 +182,7 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
 interface SortableTaskRowProps {
     task: Aria2Task;
     isDraggable: boolean;
-    children: (props: { handleProps: Record<string, unknown>; }) => ReactNode;
+    children: (props: { handleProps: Record<string, unknown> }) => ReactNode;
 }
 
 function SortableTaskRow({ task, isDraggable, children }: SortableTaskRowProps) {
