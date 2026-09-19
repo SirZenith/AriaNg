@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ArrowDown, ArrowUp, Eye, Files, Network } from 'lucide-react';
+import { ArrowDown, ArrowUp, Eye, Files, Network, RotateCcw, Info } from 'lucide-react';
 import { useTaskStore } from '@/stores/taskStore';
 import type { Aria2Task } from '@/types/aria2';
 import { formatDuration, formatPercent, formatVolume } from '@/utils/format';
@@ -13,6 +13,7 @@ import {
     getTaskStatusColorValue,
     getTaskStatusIcon,
     getTaskStatusIconBgClass,
+    isStoppedTask,
     isTaskRetryable,
 } from '@/utils/task';
 
@@ -127,13 +128,13 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
                         <div className="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
                             <div className="flex items-center gap-0.5">
                                 <span className="chip chip-download bg-transparent pl-0 dark:bg-transparent">
-                                    <ArrowDown className="h-3 w-3 shrink-0" aria-hidden="true" />
+                                    <ArrowDown className="h-4 w-4 shrink-0" aria-hidden="true" />
                                     <span className="w-15 whitespace-nowrap">
                                         {isActive ? formatVolume(Number(task.downloadSpeed)) + '/s' : '-'}
                                     </span>
                                 </span>
                                 <span className="chip chip-upload bg-transparent pl-0 dark:bg-transparent">
-                                    <ArrowUp className="h-3 w-3 shrink-0" aria-hidden="true" />
+                                    <ArrowUp className="h-4 w-4 shrink-0" aria-hidden="true" />
                                     <span className="w-15 whitespace-nowrap">
                                         {isActive ? formatVolume(Number(task.uploadSpeed)) + '/s' : '-'}
                                     </span>
@@ -142,29 +143,34 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
                             <div className="flex flex-1 flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
                                 {isError && task.errorDescription ? (
                                     <span className="text-red-600" title={t(task.errorDescription)}>
-                                        &#10005;
+                                        <Info className="h-4 w-4 shrink-0" aria-hidden="true" />
                                     </span>
                                 ) : null}
-                                {isTaskRetryable(task) ? (
+                            </div>
+                            {isStoppedTask(task) ? (
+                                isTaskRetryable(task) ? (
                                     <button
                                         type="button"
-                                        className="btn btn-primary btn-xs"
+                                        className="btn btn-primary btn-xs shrink-0"
+                                        title={t('Retry')}
+                                        aria-label={t('Retry')}
                                         onClick={(event) => {
                                             event.stopPropagation();
                                             onRetry(task);
                                         }}
                                     >
-                                        {t('Retry')}
+                                        <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
                                     </button>
-                                ) : null}
-                            </div>
-                            <span
-                                className="flex shrink-0 items-center gap-1 text-gray-500 dark:text-gray-400"
-                                title={t('Connections')}
-                            >
-                                <Network className="h-3.5 w-3.5" aria-hidden="true" />
-                                {`${task.connections ?? 0}/${task.numSeeders ?? 0}`}
-                            </span>
+                                ) : null
+                            ) : (
+                                <span
+                                    className="flex shrink-0 items-center gap-1 text-gray-500 dark:text-gray-400"
+                                    title={t('Connections')}
+                                >
+                                    <Network className="h-3.5 w-3.5" aria-hidden="true" />
+                                    {`${task.connections ?? 0}/${task.numSeeders ?? 0}`}
+                                </span>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -176,7 +182,7 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
 interface SortableTaskRowProps {
     task: Aria2Task;
     isDraggable: boolean;
-    children: (props: { handleProps: Record<string, unknown> }) => ReactNode;
+    children: (props: { handleProps: Record<string, unknown>; }) => ReactNode;
 }
 
 function SortableTaskRow({ task, isDraggable, children }: SortableTaskRowProps) {

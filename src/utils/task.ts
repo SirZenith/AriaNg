@@ -8,7 +8,7 @@ import {
     ShieldCheck,
     Trash2,
     Upload,
-    RefreshCw,
+    RotateCcw,
     type LucideIcon,
 } from 'lucide-react';
 import i18n from '@/i18n';
@@ -584,7 +584,7 @@ export function getTaskStatusIcon(task: Aria2Task, simplify?: boolean): LucideIc
     } else if (!simplify && status === 'error') {
         return AlertCircle;
     } else if (!simplify && status === 'retryable') {
-        return RefreshCw;
+        return RotateCcw;
     } else if (!simplify && status === 'removed') {
         return Trash2;
     }

@@ -1,6 +1,7 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
+import { aria2TaskService } from '@/services/taskService';
 import { useTaskStore } from '@/stores/taskStore';
 import { renderWithPanelBars } from '@/test-utils/renderWithPanelBars';
 import type { Aria2Task } from '@/types/aria2';
@@ -109,6 +110,49 @@ describe('TaskListPage task card', () => {
         expect(screen.getByTitle('Connections').textContent).toContain('12');
     });
 
+    it.each<Aria2Task['status']>(['complete', 'error', 'removed'])(
+        'hides the connection count for %s tasks',
+        (status) => {
+            useTaskStore.setState({ tasks: [createTask({ status, connections: 12 })] });
+
+            renderPage();
+
+            expect(screen.queryByTitle('Connections')).toBeNull();
+        },
+    );
+
+    it('shows the retry button in place of the connection count for retryable tasks', () => {
+        useTaskStore.setState({
+            tasks: [createTask({ status: 'error', errorDescription: 'error.unknown', connections: 12 })],
+        });
+
+        renderPage();
+
+        const retry = screen.getByLabelText('Retry');
+
+        expect(screen.queryByTitle('Connections')).toBeNull();
+        expect(retry.parentElement?.lastElementChild).toBe(retry);
+        expect(retry.querySelector('svg.lucide-rotate-ccw')).toBeTruthy();
+    });
+
+    it('does not show the retry button for stopped tasks that are not retryable', () => {
+        useTaskStore.setState({ tasks: [createTask({ status: 'complete' })] });
+
+        renderPage();
+
+        expect(screen.queryByLabelText('Retry')).toBeNull();
+    });
+
+    it('retries the task when clicking the retry button on the card', async () => {
+        useTaskStore.setState({ tasks: [createTask({ status: 'error', errorDescription: 'error.unknown' })] });
+
+        renderPage();
+
+        fireEvent.click(screen.getByLabelText('Retry'));
+
+        await waitFor(() => expect(aria2TaskService.retryTask).toHaveBeenCalledWith('gid123'));
+    });
+
     it('renders the file count as a number with a file icon', () => {
         useTaskStore.setState({ tasks: [createTask({ files: [], selectedFileCount: 3 })] });
 
@@ -142,8 +186,8 @@ describe('TaskListPage task card', () => {
         const download = screen.getByText(downloadText);
         const upload = screen.getByText(uploadText);
 
-        expect(download.className).toContain('w-20');
-        expect(upload.className).toContain('w-20');
+        expect(download.className).toContain('w-15');
+        expect(upload.className).toContain('w-15');
 
         expect(download.parentElement?.className).toContain('chip-download');
         expect(download.parentElement?.className).toContain('bg-transparent');
