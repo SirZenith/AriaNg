@@ -14,7 +14,7 @@ export default function SettingsItemList() {
 
     const views = ariaNgSettingItems.map((item) =>
         toAriaNgItemView(item, options, t, {
-            toValuePage: (key) => '/settings/ariang/settings/' + key,
+            toValuePage: (key) => '/ariang/general/' + key,
             onRequestInput: setInputItem,
             onToggle: (target, checked) => toggleAriaNgSettingSwitch(target, checked),
         }),

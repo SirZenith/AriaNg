@@ -24,7 +24,7 @@ describe('SettingsItemList', () => {
 
         const link = screen.getByRole('link', { name: /Theme/ });
 
-        expect(link.getAttribute('href')).toBe('/settings/ariang/settings/theme');
+        expect(link.getAttribute('href')).toBe('/ariang/general/theme');
         expect(link.textContent).toContain('Light');
     });
 

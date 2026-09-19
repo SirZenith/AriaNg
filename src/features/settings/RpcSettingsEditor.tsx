@@ -59,7 +59,7 @@ export default function RpcSettingsEditor({ item }: { item: string }) {
 
         if (!existing) {
             clearDraft(item);
-            navigate('/settings/ariang/rpc');
+            navigate('/ariang/rpc');
             return;
         }
 
@@ -88,7 +88,7 @@ export default function RpcSettingsEditor({ item }: { item: string }) {
 
         clearDraft(item);
         removeRpcSetting(index);
-        navigate('/settings/ariang/rpc');
+        navigate('/ariang/rpc');
     };
 
     return (

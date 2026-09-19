@@ -9,7 +9,7 @@ interface AriaNgSettingsSectionProps {
     activeTab?: string;
 }
 
-export default function AriaNgSettingsSection({ activeTab = 'settings' }: AriaNgSettingsSectionProps) {
+export default function AriaNgSettingsSection({ activeTab = 'general' }: AriaNgSettingsSectionProps) {
     const { t } = useTranslation();
     const title = t(ariaNgSettingsTabs.find((tab) => tab.key === activeTab)?.label ?? 'Settings');
 

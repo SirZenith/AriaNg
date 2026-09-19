@@ -62,11 +62,11 @@
     },
     {
       "name": "Settings",
-      "url": "#/settings/ariang"
+      "url": "#/ariang/general"
     },
     {
       "name": "Status",
-      "url": "#/status"
+      "url": "#/settings/status"
     }
   ],
   "start_url": "./",

@@ -19,11 +19,9 @@ import RpcSettingsEditorPage from '@/features/settings/RpcSettingsEditorPage';
 import RpcSettingFieldPage from '@/features/settings/RpcSettingFieldPage';
 import RpcSettingsListPage from '@/features/settings/RpcSettingsListPage';
 import SettingsHomePage from '@/features/settings/SettingsHomePage';
-import SettingsMenuPage from '@/features/settings/SettingsMenuPage';
 import StatusPage from '@/features/settings/StatusPage';
 import TaskDetailPage from '@/features/task-detail/TaskDetailPage';
 import TaskListPage from '@/features/task-list/TaskListPage';
-import AriaNgSettingsMenu from '@/features/settings/AriaNgSettingsMenu';
 
 export default function App() {
     return (
@@ -37,13 +35,14 @@ export default function App() {
                     <Route path="/new" element={<NewTaskPage />} />
                     <Route path="/new/*" element={<CommandHandler />} />
                     <Route path="/task/detail/:gid" element={<TaskDetailPage />} />
-                    <Route path="/ariang" element={<AriaNgSettingsMenu />} />
+                    <Route path="/ariang" element={<Navigate to="/home" replace />} />
                     <Route path="/ariang/general" element={<AriaNgSettingsPage />} />
                     <Route path="/ariang/general/:item" element={<AriaNgSettingValuePage />} />
                     <Route path="/ariang/rpc" element={<RpcSettingsListPage />} />
                     <Route path="/ariang/rpc/:item" element={<RpcSettingsEditorPage />} />
                     <Route path="/ariang/rpc/:item/:field" element={<RpcSettingFieldPage />} />
                     <Route path="/ariang/importExport" element={<ImportExportPage />} />
+                    <Route path="/ariang/*" element={<Navigate to="/home" replace />} />
                     <Route path="/settings" element={<SettingsHomePage />} />
                     <Route path="/settings/status" element={<StatusPage />} />
                     <Route path="/settings/basic" element={<BasicSettingsPage />} />

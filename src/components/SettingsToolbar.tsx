@@ -8,6 +8,7 @@ import { aria2SettingService } from '@/services/aria2SettingService';
 import { getAllRpcSettings } from '@/services/settingService';
 
 const settingsBase = '/settings';
+const ariaNgBase = '/ariang';
 
 function resolveOptionTitle(
     type: string | undefined,
@@ -33,39 +34,75 @@ function resolveOptionTitle(
     return 'options.' + item + '.name';
 }
 
-function resolveItemTitle(type: string | undefined, sub: string | undefined, item: string | undefined): string {
-    if (type === 'ariang' && sub === 'settings' && item) {
-        const label = getAriaNgSettingItem(item)?.label;
-
-        if (label) {
-            return label;
-        }
-    }
-
-    if (type === 'ariang' && sub === 'rpc' && item) {
-        if (item === 'new') {
-            return 'Add New RPC Setting';
-        }
-
-        const setting = getAllRpcSettings()[Number(item)];
-
-        if (setting) {
-            return setting.rpcAlias || setting.rpcHost + ':' + setting.rpcPort;
-        }
-    }
-
-    return resolveOptionTitle(type, sub, item) ?? 'Aria2 Settings';
-}
-
-function resolveSettingsLocation(pathname: string): { title: string; backTo: string } {
-    const fieldMatch = matchPath('/settings/:type/:sub/:item/:field', pathname);
+function resolveAriaNgLocation(pathname: string): { title: string; backTo: string } | null {
+    const fieldMatch = matchPath('/ariang/rpc/:item/:field', pathname);
 
     if (fieldMatch) {
         const { item, field } = fieldMatch.params;
 
         return {
+            title: getRpcSettingFieldItem(field)?.label || 'RPC Settings',
+            backTo: ariaNgBase + '/rpc/' + (item || ''),
+        };
+    }
+
+    const rpcItemMatch = matchPath('/ariang/rpc/:item', pathname);
+
+    if (rpcItemMatch) {
+        const { item } = rpcItemMatch.params;
+        let title = 'RPC Settings';
+
+        if (item === 'new') {
+            title = 'Add New RPC Setting';
+        } else {
+            const setting = getAllRpcSettings()[Number(item)];
+
+            if (setting) {
+                title = setting.rpcAlias || setting.rpcHost + ':' + setting.rpcPort;
+            }
+        }
+
+        return { title, backTo: ariaNgBase + '/rpc' };
+    }
+
+    if (matchPath('/ariang/rpc', pathname)) {
+        return { title: 'RPC Settings', backTo: '/home' };
+    }
+
+    const generalItemMatch = matchPath('/ariang/general/:item', pathname);
+
+    if (generalItemMatch) {
+        const label = getAriaNgSettingItem(generalItemMatch.params.item || '')?.label;
+
+        return { title: label || 'Settings', backTo: ariaNgBase + '/general' };
+    }
+
+    if (matchPath('/ariang/general', pathname)) {
+        return { title: 'Settings', backTo: '/home' };
+    }
+
+    if (matchPath('/ariang/importExport', pathname)) {
+        return { title: 'Import / Export AriaNg Settings', backTo: '/home' };
+    }
+
+    return null;
+}
+
+function resolveSettingsLocation(pathname: string): { title: string; backTo: string } {
+    const ariaNgLocation = resolveAriaNgLocation(pathname);
+
+    if (ariaNgLocation) {
+        return ariaNgLocation;
+    }
+
+    const fieldMatch = matchPath('/settings/:type/:sub/:item/:field', pathname);
+
+    if (fieldMatch) {
+        const { type, sub, item, field } = fieldMatch.params;
+
+        return {
             title: getRpcSettingFieldItem(field)?.label || 'Aria2 Settings',
-            backTo: settingsBase + '/ariang/rpc/' + (item || ''),
+            backTo: settingsBase + '/' + (type || '') + '/' + (sub || '') + '/' + (item || ''),
         };
     }
 
@@ -81,7 +118,7 @@ function resolveSettingsLocation(pathname: string): { title: string; backTo: str
                   : settingsBase + '/' + (type || '') + '/' + (sub || '');
 
         return {
-            title: resolveItemTitle(type, sub, item),
+            title: resolveOptionTitle(type, sub, item) ?? 'Aria2 Settings',
             backTo,
         };
     }

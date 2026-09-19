@@ -1,10 +1,9 @@
-import { ListTodo, Settings, Home } from 'lucide-react';
+import { ListTodo, Home } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import SettingsItem from '@/components/settings/SettingsItem';
 import RpcSettingsMenu from '@/features/settings/RpcSettingsMenu';
 import { useTaskStore } from '@/stores/taskStore';
 import RpcConnectionCard from './RpcConnectionCard';
-import BottomBar from '@/components/BottomBar';
 import TopBar from '@/components/TopBar';
 import SettingsSection from '@/components/settings/SettingsSection';
 import SettingsMenu from '@/features/settings/SettingsMenu';

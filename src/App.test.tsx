@@ -52,9 +52,7 @@ describe('App', () => {
         render(<App />);
 
         expect(screen.getByText('Add New RPC Setting')).toBeTruthy();
-        expect(screen.getByText('Home')).toBeTruthy();
-        expect(screen.getByText('Tasks')).toBeTruthy();
-        expect(screen.getAllByText('Aria2 Settings').length).toBeGreaterThan(0);
+        expect(screen.getByText('localhost:6800')).toBeTruthy();
     });
 
     it('shows the task list toolbar on task list routes', () => {
@@ -86,7 +84,7 @@ describe('App', () => {
             configurable: true,
         });
 
-        window.location.hash = '#/settings/ariang/settings';
+        window.location.hash = '#/ariang/general';
         render(<App />);
 
         const toggle = screen.getByRole('switch', { name: 'Register as Magnet Handler' });
@@ -191,16 +189,17 @@ describe('App', () => {
         });
     });
 
-    it('shows the settings sub item list', () => {
-        window.location.hash = '#/settings/ariang';
+    it('redirects the ariang root route to home', async () => {
+        window.location.hash = '#/ariang';
         render(<App />);
 
-        expect(screen.getByText('RPC Settings')).toBeTruthy();
-        expect(screen.getByText('Import / Export AriaNg Settings')).toBeTruthy();
+        await waitFor(() => {
+            expect(window.location.hash).toBe('#/home');
+        });
     });
 
     it('shows the rpc settings list without the settings tab bar', () => {
-        window.location.hash = '#/settings/ariang/rpc';
+        window.location.hash = '#/ariang/rpc';
         render(<App />);
 
         expect(screen.getByText('RPC Settings')).toBeTruthy();
@@ -216,7 +215,7 @@ describe('App', () => {
     });
 
     it('shows the rpc setting list', () => {
-        window.location.hash = '#/settings/ariang/rpc';
+        window.location.hash = '#/ariang/rpc';
         render(<App />);
 
         expect(screen.getByRole('link', { name: /localhost:6800/ })).toBeTruthy();
@@ -225,7 +224,7 @@ describe('App', () => {
     });
 
     it('opens the rpc setting editor from the list', async () => {
-        window.location.hash = '#/settings/ariang/rpc';
+        window.location.hash = '#/ariang/rpc';
         render(<App />);
 
         fireEvent.click(screen.getByRole('link', { name: /localhost:6800/ }));
@@ -235,7 +234,7 @@ describe('App', () => {
     });
 
     it('saves the rpc setting and reloads', () => {
-        window.location.hash = '#/settings/ariang/rpc/0';
+        window.location.hash = '#/ariang/rpc/0';
         render(<App />);
 
         fireEvent.change(screen.getByDisplayValue('localhost'), { target: { value: '192.168.1.2' } });
@@ -253,7 +252,7 @@ describe('App', () => {
         updateRpcSetting(1, 'rpcAlias', 'Server B');
         updateRpcSetting(1, 'rpcHost', '10.0.0.3');
 
-        window.location.hash = '#/settings/ariang/rpc/0';
+        window.location.hash = '#/ariang/rpc/0';
         render(<App />);
 
         fireEvent.change(screen.getByDisplayValue('10.0.0.2'), { target: { value: '192.168.1.2' } });
@@ -282,7 +281,7 @@ describe('App', () => {
     });
 
     it('opens a setting value page and keeps the selection', async () => {
-        window.location.hash = '#/settings/ariang/settings';
+        window.location.hash = '#/ariang/general';
         render(<App />);
 
         fireEvent.click(screen.getByRole('link', { name: /Theme/ }));
@@ -298,7 +297,7 @@ describe('App', () => {
     });
 
     it('opens the rpc protocol choice page from the editor', async () => {
-        window.location.hash = '#/settings/ariang/rpc/0';
+        window.location.hash = '#/ariang/rpc/0';
         render(<App />);
 
         fireEvent.click(screen.getByRole('link', { name: 'http' }));
