@@ -58,4 +58,18 @@ describe('useScrollRestoration', () => {
         renderHook(() => useScrollRestoration('test-key-b'));
         expect(scrollTopValue).toBe(55);
     });
+
+    it('keeps the last scrolled position instead of the position at unmount', () => {
+        const first = renderHook(() => useScrollRestoration('test-unmount'));
+
+        scrollTopValue = 250;
+        container.dispatchEvent(new Event('scroll'));
+
+        scrollTopValue = 0;
+        first.unmount();
+
+        renderHook(() => useScrollRestoration('test-unmount'));
+
+        expect(scrollTopValue).toBe(250);
+    });
 });

@@ -1,9 +1,14 @@
 import { screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
+import { useScrollRestoration } from '@/hooks/useScrollRestoration';
 import { useTaskStore } from '@/stores/taskStore';
 import { renderWithPanelBars } from '@/test-utils/renderWithPanelBars';
 import HomePage from './HomePage';
+
+vi.mock('@/hooks/useScrollRestoration', () => ({
+    useScrollRestoration: vi.fn(),
+}));
 
 vi.mock('@/services/aria2SettingService', () => ({
     aria2SettingService: {
@@ -44,5 +49,22 @@ describe('HomePage', () => {
         expect(screen.getByRole('link', { name: 'Tasks' })).toBeTruthy();
         expect(screen.getByRole('link', { name: 'Settings' })).toBeTruthy();
         expect(await screen.findByText('1.37.0')).toBeTruthy();
+    });
+
+    it('restores the home scroll position for both connection states', () => {
+        useTaskStore.setState({ rpcStatus: 'Disconnected' });
+
+        const first = renderPage();
+
+        expect(vi.mocked(useScrollRestoration)).toHaveBeenCalledWith('home');
+
+        first.unmount();
+        vi.mocked(useScrollRestoration).mockClear();
+
+        useTaskStore.setState({ rpcStatus: 'Connected' });
+
+        renderPage();
+
+        expect(vi.mocked(useScrollRestoration)).toHaveBeenCalledWith('home');
     });
 });

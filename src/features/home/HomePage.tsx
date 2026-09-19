@@ -2,6 +2,7 @@ import { ListTodo, Home, CirclePlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import SettingsItem from '@/components/settings/SettingsItem';
 import AriaNgRpcSettingsMenu from '@/features/settings/AriaNgRpcSettingsMenu';
+import { useScrollRestoration } from '@/hooks/useScrollRestoration';
 import { useTaskStore } from '@/stores/taskStore';
 import RpcConnectionCard from './RpcConnectionCard';
 import TopBar from '@/components/TopBar';
@@ -12,6 +13,8 @@ import AriaNgSettingsMenu from '@/features/settings/AriaNgSettingsMenu';
 export default function HomePage() {
     const { t } = useTranslation();
     const rpcStatus = useTaskStore((state) => state.rpcStatus);
+
+    useScrollRestoration('home');
 
     if (rpcStatus !== 'Connected') {
         return (
