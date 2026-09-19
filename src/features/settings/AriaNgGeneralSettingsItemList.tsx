@@ -7,7 +7,7 @@ import { ariaNgSettingItems, getAriaNgSettingValue, type AriaNgSettingItem } fro
 import { setAriaNgSettingValue, toggleAriaNgSettingSwitch } from './ariaNgSettingValue';
 import { toAriaNgItemView } from './settingsItemViews';
 
-export default function SettingsItemList() {
+export default function AriaNgGeneralSettingsItemList() {
     const { t } = useTranslation();
     const options = useSettingStore((state) => state.options);
     const [inputItem, setInputItem] = useState<AriaNgSettingItem | null>(null);

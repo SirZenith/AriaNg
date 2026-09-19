@@ -3,12 +3,12 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { ariaNgDefaultOptions } from '@/config/constants';
 import { useSettingStore } from '@/stores/settingStore';
-import SettingsItemList from './SettingsItemList';
+import AriaNgGeneralSettingsItemList from './AriaNgGeneralSettingsItemList';
 
 function renderList() {
     return render(
         <MemoryRouter>
-            <SettingsItemList />
+            <AriaNgGeneralSettingsItemList />
         </MemoryRouter>,
     );
 }

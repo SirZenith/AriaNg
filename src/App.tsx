@@ -6,7 +6,7 @@ import HomePage from '@/features/home/HomePage';
 import NewTaskPage from '@/features/new-task/NewTaskPage';
 import AdvancedOptionValuePage from '@/features/settings/AdvancedOptionValuePage';
 import AdvancedSettingsPage from '@/features/settings/AdvancedSettingsPage';
-import AriaNgSettingsPage from '@/features/settings/AriaNgSettingsPage';
+import AriaNgGeneralSettingsPage from '@/features/settings/AriaNgGeneralSettingsPage';
 import AriaNgSettingValuePage from '@/features/settings/AriaNgSettingValuePage';
 import BasicOptionValuePage from '@/features/settings/BasicOptionValuePage';
 import BasicSettingsPage from '@/features/settings/BasicSettingsPage';
@@ -36,7 +36,7 @@ export default function App() {
                     <Route path="/new/*" element={<CommandHandler />} />
                     <Route path="/task/detail/:gid" element={<TaskDetailPage />} />
                     <Route path="/ariang" element={<Navigate to="/home" replace />} />
-                    <Route path="/ariang/general" element={<AriaNgSettingsPage />} />
+                    <Route path="/ariang/general" element={<AriaNgGeneralSettingsPage />} />
                     <Route path="/ariang/general/:item" element={<AriaNgSettingValuePage />} />
                     <Route path="/ariang/rpc" element={<RpcSettingsListPage />} />
                     <Route path="/ariang/rpc/:item" element={<RpcSettingsEditorPage />} />
