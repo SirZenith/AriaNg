@@ -43,8 +43,8 @@ export default function BottomNav({ counts, debugMode }: BottomNavProps) {
     ];
 
     return (
-        <nav className="bottom-nav px-4">
-            <div className="mx-auto flex w-full max-w-[1000px]">
+        <nav className="bottom-nav">
+            <div className="mx-auto flex w-full">
                 {items.map((item) => {
                     const Icon = item.icon;
 
