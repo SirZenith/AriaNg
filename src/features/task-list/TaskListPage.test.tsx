@@ -113,4 +113,17 @@ describe('TaskListPage task card', () => {
 
         expect(useTaskStore.getState().selected['gid123']).toBe(true);
     });
+
+    it('renders evenly sized task list tabs with visible boundaries', () => {
+        renderPage();
+
+        const activeTab = screen.getByRole('link', { name: /Downloading/ });
+        const inactiveTab = screen.getByRole('link', { name: /Finished/ });
+
+        expect(activeTab.className).toContain('flex-1');
+        expect(activeTab.className).toContain('text-primary');
+        expect(inactiveTab.className).toContain('flex-1');
+        expect(inactiveTab.className).toContain('border-black/5');
+        expect(inactiveTab.className).toContain('bg-white/50');
+    });
 });

@@ -261,7 +261,7 @@ export default function TaskListPage({ location }: { location: string; }) {
                 <ReturnToolbar title={t('Tasks')} to="/home"></ReturnToolbar>
 
                 <div className="mx-auto mt-2 w-full max-w-250">
-                    <div className="flex items-center gap-1 overflow-x-auto rounded-xl bg-black/5 p-1 dark:bg-white/10">
+                    <div className="flex items-stretch gap-1 rounded-xl bg-black/5 p-1 dark:bg-white/10">
                         {taskListTabs.map((tab) => {
                             const Icon = tab.icon;
 
@@ -270,15 +270,15 @@ export default function TaskListPage({ location }: { location: string; }) {
                                     key={tab.key}
                                     to={'/tasks/' + tab.key}
                                     className={
-                                        'flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm transition-colors ' +
+                                        'flex min-w-0 flex-1 basis-0 items-center justify-center gap-1.5 rounded-lg border px-2 py-1.5 text-sm transition-colors ' +
                                         (location === tab.key
-                                            ? 'bg-white font-medium text-primary shadow-sm dark:bg-gray-700 dark:text-primary-light'
-                                            : 'text-gray-600 hover:bg-white/60 dark:text-gray-300 dark:hover:bg-white/10')
+                                            ? 'border-white bg-white font-medium text-primary shadow-sm dark:border-gray-700 dark:bg-gray-700 dark:text-primary-light'
+                                            : 'border-black/5 bg-white/50 text-gray-600 hover:bg-white/80 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10')
                                     }
                                 >
-                                    <Icon className="h-4 w-4" aria-hidden="true" />
-                                    <span className="text-xs md:text-md">{t(tab.label)}</span>
-                                    <span className="rounded-full bg-black/10 px-1.5 text-[10px] dark:bg-white/15">
+                                    <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                    <span className="hidden md:inline">{t(tab.label)}</span>
+                                    <span className="shrink-0 rounded-full bg-black/10 px-1.5 text-[10px] dark:bg-white/15">
                                         {taskCounts[tab.key] ?? 0}
                                     </span>
                                 </NavLink>
@@ -324,7 +324,10 @@ export default function TaskListPage({ location }: { location: string; }) {
                             onDragStart={handleDragStart}
                             onDragEnd={(event) => void handleDragEnd(event)}
                         >
-                            <SortableContext items={visibleTasks.map((task) => task.gid)} strategy={rectSortingStrategy}>
+                            <SortableContext
+                                items={visibleTasks.map((task) => task.gid)}
+                                strategy={rectSortingStrategy}
+                            >
                                 <div className={cardGridClass}>{taskCards}</div>
                             </SortableContext>
                         </DndContext>
@@ -345,7 +348,6 @@ export default function TaskListPage({ location }: { location: string; }) {
                         onClose={() => setContextMenu(null)}
                     />
                 ) : null}
-
             </section>
 
             <TaskListToolbar />
