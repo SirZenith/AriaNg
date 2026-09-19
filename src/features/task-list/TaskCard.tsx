@@ -23,7 +23,7 @@ export default function TaskCard({ task, isDraggable, onRetry, onCopyDownloadUrl
     const toggleSelected = useTaskStore((state) => state.toggleSelected);
 
     const completePercent = Number(task.completePercent || 0);
-    const StatusIcon = getTaskStatusIcon(task, true);
+    const StatusIcon = getTaskStatusIcon(task);
     const isActive = task.status === 'active';
     const isError = task.status === 'error';
     const showRemainTime = isActive && task.remainTime !== undefined && task.remainTime >= 0 && task.remainTime < 86400;
@@ -154,7 +154,7 @@ export default function TaskCard({ task, isDraggable, onRetry, onCopyDownloadUrl
 interface SortableTaskRowProps {
     task: Aria2Task;
     isDraggable: boolean;
-    children: (props: { handleProps: Record<string, unknown> }) => ReactNode;
+    children: (props: { handleProps: Record<string, unknown>; }) => ReactNode;
 }
 
 function SortableTaskRow({ task, isDraggable, children }: SortableTaskRowProps) {
