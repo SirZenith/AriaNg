@@ -1,9 +1,10 @@
-import { type CSSProperties, type MouseEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ArrowDown, ArrowUp, Maximize2, Files, Network, RotateCcw, Info } from 'lucide-react';
+import { ArrowDown, ArrowUp, Maximize2, Files, Network, RotateCcw } from 'lucide-react';
+import { ariaNgConstants } from '@/config/constants';
 import { useTaskStore } from '@/stores/taskStore';
 import type { Aria2Task } from '@/types/aria2';
 import { formatDuration, formatPercent, formatVolume } from '@/utils/format';
@@ -35,6 +36,58 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
     const isError = task.status === 'error';
     const showRemainTime = isActive && task.remainTime !== undefined && task.remainTime >= 0 && task.remainTime < 86400;
 
+    const [showErrorTooltip, setShowErrorTooltip] = useState(false);
+    const longPressTimer = useRef<number | null>(null);
+    const showErrorMessage = isError && !!task.errorDescription;
+
+    useEffect(() => {
+        return () => {
+            if (longPressTimer.current !== null) {
+                window.clearTimeout(longPressTimer.current);
+            }
+        };
+    }, []);
+
+    const showError = () => {
+        if (showErrorMessage) {
+            setShowErrorTooltip(true);
+        }
+    };
+
+    const hideError = () => {
+        setShowErrorTooltip(false);
+    };
+
+    const cancelLongPress = () => {
+        if (longPressTimer.current !== null) {
+            window.clearTimeout(longPressTimer.current);
+            longPressTimer.current = null;
+        }
+    };
+
+    const startLongPress = () => {
+        if (!showErrorMessage) {
+            return;
+        }
+
+        cancelLongPress();
+        longPressTimer.current = window.setTimeout(() => {
+            longPressTimer.current = null;
+            setShowErrorTooltip(true);
+        }, ariaNgConstants.errorTooltipDelay);
+    };
+
+    const handleErrorContextMenu = (event: MouseEvent<HTMLDivElement>) => {
+        if (!showErrorMessage) {
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+        cancelLongPress();
+        setShowErrorTooltip(true);
+    };
+
     const statusBgClass = getTaskStatusBgClass(task);
     const statusTextClass = getTaskStatusColorClass(task);
 
@@ -59,8 +112,28 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
                         onContextMenu(event, task);
                     }}
                 >
-                    <div className={`${statusIconBgClass} flex shrink-0 items-center rounded-lg p-1`}>
+                    <div
+                        className={`${statusIconBgClass} relative flex shrink-0 items-center rounded-lg p-1`}
+                        onMouseEnter={showError}
+                        onMouseLeave={hideError}
+                        onTouchStart={startLongPress}
+                        onTouchEnd={hideError}
+                        onTouchCancel={hideError}
+                        onTouchMove={() => {
+                            cancelLongPress();
+                            hideError();
+                        }}
+                        onContextMenu={handleErrorContextMenu}
+                    >
                         {StatusIcon ? <StatusIcon className={'h-6 w-6 ' + statusIconClass} aria-hidden="true" /> : null}
+                        {showErrorTooltip && task.errorDescription ? (
+                            <span
+                                role="tooltip"
+                                className="pointer-events-none absolute top-1/2 left-0 z-30 mt-4 w-max max-w-60 rounded-lg bg-gray-900 px-2 py-1 text-xs whitespace-normal text-white shadow-lg dark:bg-gray-700"
+                            >
+                                {t(task.errorDescription)}
+                            </span>
+                        ) : null}
                     </div>
 
                     <div className="flex min-w-0 flex-1 flex-col gap-2">
@@ -140,13 +213,7 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
                                     </span>
                                 </span>
                             </div>
-                            <div className="flex flex-1 flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                                {isError && task.errorDescription ? (
-                                    <span className="text-red-600" title={t(task.errorDescription)}>
-                                        <Info className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                    </span>
-                                ) : null}
-                            </div>
+                            <div className="flex flex-1 flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400" />
                             {isStoppedTask(task) ? (
                                 isTaskRetryable(task) ? (
                                     <button

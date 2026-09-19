@@ -121,6 +121,41 @@ describe('TaskListPage task card', () => {
         },
     );
 
+    it('shows the error description tooltip when hovering the status icon', () => {
+        useTaskStore.setState({ tasks: [createTask({ status: 'error', errorDescription: 'error.unknown' })] });
+
+        renderPage();
+
+        const statusIcon = document.querySelector('.card .rounded-lg.p-1') as Element;
+
+        expect(statusIcon).toBeTruthy();
+        expect(screen.queryByRole('tooltip')).toBeNull();
+
+        fireEvent.mouseOver(statusIcon);
+
+        expect(screen.getByRole('tooltip').textContent).toBeTruthy();
+
+        fireEvent.mouseOut(statusIcon);
+
+        expect(screen.queryByRole('tooltip')).toBeNull();
+    });
+
+    it('shows the error description tooltip on long press', async () => {
+        useTaskStore.setState({ tasks: [createTask({ status: 'error', errorDescription: 'error.unknown' })] });
+
+        renderPage();
+
+        const statusIcon = document.querySelector('.card .rounded-lg.p-1') as Element;
+
+        fireEvent.touchStart(statusIcon);
+
+        await waitFor(() => expect(screen.getByRole('tooltip')).toBeTruthy());
+
+        fireEvent.touchEnd(statusIcon);
+
+        expect(screen.queryByRole('tooltip')).toBeNull();
+    });
+
     it('shows the retry button in place of the connection count for retryable tasks', () => {
         useTaskStore.setState({
             tasks: [createTask({ status: 'error', errorDescription: 'error.unknown', connections: 12 })],

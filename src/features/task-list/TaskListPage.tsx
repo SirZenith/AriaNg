@@ -301,7 +301,7 @@ export default function TaskListPage({ location }: { location: string }) {
                 </div>
             </TopBar>
 
-            <section className="space-y-3">
+            <section className="space-y-3 pt-1">
                 {visibleTasks.length > 0 ? (
                     isDraggable ? (
                         <DndContext
