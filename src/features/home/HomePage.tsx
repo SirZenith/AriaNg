@@ -1,7 +1,7 @@
 import { ListTodo, Home } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import SettingsItem from '@/components/settings/SettingsItem';
-import RpcSettingsMenu from '@/features/settings/RpcSettingsMenu';
+import AriaNgRpcSettingsMenu from '@/features/settings/AriaNgRpcSettingsMenu';
 import { useTaskStore } from '@/stores/taskStore';
 import RpcConnectionCard from './RpcConnectionCard';
 import TopBar from '@/components/TopBar';
@@ -16,7 +16,7 @@ export default function HomePage() {
     if (rpcStatus !== 'Connected') {
         return (
             <section className="space-y-3">
-                <RpcSettingsMenu />
+                <AriaNgRpcSettingsMenu />
             </section>
         );
     }

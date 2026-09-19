@@ -7,7 +7,7 @@ import NewTaskPage from '@/features/new-task/NewTaskPage';
 import AdvancedOptionValuePage from '@/features/settings/AdvancedOptionValuePage';
 import AdvancedSettingsPage from '@/features/settings/AdvancedSettingsPage';
 import AriaNgGeneralSettingsPage from '@/features/settings/AriaNgGeneralSettingsPage';
-import AriaNgSettingValuePage from '@/features/settings/AriaNgSettingValuePage';
+import AriaNgGeneralSettingValuePage from '@/features/settings/AriaNgGeneralSettingValuePage';
 import BasicOptionValuePage from '@/features/settings/BasicOptionValuePage';
 import BasicSettingsPage from '@/features/settings/BasicSettingsPage';
 import ImportExportPage from '@/features/settings/ImportExportPage';
@@ -17,7 +17,7 @@ import ProtocolSettingsPage from '@/features/settings/ProtocolSettingsPage';
 import RpcGlobalSettingsPage from '@/features/settings/RpcGlobalSettingsPage';
 import RpcSettingsEditorPage from '@/features/settings/RpcSettingsEditorPage';
 import RpcSettingFieldPage from '@/features/settings/RpcSettingFieldPage';
-import RpcSettingsListPage from '@/features/settings/RpcSettingsListPage';
+import AriaNgRpcSettingsListPage from '@/features/settings/AriaNgRpcSettingsListPage';
 import SettingsHomePage from '@/features/settings/SettingsHomePage';
 import StatusPage from '@/features/settings/StatusPage';
 import TaskDetailPage from '@/features/task-detail/TaskDetailPage';
@@ -37,8 +37,8 @@ export default function App() {
                     <Route path="/task/detail/:gid" element={<TaskDetailPage />} />
                     <Route path="/ariang" element={<Navigate to="/home" replace />} />
                     <Route path="/ariang/general" element={<AriaNgGeneralSettingsPage />} />
-                    <Route path="/ariang/general/:item" element={<AriaNgSettingValuePage />} />
-                    <Route path="/ariang/rpc" element={<RpcSettingsListPage />} />
+                    <Route path="/ariang/general/:item" element={<AriaNgGeneralSettingValuePage />} />
+                    <Route path="/ariang/rpc" element={<AriaNgRpcSettingsListPage />} />
                     <Route path="/ariang/rpc/:item" element={<RpcSettingsEditorPage />} />
                     <Route path="/ariang/rpc/:item/:field" element={<RpcSettingFieldPage />} />
                     <Route path="/ariang/importExport" element={<ImportExportPage />} />

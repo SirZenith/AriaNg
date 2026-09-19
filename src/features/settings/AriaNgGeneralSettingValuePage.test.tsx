@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { ariaNgDefaultOptions } from '@/config/constants';
 import { useSettingStore } from '@/stores/settingStore';
 import { renderWithPanelBars } from '@/test-utils/renderWithPanelBars';
-import AriaNgSettingValuePage from './AriaNgSettingValuePage';
+import AriaNgGeneralSettingValuePage from './AriaNgGeneralSettingValuePage';
 
 afterEach(() => {
     window.localStorage.clear();
@@ -14,12 +14,12 @@ afterEach(() => {
 function renderPage() {
     return renderWithPanelBars(
         <MemoryRouter>
-            <AriaNgSettingValuePage settingKey="theme" />
+            <AriaNgGeneralSettingValuePage settingKey="theme" />
         </MemoryRouter>,
     );
 }
 
-describe('AriaNgSettingValuePage', () => {
+describe('AriaNgGeneralSettingValuePage', () => {
     it('shows all choices and marks the current value', () => {
         renderPage();
 
