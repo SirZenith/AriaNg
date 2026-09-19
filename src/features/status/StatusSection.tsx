@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Power, RefreshCw, Save } from 'lucide-react';
+import BottomBarButton from '@/components/BottomBarButton';
+import SplitBottomBar from '@/components/SplitBottomBar';
 import { aria2SettingService } from '@/services/aria2SettingService';
 import { notifyInPage } from '@/services/notification';
 import { useTaskStore } from '@/stores/taskStore';
@@ -92,17 +95,35 @@ export default function StatusSection() {
                 </div>
             ) : null}
 
-            <div className="mt-6 flex flex-wrap gap-2">
-                <button type="button" className="btn btn-primary px-4 py-2" onClick={reconnect}>
-                    {t('Reconnect')}
-                </button>
-                <button type="button" className="btn btn-success px-4 py-2" onClick={() => void saveSession()}>
-                    {t('Save Session')}
-                </button>
-                <button type="button" className="btn btn-danger px-4 py-2" onClick={() => void shutdown()}>
-                    {t('Shutdown')}
-                </button>
-            </div>
+            <SplitBottomBar
+                leading={
+                    <>
+                        <BottomBarButton
+                            ariaLabel={t('Reconnect')}
+                            label={t('Reconnect')}
+                            icon={RefreshCw}
+                            iconClassName="text-primary dark:text-primary-light"
+                            onClick={reconnect}
+                        />
+                        <BottomBarButton
+                            ariaLabel={t('Save Session')}
+                            label={t('Save Session')}
+                            icon={Save}
+                            iconClassName="text-green-600 dark:text-green-500"
+                            onClick={() => void saveSession()}
+                        />
+                    </>
+                }
+                trailing={
+                    <BottomBarButton
+                        ariaLabel={t('Shutdown')}
+                        label={t('Shutdown')}
+                        icon={Power}
+                        className="text-red-600 dark:text-red-400"
+                        onClick={() => void shutdown()}
+                    />
+                }
+            />
         </div>
     );
 }
