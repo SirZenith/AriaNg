@@ -8,6 +8,7 @@ import {
     ShieldCheck,
     Trash2,
     Upload,
+    RefreshCw,
     type LucideIcon,
 } from 'lucide-react';
 import i18n from '@/i18n';
@@ -66,7 +67,7 @@ export function calculateDownloadRemainTime(remainBytes: number, downloadSpeed: 
     return remainBytes / downloadSpeed;
 }
 
-export function getTaskName(task: Aria2Task): { name: string; success: boolean } {
+export function getTaskName(task: Aria2Task): { name: string; success: boolean; } {
     let taskName = '';
     let success = true;
 
@@ -412,6 +413,7 @@ type TaskCardStatus =
     | 'paused'
     | 'complete'
     | 'error'
+    | 'retryable'
     | 'removed';
 
 export function getTaskCardStatus(task: Aria2Task): TaskCardStatus | null {
@@ -420,28 +422,31 @@ export function getTaskCardStatus(task: Aria2Task): TaskCardStatus | null {
     }
 
     switch (task.status) {
-        case 'active':
-            if (task.verifyIntegrityPending) {
-                return 'verify_integrity_pending';
-            } else if (task.verifiedLength) {
-                return 'verified_length';
-            } else if (isSeeding(task)) {
-                return 'seeding';
-            } else {
-                return 'downloading';
-            }
-        case 'waiting':
-            return 'waiting';
-        case 'paused':
-            return 'paused';
-        case 'complete':
-            return 'complete';
-        case 'error':
-            return 'error';
-        case 'removed':
-            return 'removed';
-        default:
-            return null;
+    case 'active':
+        if (task.verifyIntegrityPending) {
+            return 'verify_integrity_pending';
+        } else if (task.verifiedLength) {
+            return 'verified_length';
+        } else if (isSeeding(task)) {
+            return 'seeding';
+        } else {
+            return 'downloading';
+        }
+    case 'waiting':
+        return 'waiting';
+    case 'paused':
+        return 'paused';
+    case 'complete':
+        return 'complete';
+    case 'error':
+        if (task.errorDescription && !task.bittorrent) {
+            return 'retryable';
+        }
+        return 'error';
+    case 'removed':
+        return 'removed';
+    default:
+        return null;
     }
 }
 
@@ -496,6 +501,12 @@ const taskStatusStyles: Record<TaskCardStatus, TaskStatusStyle> = {
         colorValue: 'var(--color-green-600)',
     },
     error: {
+        bgClass: 'bg-red-500',
+        textClass: 'text-red-500 dark:text-red-400',
+        iconBgClass: 'bg-red-500/15 dark:bg-red-500/25',
+        colorValue: 'var(--color-red-500)',
+    },
+    retryable: {
         bgClass: 'bg-red-500',
         textClass: 'text-red-500 dark:text-red-400',
         iconBgClass: 'bg-red-500/15 dark:bg-red-500/25',
@@ -572,6 +583,8 @@ export function getTaskStatusIcon(task: Aria2Task, simplify?: boolean): LucideIc
         return CheckCircle2;
     } else if (!simplify && status === 'error') {
         return AlertCircle;
+    } else if (!simplify && status === 'retryable') {
+        return RefreshCw;
     } else if (!simplify && status === 'removed') {
         return Trash2;
     }
