@@ -29,7 +29,7 @@ describe('HomePage', () => {
 
         renderPage();
 
-        expect(screen.getByText('Add New RPC Setting')).toBeTruthy();
+        expect(screen.getByRole('link', { name: 'Add New RPC Setting' })).toBeTruthy();
         expect(screen.queryByText('Connection Status')).toBeNull();
         expect(screen.queryByRole('link', { name: 'Tasks' })).toBeNull();
     });

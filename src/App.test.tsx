@@ -51,8 +51,17 @@ describe('App', () => {
     it('renders the application layout', () => {
         render(<App />);
 
-        expect(screen.getByText('Add New RPC Setting')).toBeTruthy();
+        expect(screen.getByRole('link', { name: 'Add New RPC Setting' })).toBeTruthy();
         expect(screen.getByText('localhost:6800')).toBeTruthy();
+    });
+
+    it('reserves bottom padding for the floating bottom bar in the scroll container', () => {
+        render(<App />);
+
+        const main = document.querySelector('main[data-scroll-container]');
+
+        expect(main?.className).toContain('app-scroll-container');
+        expect(main?.className).not.toContain('pb-4');
     });
 
     it('shows the task list toolbar on task list routes', () => {
@@ -220,7 +229,7 @@ describe('App', () => {
 
         expect(screen.getByRole('link', { name: /localhost:6800/ })).toBeTruthy();
         expect(screen.getByText('Default')).toBeTruthy();
-        expect(screen.getByText('Add New RPC Setting')).toBeTruthy();
+        expect(screen.getByRole('link', { name: 'Add New RPC Setting' })).toBeTruthy();
     });
 
     it('opens the rpc setting editor from the list', async () => {

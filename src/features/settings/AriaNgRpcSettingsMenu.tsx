@@ -40,6 +40,8 @@ export default function AriaNgRpcSettingsMenu() {
                     <Link
                         to="/ariang/rpc/new"
                         className="bottom-bar flex h-10 w-10 shrink-0 items-center justify-center p-0"
+                        title={t('Add New RPC Setting')}
+                        aria-label={t('Add New RPC Setting')}
                     >
                         <Plus className="h-4 w-4" aria-hidden="true" />
                     </Link>
