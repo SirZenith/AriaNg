@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import BottomBar from '@/components/BottomBar';
+import CenteredBottomBar from '@/components/CenteredBottomBar';
 import ReturnToolbar from '@/components/ReturnToolbar';
 import SettingsCard from '@/components/settings/SettingsCard';
 import TopBar from '@/components/TopBar';
@@ -53,13 +53,11 @@ export default function NewTaskSettingsPage() {
                 <Aria2OptionItemList options={availableOptions} values={draft} onChange={setValue} />
             </SettingsCard>
 
-            <BottomBar>
-                <div className="bottom-bar mx-auto mb-2 flex w-[90%] max-w-250 items-center justify-center gap-2 px-4 py-3">
-                    <button type="button" className="btn btn-primary btn-sm px-6" onClick={confirm}>
-                        {t('Confirm')}
-                    </button>
-                </div>
-            </BottomBar>
+            <CenteredBottomBar>
+                <button type="button" className="bottom-bar-item px-6" onClick={confirm}>
+                    {t('Confirm')}
+                </button>
+            </CenteredBottomBar>
         </>
     );
 }

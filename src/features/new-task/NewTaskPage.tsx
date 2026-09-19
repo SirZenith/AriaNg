@@ -214,18 +214,19 @@ export default function NewTaskPage() {
 
             <SplitBottomBar
                 leading={
+                    <button
+                        type="button"
+                        className="bottom-bar-item"
+                        title={t('Task Settings')}
+                        aria-label={t('Task Settings')}
+                        onClick={() => navigate('/new/settings')}
+                    >
+                        <Settings2 className="h-4 w-4" aria-hidden="true" />
+                        <span className="hidden md:inline">{t('Task Settings')}</span>
+                    </button>
+                }
+                trailing={
                     <>
-                        <button
-                            type="button"
-                            disabled={submitting}
-                            className="bottom-bar-item bottom-bar-item-active"
-                            title={t('Start')}
-                            aria-label={t('Start')}
-                            onClick={() => void startDownload(false)}
-                        >
-                            <Play className="h-4 w-4" aria-hidden="true" />
-                            <span className="hidden md:inline">{t('Start')}</span>
-                        </button>
                         <button
                             type="button"
                             disabled={submitting}
@@ -237,19 +238,18 @@ export default function NewTaskPage() {
                             <Pause className="h-4 w-4" aria-hidden="true" />
                             <span className="hidden md:inline">{t('Pause')}</span>
                         </button>
+                        <button
+                            type="button"
+                            disabled={submitting}
+                            className="bottom-bar-item"
+                            title={t('Start')}
+                            aria-label={t('Start')}
+                            onClick={() => void startDownload(false)}
+                        >
+                            <Play className="h-4 w-4" aria-hidden="true" />
+                            <span className="hidden md:inline">{t('Start')}</span>
+                        </button>
                     </>
-                }
-                trailing={
-                    <button
-                        type="button"
-                        className="bottom-bar-item"
-                        title={t('Task Settings')}
-                        aria-label={t('Task Settings')}
-                        onClick={() => navigate('/new/settings')}
-                    >
-                        <Settings2 className="h-4 w-4" aria-hidden="true" />
-                        <span className="hidden md:inline">{t('Task Settings')}</span>
-                    </button>
                 }
             />
         </>
