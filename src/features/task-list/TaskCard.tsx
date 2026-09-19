@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ArrowDown, ArrowUp, Eye, Files, Network, RotateCcw, Info } from 'lucide-react';
+import { ArrowDown, ArrowUp, ReceiptText, Files, Network, RotateCcw, Info } from 'lucide-react';
 import { useTaskStore } from '@/stores/taskStore';
 import type { Aria2Task } from '@/types/aria2';
 import { formatDuration, formatPercent, formatVolume } from '@/utils/format';
@@ -78,7 +78,7 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
                                 aria-label={t('Click to view task detail')}
                                 onClick={(event) => event.stopPropagation()}
                             >
-                                <Eye className="h-4 w-4" aria-hidden="true" />
+                                <ReceiptText className="h-4 w-4" aria-hidden="true" />
                             </Link>
 
                             {isDraggable ? (
