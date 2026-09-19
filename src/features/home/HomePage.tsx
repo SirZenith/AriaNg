@@ -23,11 +23,11 @@ export default function HomePage() {
     return (
         <>
             <TopBar>
-                <div className="mx-auto flex w-full max-w-250 items-center gap-x-1.5">
+                <div className="toolbar-title-container">
                     <span className="toolbar-icon-btn">
                         <Home className="h-7 w-7" aria-hidden="true" />
                     </span>
-                    <span className="min-w-0 flex-1 truncate text-lg font-bold">Aria2</span>
+                    <span className="toolbar-title-text">Aria2</span>
                 </div>
             </TopBar>
 
