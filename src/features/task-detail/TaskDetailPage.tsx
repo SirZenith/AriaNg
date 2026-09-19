@@ -177,7 +177,7 @@ export default function TaskDetailPage() {
 
     return (
         <TaskDetailPanel tabs={tabList}>
-            <section className="rounded bg-white p-4 shadow dark:bg-gray-800">
+            <section className="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
                 {currentTab === 'overview' ? (
                     <TaskOverview task={task} healthPercent={healthPercent} showPiecesInfo={showPiecesInfo} />
                 ) : null}
