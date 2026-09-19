@@ -11,7 +11,7 @@ import {
     type DragStartEvent,
 } from '@dnd-kit/core';
 import { arrayMove, rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
-import { CheckCircle2, Clock, Download, type LucideIcon } from 'lucide-react';
+import { CheckCircle2, Clock, Download, BrushCleaning, type LucideIcon } from 'lucide-react';
 import ContextMenu, { type ContextMenuItem } from '@/components/ContextMenu';
 import TaskListToolbar from '@/components/TaskListToolbar';
 import TopBar from '@/components/TopBar';
@@ -36,7 +36,7 @@ interface ContextMenuState {
 
 const cardGridClass = 'grid grid-cols-1 gap-3';
 
-const taskListTabs: { key: string; label: string; icon: LucideIcon }[] = [
+const taskListTabs: { key: string; label: string; icon: LucideIcon; }[] = [
     { key: 'downloading', label: 'Downloading', icon: Download },
     { key: 'waiting', label: 'Waiting', icon: Clock },
     { key: 'stopped', label: 'Finished / Stopped', icon: CheckCircle2 },
@@ -53,7 +53,7 @@ function buildMagnetLink(task: Aria2Task): string {
     return 'magnet:?xt=urn:btih:' + infoHash + (name ? '&dn=' + encodeURIComponent(name) : '');
 }
 
-export default function TaskListPage({ location }: { location: string }) {
+export default function TaskListPage({ location }: { location: string; }) {
     useTaskListPolling(location);
     useScrollRestoration(location);
 
@@ -82,8 +82,8 @@ export default function TaskListPage({ location }: { location: string }) {
         ? location === 'waiting'
             ? options.waitingTaskListPageDisplayOrder
             : location === 'stopped'
-              ? options.stoppedTaskListPageDisplayOrder
-              : options.displayOrder
+                ? options.stoppedTaskListPageDisplayOrder
+                : options.displayOrder
         : options.displayOrder;
 
     const visibleTasks = orderTasks(
@@ -305,10 +305,11 @@ export default function TaskListPage({ location }: { location: string }) {
                     {location === 'stopped' ? (
                         <button
                             type="button"
-                            className="btn btn-danger-soft btn-sm"
+                            className="mx-auto btn btn-danger-soft btn-sm"
                             onClick={() => void clearStoppedTasks()}
                         >
-                            {t('Clear Stopped Tasks')}
+                            <span className="hidden md:inline">{t('Clear Stopped Tasks')}</span>
+                            <BrushCleaning className="inline md:hidden h-4 w-4" />
                         </button>
                     ) : null}
                 </div>
