@@ -218,6 +218,16 @@ describe('TaskListPage task card', () => {
         expect(screen.getByText(/%$/).className).toContain('text-green-600');
     });
 
+    it('uses the soft status color style for the clear stopped tasks button', () => {
+        renderWithPanelBars(
+            <MemoryRouter initialEntries={['/tasks/stopped']}>
+                <TaskListPage location="stopped" />
+            </MemoryRouter>,
+        );
+
+        expect(screen.getByText('Clear Stopped Tasks').className).toContain('btn-danger-soft');
+    });
+
     it('renders evenly sized task list tabs with visible boundaries', () => {
         renderPage();
 

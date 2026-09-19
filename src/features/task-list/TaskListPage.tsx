@@ -34,7 +34,7 @@ interface ContextMenuState {
     task: Aria2Task;
 }
 
-const cardGridClass = 'grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4';
+const cardGridClass = 'grid grid-cols-1 gap-3';
 
 const taskListTabs: { key: string; label: string; icon: LucideIcon }[] = [
     { key: 'downloading', label: 'Downloading', icon: Download },
@@ -305,7 +305,7 @@ export default function TaskListPage({ location }: { location: string }) {
                     {location === 'stopped' ? (
                         <button
                             type="button"
-                            className="btn btn-danger btn-sm"
+                            className="btn btn-danger-soft btn-sm"
                             onClick={() => void clearStoppedTasks()}
                         >
                             {t('Clear Stopped Tasks')}

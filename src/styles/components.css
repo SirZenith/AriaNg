@@ -31,7 +31,11 @@
     }
 
     .btn-danger {
-        @apply bg-red-500/80 dark:bg-red-500/85 hover:bg-red-500/15 hover:dark:bg-red-500/25 text-white;
+        @apply bg-red-500 dark:bg-red-500 hover:bg-red-500/15 hover:dark:bg-red-500/25 text-white;
+    }
+
+    .btn-danger-soft {
+        @apply bg-red-500/15 text-red-500 hover:bg-red-500/25 dark:text-red-400;
     }
 
     .btn-ghost {
