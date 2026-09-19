@@ -88,11 +88,11 @@
     }
 
     .chip-download {
-        @apply text-green-600 dark:text-green-500;
+        @apply text-blue-500 dark:text-blue-400;
     }
 
     .chip-upload {
-        @apply text-blue-500 dark:text-blue-400;
+        @apply text-green-600 dark:text-green-500;
     }
 
     .input {

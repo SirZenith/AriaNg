@@ -97,13 +97,48 @@ describe('TaskListPage task card', () => {
         expect(screen.getByTitle('Connections').textContent).toContain('12');
     });
 
-    it('uses the shared chip style for the speed text', () => {
-        const speedText = formatVolume(999999999999) + '/s';
-        useTaskStore.setState({ tasks: [createTask({ downloadSpeed: 999999999999 })] });
+    it('renders the file count as a number with a file icon', () => {
+        useTaskStore.setState({ tasks: [createTask({ files: [], selectedFileCount: 3 })] });
 
         renderPage();
 
-        expect(screen.getByText(speedText).className).toContain('chip');
+        const fileCount = screen.getByTitle('(3 Files)');
+
+        expect(fileCount.textContent).toBe('3');
+        expect(fileCount.querySelector('svg.lucide-files')).toBeTruthy();
+    });
+
+    it('aligns the speed chips left and the connection count right', () => {
+        useTaskStore.setState({ tasks: [createTask({ connections: 12 })] });
+
+        renderPage();
+
+        const connection = screen.getByTitle('Connections');
+        const row = connection.parentElement;
+
+        expect(row?.lastElementChild).toBe(connection);
+        expect(row?.firstElementChild?.querySelector('.chip-download')).toBeTruthy();
+    });
+
+    it('renders the speed text without a background and with a fixed width', () => {
+        const downloadText = formatVolume(999999999999) + '/s';
+        const uploadText = formatVolume(1000) + '/s';
+        useTaskStore.setState({ tasks: [createTask({ downloadSpeed: 999999999999, uploadSpeed: 1000 })] });
+
+        renderPage();
+
+        const download = screen.getByText(downloadText);
+        const upload = screen.getByText(uploadText);
+
+        expect(download.className).toContain('w-22');
+        expect(upload.className).toContain('w-22');
+
+        expect(download.parentElement?.className).toContain('chip-download');
+        expect(download.parentElement?.className).toContain('bg-transparent');
+        expect(download.parentElement?.className).toContain('pl-0');
+        expect(upload.parentElement?.className).toContain('chip-upload');
+        expect(upload.parentElement?.className).toContain('bg-transparent');
+        expect(upload.parentElement?.className).toContain('pl-0');
     });
 
     it('toggles the selection when clicking the task name', () => {
@@ -129,6 +164,32 @@ describe('TaskListPage task card', () => {
 
         expect(useTaskStore.getState().selected['gid123']).toBe(true);
         expect(card?.className).toContain('card-selected');
+    });
+
+    it.each<[Aria2Task['status'], string, string]>([
+        ['active', 'bg-primary', 'text-primary'],
+        ['complete', 'bg-green-500', 'text-green-600'],
+        ['error', 'bg-red-500', 'text-red-500'],
+    ])('colors the progress bar and percent text for %s tasks', (status, barClass, textClass) => {
+        useTaskStore.setState({ tasks: [createTask({ status })] });
+
+        renderPage();
+
+        const card = screen.getByText('ubuntu.iso').closest('div.cursor-pointer');
+
+        expect(card?.querySelector('.h-1 > div')?.className).toContain(barClass);
+        expect(screen.getByText(/%$/).className).toContain(textClass);
+    });
+
+    it('uses the green progress for seeding tasks', () => {
+        useTaskStore.setState({ tasks: [createTask({ status: 'active', seeder: true })] });
+
+        renderPage();
+
+        const card = screen.getByText('ubuntu.iso').closest('div.cursor-pointer');
+
+        expect(card?.querySelector('.h-1 > div')?.className).toContain('bg-green-500');
+        expect(screen.getByText(/%$/).className).toContain('text-green-600');
     });
 
     it('renders evenly sized task list tabs with visible boundaries', () => {

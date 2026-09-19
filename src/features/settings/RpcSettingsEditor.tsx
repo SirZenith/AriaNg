@@ -26,7 +26,7 @@ const rpcSettingFields: (keyof AriaNgRpcSetting)[] = [
     'secret',
 ];
 
-export default function RpcSettingsEditor({ item }: { item: string; }) {
+export default function RpcSettingsEditor({ item }: { item: string }) {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const isNew = item === 'new';
