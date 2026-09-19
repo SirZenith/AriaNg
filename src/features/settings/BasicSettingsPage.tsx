@@ -9,11 +9,7 @@ export default function BasicSettingsPage() {
 
     return (
         <SettingsPage>
-            <Aria2OptionListPage
-                category="basic"
-                routeBase="/settings/basic"
-                title={label ? t(label) : undefined}
-            />
+            <Aria2OptionListPage category="basic" routeBase="/settings/basic" title={label ? t(label) : undefined} />
         </SettingsPage>
     );
 }

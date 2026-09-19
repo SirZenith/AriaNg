@@ -15,35 +15,35 @@
 
 ## 一、通用组件（`src/components/settings/`）
 
-| 组件 | 职责 | 关键 props |
-| --- | --- | --- |
-| `SettingsItem` | 单条目，按 `indicator` 渲染右侧指示物 | `icon?`, `label`, `description?`, `indicator`, `to?`, `onClick?`, `disabled?` |
-| `SettingsCard` | 白色圆角卡片容器 | `children`, `className?` |
-| `SettingsSection` | 可选小标题 + `SettingsCard` | `title?`, `children` |
-| `SettingsChoiceList` | 候选值列表（勾选），保留 `role=listbox/option`、`aria-selected` | `items`, `value`, `onSelect` |
-| `SettingsInputModal` | 输入弹窗（基于 `Modal`） | `title`, `value`, `type`, `history?`, `required?`, `readonly?`, `suffix?`, `onConfirm`, `onClose` |
-| `SettingsChoiceModal` | 候选值弹窗（标题 + `SettingsChoiceList`），任务设置使用 | `title`, `items`, `value`, `onSelect`, `onClose` |
+| 组件                  | 职责                                                            | 关键 props                                                                                        |
+| --------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `SettingsItem`        | 单条目，按 `indicator` 渲染右侧指示物                           | `icon?`, `label`, `description?`, `indicator`, `to?`, `onClick?`, `disabled?`                     |
+| `SettingsCard`        | 白色圆角卡片容器                                                | `children`, `className?`                                                                          |
+| `SettingsSection`     | 可选小标题 + `SettingsCard`                                     | `title?`, `children`                                                                              |
+| `SettingsChoiceList`  | 候选值列表（勾选），保留 `role=listbox/option`、`aria-selected` | `items`, `value`, `onSelect`                                                                      |
+| `SettingsInputModal`  | 输入弹窗（基于 `Modal`）                                        | `title`, `value`, `type`, `history?`, `required?`, `readonly?`, `suffix?`, `onConfirm`, `onClose` |
+| `SettingsChoiceModal` | 候选值弹窗（标题 + `SettingsChoiceList`），任务设置使用         | `title`, `items`, `value`, `onSelect`, `onClose`                                                  |
 
 ```ts
 type SettingsIndicator =
-    | { type: 'navigate' }
-    | { type: 'check'; selected: boolean }
-    | { type: 'switch'; checked: boolean; onChange: (v: boolean) => void }
-    | { type: 'value'; text: string };
+  | { type: 'navigate' }
+  | { type: 'check'; selected: boolean }
+  | { type: 'switch'; checked: boolean; onChange: (v: boolean) => void }
+  | { type: 'value'; text: string };
 ```
 
 ## 二、适配层（`src/features/settings/`）
 
 ```ts
 interface SettingsItemView {
-    key: string;
-    icon?: LucideIcon;
-    label: string;
-    description?: string;
-    indicator: SettingsIndicator;
-    to?: string;
-    onClick?: () => void;
-    disabled?: boolean;
+  key: string;
+  icon?: LucideIcon;
+  label: string;
+  description?: string;
+  indicator: SettingsIndicator;
+  to?: string;
+  onClick?: () => void;
+  disabled?: boolean;
 }
 ```
 

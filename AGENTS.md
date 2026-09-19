@@ -6,24 +6,24 @@ AriaNg 是一个让 [aria2](https://github.com/aria2/aria2) 更易用的现代 W
 
 当前仓库为 **Vite + React 19 + TypeScript + Tailwind CSS 4** 重写版本（v2.0）：路由使用 Hash 模式，产物为纯静态资源，无需服务端 rewrite。原 AngularJS 实现归档在 `legacy/`，可独立构建；除语言源文件外不要修改 `legacy/`。
 
-技术栈：React 19、TypeScript 5、Tailwind CSS 4、zustand、react-router-dom 7、react-i18next、lucide-react、@dnd-kit、recharts、vitest。
+技术栈：React 19、TypeScript 7（原生 `tsc` 做类型检查；ESLint 走 TypeScript 6 API，见"注意事项"）、Tailwind CSS 4、zustand、react-router-dom 7、react-i18next、lucide-react、@dnd-kit、recharts、vitest。
 
 ## 环境与命令
 
 Node.js `>= 20`，包管理器使用 npm（仓库包含 `package-lock.json`）。开发服务器默认 `http://localhost:9000`。
 
-| 命令                    | 说明                                          |
-| ----------------------- | --------------------------------------------- |
-| `npm run dev`           | 开发服务器                                    |
-| `npm run build`         | `tsc --noEmit` + `vite build`，产物在 `dist/` |
-| `npm run preview`       | 预览构建产物                                  |
-| `npm run typecheck`     | 仅类型检查                                    |
-| `npm run lint`          | ESLint                                        |
-| `npm test`              | Vitest 单元测试（jsdom）                      |
-| `npm test:watch`        | Vitest watch 模式                             |
-| `npm run format`        | Prettier 写入                                 |
-| `npm run format:check`  | Prettier 校验（CI 使用）                      |
-| `npm run convert-langs` | 由 legacy 语言文件重新生成 `src/locales/**`   |
+| 命令                    | 说明                                                      |
+| ----------------------- | --------------------------------------------------------- |
+| `npm run dev`           | 开发服务器                                                |
+| `npm run build`         | `tsc --noEmit`（TS 7 原生）+ `vite build`，产物在 `dist/` |
+| `npm run preview`       | 预览构建产物                                              |
+| `npm run typecheck`     | 仅类型检查（TS 7 原生 `tsc`）                             |
+| `npm run lint`          | ESLint                                                    |
+| `npm test`              | Vitest 单元测试（jsdom）                                  |
+| `npm test:watch`        | Vitest watch 模式                                         |
+| `npm run format`        | Prettier 写入                                             |
+| `npm run format:check`  | Prettier 校验（CI 使用）                                  |
+| `npm run convert-langs` | 由 legacy 语言文件重新生成 `src/locales/**`               |
 
 ### 完成标准
 
@@ -105,4 +105,6 @@ jsdom 无法覆盖视觉效果时，可在 `npm run dev` 后用无头浏览器�
 - `src/locales/**`、`dist/**` 为生成/构建产物，不要手工修改。
 - `legacy/**` 为归档实现；转换脚本会读取其中的语言文件，其余内容保持不变。
 - 应用不注册 Service Worker、不做离线缓存（`public/manifest.json` 仅提供 PWA 元数据与 magnet 协议注册）。
+- TypeScript 为双版本方案：`@typescript/native`（别名到 `typescript@^7.0.2`）提供原生 `tsc`；包名 `typescript` 是 `@typescript/typescript6` 的别名（提供 `tsc6` 与 TS 6 API），供 typescript-eslint 使用。TS 7 不带 JS API，待 typescript-eslint 支持后方可移除别名；升级 CLI 只需升级 `@typescript/native`。
+- `tsconfig.json` 不使用 `baseUrl`（TS 7 已移除该选项），`paths` 直接相对项目根书写。
 - PLAN.md 记录重写阶段与决策，可作为历史背景参考。

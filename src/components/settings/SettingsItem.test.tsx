@@ -48,12 +48,7 @@ describe('SettingsItem', () => {
 
     it('renders a readonly value item without a chevron', () => {
         renderItem(
-            <SettingsItem
-                label="GID"
-                indicator={{ type: 'value', text: 'abc' }}
-                onClick={() => undefined}
-                disabled
-            />,
+            <SettingsItem label="GID" indicator={{ type: 'value', text: 'abc' }} onClick={() => undefined} disabled />,
         );
 
         expect(screen.queryByRole('button')).toBeNull();

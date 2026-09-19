@@ -11,23 +11,23 @@ interface MenuItem {
     icon?: LucideIcon;
 }
 
-export default function SettingsMenu({ type }: { type?: string; }) {
+export default function SettingsMenu({ type }: { type?: string }) {
     const { t } = useTranslation();
 
     const subItems = type ? settingsSubItems[type] : undefined;
 
     const items: MenuItem[] = subItems
         ? subItems.map((item) => ({
-            key: item.key,
-            label: item.label,
-            to: '/settings/' + type + '/' + item.key,
-        }))
+              key: item.key,
+              label: item.label,
+              to: '/settings/' + type + '/' + item.key,
+          }))
         : settingsCategories.map((category) => ({
-            key: category.key,
-            label: category.label,
-            to: '/settings/' + category.key,
-            icon: category.icon,
-        }));
+              key: category.key,
+              label: category.label,
+              to: '/settings/' + category.key,
+              icon: category.icon,
+          }));
 
     return (
         <SettingsCard>

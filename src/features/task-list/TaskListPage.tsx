@@ -35,7 +35,7 @@ interface ContextMenuState {
 
 const cardGridClass = 'grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4';
 
-const taskListTabs: { key: string; label: string; icon: LucideIcon; }[] = [
+const taskListTabs: { key: string; label: string; icon: LucideIcon }[] = [
     { key: 'downloading', label: 'Downloading', icon: Download },
     { key: 'waiting', label: 'Waiting', icon: Clock },
     { key: 'stopped', label: 'Finished / Stopped', icon: CheckCircle2 },
@@ -52,7 +52,7 @@ function buildMagnetLink(task: Aria2Task): string {
     return 'magnet:?xt=urn:btih:' + infoHash + (name ? '&dn=' + encodeURIComponent(name) : '');
 }
 
-export default function TaskListPage({ location }: { location: string; }) {
+export default function TaskListPage({ location }: { location: string }) {
     useTaskListPolling(location);
     useScrollRestoration(location);
 
@@ -81,8 +81,8 @@ export default function TaskListPage({ location }: { location: string; }) {
         ? location === 'waiting'
             ? options.waitingTaskListPageDisplayOrder
             : location === 'stopped'
-                ? options.stoppedTaskListPageDisplayOrder
-                : options.displayOrder
+              ? options.stoppedTaskListPageDisplayOrder
+              : options.displayOrder
         : options.displayOrder;
 
     const visibleTasks = orderTasks(
@@ -296,7 +296,11 @@ export default function TaskListPage({ location }: { location: string; }) {
                     </select>
 
                     {location === 'stopped' ? (
-                        <button type="button" className="btn btn-danger btn-sm" onClick={() => void clearStoppedTasks()}>
+                        <button
+                            type="button"
+                            className="btn btn-danger btn-sm"
+                            onClick={() => void clearStoppedTasks()}
+                        >
                             {t('Clear Stopped Tasks')}
                         </button>
                     ) : null}

@@ -15,7 +15,7 @@ export type SettingsIndicator =
     | { type: 'navigate'; text?: string }
     | { type: 'value'; text: string }
     | { type: 'check'; selected: boolean }
-    | { type: 'switch'; checked: boolean; onChange: (checked: boolean) => void; };
+    | { type: 'switch'; checked: boolean; onChange: (checked: boolean) => void };
 
 export interface SettingsItemProps {
     icon?: LucideIcon;

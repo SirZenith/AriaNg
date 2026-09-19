@@ -9,11 +9,7 @@ export default function RpcGlobalSettingsPage() {
 
     return (
         <SettingsPage>
-            <Aria2OptionListPage
-                category="rpc"
-                routeBase="/settings/rpc"
-                title={label ? t(label) : undefined}
-            />
+            <Aria2OptionListPage category="rpc" routeBase="/settings/rpc" title={label ? t(label) : undefined} />
         </SettingsPage>
     );
 }

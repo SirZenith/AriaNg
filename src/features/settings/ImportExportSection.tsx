@@ -86,11 +86,7 @@ export default function ImportExportSection() {
                         onChange={(event) => void openImportFile(event.target.files?.[0])}
                     />
                 </label>
-                <button
-                    type="button"
-                    className="btn btn-warning btn-sm"
-                    onClick={clearHistory}
-                >
+                <button type="button" className="btn btn-warning btn-sm" onClick={clearHistory}>
                     {t('Clear Settings History')}
                 </button>
             </div>
@@ -128,18 +124,10 @@ export default function ImportExportSection() {
                             value={exportText}
                         />
                         <div className="mt-2 flex justify-end gap-2">
-                            <button
-                                type="button"
-                                className="btn btn-muted btn-sm"
-                                onClick={() => setShowExport(false)}
-                            >
+                            <button type="button" className="btn btn-muted btn-sm" onClick={() => setShowExport(false)}>
                                 {t('Close')}
                             </button>
-                            <button
-                                type="button"
-                                className="btn btn-secondary btn-sm"
-                                onClick={downloadExport}
-                            >
+                            <button type="button" className="btn btn-secondary btn-sm" onClick={downloadExport}>
                                 {t('Download')}
                             </button>
                             <button type="button" className="btn btn-primary btn-sm" onClick={() => void copyExport()}>

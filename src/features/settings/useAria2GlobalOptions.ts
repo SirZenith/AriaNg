@@ -42,7 +42,7 @@ export default function useAria2GlobalOptions() {
 
 function i18nText(data: unknown): string {
     if (data && typeof data === 'object' && 'message' in data) {
-        return String((data as { message: unknown; }).message);
+        return String((data as { message: unknown }).message);
     }
 
     return String(data);

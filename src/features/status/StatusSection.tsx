@@ -96,18 +96,10 @@ export default function StatusSection() {
                 <button type="button" className="btn btn-primary px-4 py-2" onClick={reconnect}>
                     {t('Reconnect')}
                 </button>
-                <button
-                    type="button"
-                    className="btn btn-success px-4 py-2"
-                    onClick={() => void saveSession()}
-                >
+                <button type="button" className="btn btn-success px-4 py-2" onClick={() => void saveSession()}>
                     {t('Save Session')}
                 </button>
-                <button
-                    type="button"
-                    className="btn btn-danger px-4 py-2"
-                    onClick={() => void shutdown()}
-                >
+                <button type="button" className="btn btn-danger px-4 py-2" onClick={() => void shutdown()}>
                     {t('Shutdown')}
                 </button>
             </div>

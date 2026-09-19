@@ -53,11 +53,7 @@ export default function TaskSettingsPanel({ options, values, onConfirm, onClose 
                 </div>
 
                 <div className="flex justify-end gap-2 border-t border-gray-200 px-4 py-3 dark:border-gray-700">
-                    <button
-                        type="button"
-                        className="btn btn-secondary px-4 py-2"
-                        onClick={onClose}
-                    >
+                    <button type="button" className="btn btn-secondary px-4 py-2" onClick={onClose}>
                         {t('Back')}
                     </button>
                     <button

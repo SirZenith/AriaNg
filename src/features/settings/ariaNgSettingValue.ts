@@ -34,9 +34,8 @@ function setMagnetHandler(registered: boolean): void {
         return;
     }
 
-    const unregister = (
-        navigator as Navigator & { unregisterProtocolHandler?: (scheme: string, url: string) => void; }
-    ).unregisterProtocolHandler;
+    const unregister = (navigator as Navigator & { unregisterProtocolHandler?: (scheme: string, url: string) => void })
+        .unregisterProtocolHandler;
 
     if (typeof unregister === 'function') {
         try {

@@ -38,7 +38,11 @@ describe('Aria2OptionItemList', () => {
         const onChange = vi.fn();
 
         renderList(
-            <Aria2OptionItemList options={[booleanOption]} values={{ 'check-integrity': 'false' }} onChange={onChange} />,
+            <Aria2OptionItemList
+                options={[booleanOption]}
+                values={{ 'check-integrity': 'false' }}
+                onChange={onChange}
+            />,
         );
 
         fireEvent.click(screen.getByRole('switch'));
