@@ -99,7 +99,7 @@ export default function TaskPeerList({ peers, pieceCount }: TaskPeerListProps) {
 
                             <div className="flex items-center gap-2">
                                 <div className="min-w-0 flex-1">
-                                    <PieceBar bitField={peer.bitfield} pieceCount={pieceCount} color="#208fe5" />
+                                    <PieceBar bitField={peer.bitfield} pieceCount={pieceCount} color="#88c0d0" />
                                 </div>
                                 <span className="shrink-0 text-xs">
                                     {formatPercent(Number(peer.completePercent || 0), 2) + '%'}

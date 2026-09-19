@@ -43,7 +43,7 @@ export default function PieceMap({ bitField, pieceCount }: PieceMapProps) {
                 const x = (i % columns) * step;
                 const y = Math.floor(i / columns) * step;
 
-                context.fillStyle = pieces[i] ? '#74a329' : isDark ? '#4b5563' : '#d1d5db';
+                context.fillStyle = pieces[i] ? '#a3be8c' : isDark ? '#4c566a' : '#d8dee9';
                 context.fillRect(x, y, CELL_SIZE, CELL_SIZE);
             }
         };

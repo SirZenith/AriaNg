@@ -1,5 +1,5 @@
 {
-  "background_color": "#ffffff",
+  "background_color": "#eceff4",
   "categories": ["utilities"],
   "description": "AriaNg, a modern web frontend making aria2 easier to use.",
   "display": "standalone",
@@ -70,5 +70,5 @@
     }
   ],
   "start_url": "./",
-  "theme_color": "#3c4852"
+  "theme_color": "#2e3440"
 }

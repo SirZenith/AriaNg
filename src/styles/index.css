@@ -4,14 +4,134 @@
 @custom-variant dark (&:where(.theme-dark, .theme-dark *));
 
 @theme {
-    --color-primary: #3c8dbc;
-    --color-primary-hover: #367fa9;
-    --color-primary-light: #5ba7d6;
-    --color-danger: #dd4b39;
-    --color-success: #00a65a;
-    --color-warning: #f39c12;
-    --color-chrome: #3c4852;
-    --color-page: #ecf0f5;
+    /* Nord palette: https://www.nordtheme.com */
+    --color-nord-0: #2e3440;
+    --color-nord-1: #3b4252;
+    --color-nord-2: #434c5e;
+    --color-nord-3: #4c566a;
+    --color-nord-4: #d8dee9;
+    --color-nord-5: #e5e9f0;
+    --color-nord-6: #eceff4;
+    --color-nord-7: #8fbcbb;
+    --color-nord-8: #88c0d0;
+    --color-nord-9: #81a1c1;
+    --color-nord-10: #5e81ac;
+    --color-nord-11: #bf616a;
+    --color-nord-12: #d08770;
+    --color-nord-13: #ebcb8b;
+    --color-nord-14: #a3be8c;
+    --color-nord-15: #b48ead;
+
+    /* Neutrals: Snow Storm (light) -> Polar Night (dark) */
+    --color-gray-50: #f4f6f9;
+    --color-gray-100: #e5e9f0;
+    --color-gray-200: #d8dee9;
+    --color-gray-300: #c6cede;
+    --color-gray-400: #94a0b8;
+    --color-gray-500: #6d7a90;
+    --color-gray-600: #4c566a;
+    --color-gray-700: #434c5e;
+    --color-gray-800: #3b4252;
+    --color-gray-900: #2e3440;
+    --color-gray-950: #272c36;
+
+    /* Red -> Aurora nord11 */
+    --color-red-50: #f7e9ea;
+    --color-red-100: #efd3d5;
+    --color-red-200: #e4b6b9;
+    --color-red-300: #d8989d;
+    --color-red-400: #cc7a80;
+    --color-red-500: #bf616a;
+    --color-red-600: #a94e57;
+    --color-red-700: #8e3f47;
+    --color-red-800: #75343b;
+    --color-red-900: #5c272d;
+    --color-red-950: #3b181c;
+
+    /* Green -> Aurora nord14 */
+    --color-green-50: #f1f5ec;
+    --color-green-100: #e3ebd9;
+    --color-green-200: #cfddc0;
+    --color-green-300: #bbd0a7;
+    --color-green-400: #afc79a;
+    --color-green-500: #a3be8c;
+    --color-green-600: #8aa871;
+    --color-green-700: #718e59;
+    --color-green-800: #5a7247;
+    --color-green-900: #435735;
+    --color-green-950: #2a3821;
+
+    /* Blue -> Frost nord9/nord10 */
+    --color-blue-50: #edf1f6;
+    --color-blue-100: #dce4ee;
+    --color-blue-200: #c0cedf;
+    --color-blue-300: #a0b5ce;
+    --color-blue-400: #91aac8;
+    --color-blue-500: #81a1c1;
+    --color-blue-600: #5e81ac;
+    --color-blue-700: #4c6e94;
+    --color-blue-800: #3f5c7c;
+    --color-blue-900: #2c4257;
+    --color-blue-950: #1b2937;
+
+    /* Amber / Yellow -> Aurora nord13 */
+    --color-amber-50: #fcf7ec;
+    --color-amber-100: #f8efd9;
+    --color-amber-200: #f3e3be;
+    --color-amber-300: #efd7a5;
+    --color-amber-400: #edd198;
+    --color-amber-500: #ebcb8b;
+    --color-amber-600: #d9b36a;
+    --color-amber-700: #be9648;
+    --color-amber-800: #a07c36;
+    --color-amber-900: #6e5626;
+    --color-amber-950: #443417;
+
+    --color-yellow-300: #efd7a5;
+
+    /* Orange -> Aurora nord12 */
+    --color-orange-50: #f9eeea;
+    --color-orange-100: #f3ddd6;
+    --color-orange-200: #e9c8bd;
+    --color-orange-300: #e0ae9d;
+    --color-orange-400: #d89b85;
+    --color-orange-500: #d08770;
+    --color-orange-600: #b96b52;
+    --color-orange-700: #9c563f;
+    --color-orange-800: #7f452f;
+    --color-orange-900: #5c3125;
+    --color-orange-950: #381d16;
+
+    /* Indigo -> Aurora nord15 */
+    --color-indigo-50: #f5f0f4;
+    --color-indigo-100: #ede5eb;
+    --color-indigo-200: #dcc9d7;
+    --color-indigo-300: #cbadc4;
+    --color-indigo-400: #c3a5bd;
+    --color-indigo-500: #b48ead;
+    --color-indigo-600: #9a7292;
+    --color-indigo-700: #8a6a84;
+    --color-indigo-800: #6f5069;
+    --color-indigo-900: #4a3946;
+    --color-indigo-950: #2d232b;
+
+    --color-black: #2e3440;
+
+    /* Semantic tokens */
+    --color-primary: #5e81ac;
+    --color-primary-hover: #4c6e94;
+    --color-primary-light: #88c0d0;
+    --color-danger: #bf616a;
+    --color-success: #a3be8c;
+    --color-warning: #ebcb8b;
+    --color-chrome: #2e3440;
+    --color-page: #eceff4;
+
+    /* Chart colors (canvas / recharts) */
+    --color-chart-piece-done: #a3be8c;
+    --color-chart-piece-pending: #d8dee9;
+    --color-chart-download: #a3be8c;
+    --color-chart-upload: #81a1c1;
 }
 
 html,
@@ -32,13 +152,14 @@ body {
         sans-serif;
     font-size: 14px;
     background-color: var(--color-page);
-    color: #333;
+    color: #2e3440;
     color-scheme: light;
 }
 
 body.theme-dark {
-    --color-page: #1e282c;
+    --color-page: #2e3440;
+    --color-chart-piece-pending: #4c566a;
     background-color: var(--color-page);
-    color: #d2d6de;
+    color: #d8dee9;
     color-scheme: dark;
 }

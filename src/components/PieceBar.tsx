@@ -7,7 +7,7 @@ interface PieceBarProps {
     color?: string;
 }
 
-export default function PieceBar({ bitField, pieceCount, color = '#74a329' }: PieceBarProps) {
+export default function PieceBar({ bitField, pieceCount, color = '#a3be8c' }: PieceBarProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
