@@ -286,7 +286,7 @@ export default function TaskListPage({ location }: { location: string }) {
                     </div>
                 </div>
 
-                <div className="panel mt-2 flex flex-wrap items-center gap-2 px-3 py-2">
+                <div className="panel mt-2 flex w-full mx-auto max-w-250 flex-wrap items-center gap-2 px-3 py-2">
                     <span className="text-sm font-semibold">{t('Display Order')}</span>
                     <select
                         className="input w-auto"
