@@ -44,7 +44,7 @@ afterEach(() => {
     window.location.hash = '';
     useSettingStore.setState({ options: ariaNgDefaultOptions });
     useRpcDraftStore.setState({ drafts: {} });
-    useTaskStore.setState({ tasks: [] });
+    useTaskStore.setState({ tasks: [], rpcStatus: 'Connecting' });
 });
 
 describe('App', () => {
@@ -79,6 +79,16 @@ describe('App', () => {
         expect(screen.getByLabelText('Back')).toBeTruthy();
         expect(screen.queryByText('Server:')).toBeNull();
     });
+
+    it.each(['/settings/basic', '/settings/advanced', '/settings/rpc', '/settings/protocol', '/settings/status'])(
+        'returns to home from %s',
+        (path: string) => {
+            window.location.hash = '#' + path;
+            render(<App />);
+
+            expect(screen.getByLabelText('Back').getAttribute('href')).toBe('#/home');
+        },
+    );
 
     it('registers and unregisters the magnet handler from the settings page', () => {
         const register = vi.fn();
@@ -179,14 +189,13 @@ describe('App', () => {
         expect(screen.queryByPlaceholderText('Search')).toBeNull();
     });
 
-    it('shows the settings category list', () => {
+    it('redirects the settings root route to home', async () => {
         window.location.hash = '#/settings';
         render(<App />);
 
-        expect(screen.getByText('Basic Settings')).toBeTruthy();
-        expect(screen.getByText('Protocol Settings')).toBeTruthy();
-        expect(screen.getByLabelText('Back')).toBeTruthy();
-        expect(screen.queryByText('Server:')).toBeNull();
+        await waitFor(() => {
+            expect(window.location.hash).toBe('#/home');
+        });
     });
 
     it('redirects a protocol category link to the protocol settings page', async () => {
@@ -275,7 +284,8 @@ describe('App', () => {
     });
 
     it('navigates the settings hierarchy and back', async () => {
-        window.location.hash = '#/settings';
+        useTaskStore.setState({ rpcStatus: 'Connected' });
+        window.location.hash = '#/home';
         render(<App />);
 
         fireEvent.click(screen.getByText('Protocol Settings'));
@@ -286,7 +296,9 @@ describe('App', () => {
 
         fireEvent.click(screen.getByLabelText('Back'));
 
-        expect(await screen.findByText('Basic Settings')).toBeTruthy();
+        await waitFor(() => {
+            expect(window.location.hash).toBe('#/home');
+        });
     });
 
     it('opens a setting value page and keeps the selection', async () => {

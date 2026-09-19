@@ -39,7 +39,7 @@ export default function BottomNav({ counts, debugMode }: BottomNavProps) {
             paths: ['/tasks/downloading', '/tasks/waiting', '/tasks/stopped'],
         },
         { to: '/new', icon: Plus, label: t('New') },
-        { to: '/settings', icon: SlidersHorizontal, label: t('Aria2 Settings') },
+        { to: '/home', icon: SlidersHorizontal, label: t('Aria2 Settings') },
         ...(debugMode ? [{ to: '/debug', icon: Wrench, label: t('Debug') }] : []),
     ];
 

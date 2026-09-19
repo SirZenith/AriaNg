@@ -140,7 +140,7 @@ function resolveSettingsLocation(pathname: string): { title: string; backTo: str
     if (typeMatch?.params.type) {
         const category = getSettingsCategory(typeMatch.params.type);
 
-        return { title: category?.label || 'Aria2 Settings', backTo: settingsBase };
+        return { title: category?.label || 'Aria2 Settings', backTo: '/home' };
     }
 
     return { title: 'Aria2 Settings', backTo: '/home' };

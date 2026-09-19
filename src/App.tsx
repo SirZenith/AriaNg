@@ -18,7 +18,6 @@ import RpcGlobalSettingsPage from '@/features/settings/RpcGlobalSettingsPage';
 import RpcSettingsEditorPage from '@/features/settings/RpcSettingsEditorPage';
 import RpcSettingFieldPage from '@/features/settings/RpcSettingFieldPage';
 import AriaNgRpcSettingsListPage from '@/features/settings/AriaNgRpcSettingsListPage';
-import SettingsHomePage from '@/features/settings/SettingsHomePage';
 import StatusPage from '@/features/settings/StatusPage';
 import TaskDetailPage from '@/features/task-detail/TaskDetailPage';
 import TaskListPage from '@/features/task-list/TaskListPage';
@@ -43,7 +42,7 @@ export default function App() {
                     <Route path="/ariang/rpc/:item/:field" element={<RpcSettingFieldPage />} />
                     <Route path="/ariang/importExport" element={<ImportExportPage />} />
                     <Route path="/ariang/*" element={<Navigate to="/home" replace />} />
-                    <Route path="/settings" element={<SettingsHomePage />} />
+                    <Route path="/settings" element={<Navigate to="/home" replace />} />
                     <Route path="/settings/status" element={<StatusPage />} />
                     <Route path="/settings/basic" element={<BasicSettingsPage />} />
                     <Route path="/settings/basic/:option" element={<BasicOptionValuePage />} />
