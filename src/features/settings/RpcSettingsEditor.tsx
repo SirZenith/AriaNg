@@ -1,6 +1,9 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { Save, Terminal, Trash2 } from 'lucide-react';
+import BottomBarButton from '@/components/BottomBarButton';
+import CenteredBottomBar from '@/components/CenteredBottomBar';
 import ExportCommandApiDialog, { type ExportCommandData } from '@/components/ExportCommandApiDialog';
 import type { AriaNgRpcSetting } from '@/config/constants';
 import {
@@ -98,23 +101,31 @@ export default function RpcSettingsEditor({ item }: { item: string }) {
         <div className="flex flex-col gap-3">
             <RpcSettingFields setting={draft} rpcItem={item} onChange={setField} />
 
-            <div className="flex flex-wrap gap-2">
-                <button type="button" className="btn btn-primary btn-sm" onClick={save}>
-                    {t('Save')}
-                </button>
+            <CenteredBottomBar>
+                <BottomBarButton
+                    ariaLabel={t('Save')}
+                    label={t('Save')}
+                    icon={Save}
+                    iconClassName="text-green-600 dark:text-green-500"
+                    onClick={save}
+                />
                 {existing && !existing.isDefault ? (
-                    <button type="button" className="btn btn-danger btn-sm" onClick={remove}>
-                        {t('Remove')}
-                    </button>
+                    <BottomBarButton
+                        ariaLabel={t('Remove')}
+                        label={t('Remove')}
+                        icon={Trash2}
+                        className="text-red-600 dark:text-red-400"
+                        onClick={remove}
+                    />
                 ) : null}
-                <button
-                    type="button"
-                    className="btn btn-secondary btn-sm"
+                <BottomBarButton
+                    ariaLabel={t('Export Command API')}
+                    label={t('Export Command API')}
+                    icon={Terminal}
+                    iconClassName="text-primary dark:text-primary-light"
                     onClick={() => setExportOptions({ type: 'setting', data: draft })}
-                >
-                    {t('Export Command API')}
-                </button>
-            </div>
+                />
+            </CenteredBottomBar>
 
             {exportOptions ? (
                 <ExportCommandApiDialog options={exportOptions} onClose={() => setExportOptions(null)} />
