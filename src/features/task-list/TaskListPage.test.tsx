@@ -83,8 +83,10 @@ describe('TaskListPage task card', () => {
         renderPage();
 
         const card = screen.getByText('ubuntu.iso').closest('div.cursor-pointer');
+        const statusIcon = card?.querySelector('svg.lucide-download');
 
-        expect(card?.querySelector('svg.lucide-download')).toBeTruthy();
+        expect(statusIcon).toBeTruthy();
+        expect(card?.firstElementChild?.contains(statusIcon ?? null)).toBe(true);
     });
 
     it('shows the connection count in the status row', () => {

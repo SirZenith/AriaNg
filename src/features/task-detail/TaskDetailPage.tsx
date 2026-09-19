@@ -1,4 +1,5 @@
 import {
+    Copy,
     FileText,
     LayoutDashboard,
     LayoutGrid,
@@ -14,9 +15,9 @@ import {
 import { type ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import BottomBar from '@/components/BottomBar';
 import PieceBar from '@/components/PieceBar';
 import PieceMap from '@/components/PieceMap';
+import SplitBottomBar from '@/components/SplitBottomBar';
 import TaskDetailToolbar from '@/components/TaskDetailToolbar';
 import TopBar from '@/components/TopBar';
 import { useTaskDetail } from '@/hooks/useTaskDetail';
@@ -25,8 +26,10 @@ import {
     getConfirmTaskRemoval,
     getShowPiecesInfoInTaskDetailPage,
 } from '@/services/settingService';
+import { notifyInPage } from '@/services/notification';
 import { aria2TaskService } from '@/services/taskService';
 import type { Aria2Task } from '@/types/aria2';
+import { copyText } from '@/utils/clipboard';
 import { estimateHealthPercentFromPeers, isTaskRetryable } from '@/utils/task';
 import TaskFileList from './TaskFileList';
 import TaskOptionSettings from './TaskOptionSettings';
@@ -135,6 +138,19 @@ export default function TaskDetailPage() {
         navigate('/tasks/downloading');
     };
 
+    const copyTaskLink = async () => {
+        const url = task.singleUrl;
+
+        if (!url) {
+            notifyInPage('Error', t('There is no url in selected tasks'), { type: 'error' });
+            return;
+        }
+
+        if (await copyText(url)) {
+            notifyInPage('', t('Data has been copied to clipboard.'), { type: 'success' });
+        }
+    };
+
     const tabs: { key: string; label: string; icon: LucideIcon }[] = [
         { key: 'overview', label: 'Overview', icon: LayoutDashboard },
         ...(showPiecesInfo ? [{ key: 'pieces', label: 'Pieces', icon: LayoutGrid }] : []),
@@ -196,47 +212,73 @@ export default function TaskDetailPage() {
                 {currentTab === 'settings' ? <TaskOptionSettings task={task} /> : null}
             </section>
 
-            <BottomBar>
-                <div className="bottom-bar mx-auto mb-2 flex items-center justify-center w-[90%] max-w-250 gap-2 px-4 py-3 rounded-full">
-                    {task.status === 'active' ? (
+            <SplitBottomBar
+                leading={
+                    <>
+                        {task.status === 'active' ? (
+                            <button
+                                type="button"
+                                className="bottom-bar-item"
+                                title={t('Pause')}
+                                aria-label={t('Pause')}
+                                onClick={() => void changeTaskState('pause')}
+                            >
+                                <Pause className="h-4 w-4" aria-hidden="true" />
+                                <span className="hidden md:inline">{t('Pause')}</span>
+                            </button>
+                        ) : null}
+
+                        {task.status === 'waiting' || task.status === 'paused' ? (
+                            <button
+                                type="button"
+                                className="bottom-bar-item bottom-bar-item-active"
+                                title={t('Start')}
+                                aria-label={t('Start')}
+                                onClick={() => void changeTaskState('start')}
+                            >
+                                <Play className="h-4 w-4" aria-hidden="true" />
+                                <span className="hidden md:inline">{t('Start')}</span>
+                            </button>
+                        ) : null}
+
+                        {isTaskRetryable(task) ? (
+                            <button
+                                type="button"
+                                className="bottom-bar-item"
+                                title={t('Retry')}
+                                aria-label={t('Retry')}
+                                onClick={() => void retryTask(task)}
+                            >
+                                <RotateCcw className="h-4 w-4" aria-hidden="true" />
+                                <span className="hidden md:inline">{t('Retry')}</span>
+                            </button>
+                        ) : null}
+
                         <button
                             type="button"
-                            className="btn btn-secondary btn-sm"
-                            onClick={() => void changeTaskState('pause')}
+                            className="bottom-bar-item"
+                            title={t('Copy Download Url')}
+                            aria-label={t('Copy Download Url')}
+                            onClick={() => void copyTaskLink()}
                         >
-                            <Pause className="h-4 w-4" aria-hidden="true" />
-                            <span>{t('Pause')}</span>
+                            <Copy className="h-4 w-4" aria-hidden="true" />
+                            <span className="hidden md:inline">{t('Copy Download Url')}</span>
                         </button>
-                    ) : null}
-
-                    {task.status === 'waiting' || task.status === 'paused' ? (
-                        <button
-                            type="button"
-                            className="btn btn-primary btn-sm"
-                            onClick={() => void changeTaskState('start')}
-                        >
-                            <Play className="h-4 w-4" aria-hidden="true" />
-                            <span>{t('Start')}</span>
-                        </button>
-                    ) : null}
-
-                    {isTaskRetryable(task) ? (
-                        <button type="button" className="btn btn-secondary btn-sm" onClick={() => void retryTask(task)}>
-                            <RotateCcw className="h-4 w-4" aria-hidden="true" />
-                            <span>{t('Retry')}</span>
-                        </button>
-                    ) : null}
-
+                    </>
+                }
+                trailing={
                     <button
                         type="button"
-                        className="btn btn-danger btn-sm ml-auto"
+                        className="bottom-bar-item text-red-600 dark:text-red-400"
+                        title={t('Delete')}
+                        aria-label={t('Delete')}
                         onClick={() => void removeTask(task)}
                     >
                         <Trash2 className="h-4 w-4" aria-hidden="true" />
-                        <span>{t('Delete')}</span>
+                        <span className="hidden md:inline">{t('Delete')}</span>
                     </button>
-                </div>
-            </BottomBar>
+                }
+            />
         </TaskDetailPanel>
     );
 }

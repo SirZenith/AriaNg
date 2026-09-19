@@ -1,10 +1,11 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { useTaskDetail } from '@/hooks/useTaskDetail';
 import { aria2TaskService } from '@/services/taskService';
 import { renderWithPanelBars } from '@/test-utils/renderWithPanelBars';
 import type { Aria2Task } from '@/types/aria2';
+import { copyText } from '@/utils/clipboard';
 import TaskDetailPage from './TaskDetailPage';
 
 vi.mock('@/hooks/useTaskDetail', () => ({
@@ -18,6 +19,14 @@ vi.mock('@/services/taskService', () => ({
         retryTask: vi.fn(),
         removeTasks: vi.fn(),
     },
+}));
+
+vi.mock('@/services/notification', () => ({
+    notifyInPage: vi.fn(),
+}));
+
+vi.mock('@/utils/clipboard', () => ({
+    copyText: vi.fn(async () => true),
 }));
 
 vi.mock('@/services/settingService', async (importOriginal) => {
@@ -117,5 +126,21 @@ describe('TaskDetailPage bottom bar', () => {
         expect(aria2TaskService.removeTasks).toHaveBeenCalledWith([expect.objectContaining({ gid: 'gid123' })]);
 
         confirmSpy.mockRestore();
+    });
+
+    it('copies the task download url', async () => {
+        useTaskDetailMock.mockReturnValue({
+            task: createTask({ status: 'active', singleUrl: 'https://example.com/a.iso' }),
+            peers: [],
+            loading: false,
+        });
+
+        renderPage();
+
+        fireEvent.click(screen.getByText('Copy Download Url'));
+
+        await waitFor(() => {
+            expect(copyText).toHaveBeenCalledWith('https://example.com/a.iso');
+        });
     });
 });
