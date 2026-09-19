@@ -143,11 +143,11 @@
     }
 
     .bottom-bar-item {
-        @apply flex items-center justify-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-white/70 disabled:pointer-events-none disabled:opacity-50 dark:text-gray-200 dark:hover:bg-white/10;
+        @apply flex cursor-pointer items-center justify-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 active:scale-95 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-default dark:text-gray-200 dark:hover:bg-white/20;
     }
 
     .bottom-bar-item-active {
-        @apply bg-white text-primary shadow-sm hover:bg-white dark:bg-gray-700 dark:text-primary-light dark:hover:bg-gray-700;
+        @apply bg-white text-primary shadow-sm hover:bg-gray-100 dark:bg-gray-700 dark:text-primary-light dark:hover:bg-gray-600;
     }
 
     .app-scroll-container {

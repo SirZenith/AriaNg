@@ -1,12 +1,19 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Check, Eraser, FileDown, FileUp, RotateCcw } from 'lucide-react';
 import { notifyInPage } from '@/services/notification';
 import { aria2SettingService } from '@/services/aria2SettingService';
 import { exportAllOptions, importAllOptions } from '@/services/settingService';
 import { downloadFile, readFileAsText } from '@/utils/file';
 import { copyText } from '@/utils/clipboard';
+import BottomBarButton from '@/components/BottomBarButton';
+import SplitBottomBar from '@/components/SplitBottomBar';
 
-export default function ImportExportSection() {
+interface ImportExportSectionProps {
+    onReset: () => void;
+}
+
+export default function ImportExportSection({ onReset }: ImportExportSectionProps) {
     const { t } = useTranslation();
     const [importText, setImportText] = useState('');
     const [exportText, setExportText] = useState('');
@@ -73,40 +80,12 @@ export default function ImportExportSection() {
 
     return (
         <div>
-            <div className="flex flex-wrap gap-2">
-                <button type="button" className="btn btn-primary btn-sm" onClick={exportSettings}>
-                    {t('Export Settings')}
-                </button>
-                <label className="btn btn-success btn-sm cursor-pointer">
-                    {t('Import Settings')}
-                    <input
-                        type="file"
-                        accept=".json"
-                        className="hidden"
-                        onChange={(event) => void openImportFile(event.target.files?.[0])}
-                    />
-                </label>
-                <button type="button" className="btn btn-warning btn-sm" onClick={clearHistory}>
-                    {t('Clear Settings History')}
-                </button>
-            </div>
-
-            <div className="mt-3">
-                <textarea
-                    className="h-32 w-full rounded border border-gray-300 bg-white px-2 py-1 font-mono text-xs dark:border-gray-600 dark:bg-gray-800"
-                    placeholder={t('Import Settings')}
-                    value={importText}
-                    onChange={(event) => setImportText(event.target.value)}
-                />
-                <button
-                    type="button"
-                    disabled={!importText}
-                    className="btn btn-primary btn-sm mt-1"
-                    onClick={applyImport}
-                >
-                    {t('Import')}
-                </button>
-            </div>
+            <textarea
+                className="h-32 w-full rounded border border-gray-300 bg-white px-2 py-1 font-mono text-xs dark:border-gray-600 dark:bg-gray-800"
+                placeholder={t('Import Settings')}
+                value={importText}
+                onChange={(event) => setImportText(event.target.value)}
+            />
 
             {showExport ? (
                 <div
@@ -137,6 +116,57 @@ export default function ImportExportSection() {
                     </div>
                 </div>
             ) : null}
+
+            <SplitBottomBar
+                leading={
+                    <>
+                        <BottomBarButton
+                            ariaLabel={t('Export Settings')}
+                            label={t('Export Settings')}
+                            icon={FileUp}
+                            iconClassName="text-green-600 dark:text-green-500"
+                            onClick={exportSettings}
+                        />
+                        <BottomBarButton
+                            ariaLabel={t('Import Settings')}
+                            label={t('Import Settings')}
+                            icon={FileDown}
+                            iconClassName="text-primary dark:text-primary-light"
+                        >
+                            <input
+                                type="file"
+                                accept=".json"
+                                className="hidden"
+                                onChange={(event) => void openImportFile(event.target.files?.[0])}
+                            />
+                        </BottomBarButton>
+                        <BottomBarButton
+                            ariaLabel={t('Import')}
+                            label={t('Import')}
+                            icon={Check}
+                            iconClassName="text-primary dark:text-primary-light"
+                            disabled={!importText}
+                            onClick={applyImport}
+                        />
+                        <BottomBarButton
+                            ariaLabel={t('Clear Settings History')}
+                            label={t('Clear Settings History')}
+                            icon={Eraser}
+                            iconClassName="text-amber-600 dark:text-amber-400"
+                            onClick={clearHistory}
+                        />
+                    </>
+                }
+                trailing={
+                    <BottomBarButton
+                        ariaLabel={t('Reset Settings')}
+                        label={t('Reset Settings')}
+                        icon={RotateCcw}
+                        iconClassName="text-red-600 dark:text-red-400"
+                        onClick={onReset}
+                    />
+                }
+            />
         </div>
     );
 }

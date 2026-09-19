@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
+import BottomBarButton from '@/components/BottomBarButton';
 import CenteredBottomBar from '@/components/CenteredBottomBar';
 import ReturnToolbar from '@/components/ReturnToolbar';
 import SettingsCard from '@/components/settings/SettingsCard';
@@ -56,9 +57,13 @@ export default function NewTaskSettingsPage() {
             </SettingsCard>
 
             <CenteredBottomBar>
-                <button type="button" className="bottom-bar-item px-6" onClick={confirm}>
-                    {t('Confirm')}
-                </button>
+                <BottomBarButton
+                    ariaLabel={t('Confirm')}
+                    label={t('Confirm')}
+                    hideLabelOnMobile={false}
+                    className="px-6"
+                    onClick={confirm}
+                />
             </CenteredBottomBar>
         </>
     );

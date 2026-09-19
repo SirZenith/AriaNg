@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CheckSquare, Pause, Play, Plus, Search, Trash2 } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import BottomBarButton from './BottomBarButton';
 import SplitBottomBar from './SplitBottomBar';
 import { useKeyboardShortcuts } from '@/hooks/useAria2';
 import { aria2TaskService } from '@/services/taskService';
@@ -75,74 +76,58 @@ export default function TaskListToolbar() {
         <SplitBottomBar
             leading={
                 <>
-                    <Link
+                    <BottomBarButton
                         to="/new"
                         state={{ from: location.pathname }}
-                        className="bottom-bar-item"
-                        title={t('New')}
-                        aria-label={t('New')}
-                    >
-                        <Plus className="h-4 w-4 text-primary dark:text-primary-light" aria-hidden="true" />
-                        <span className="hidden md:inline">{t('New')}</span>
-                    </Link>
-                    <button
-                        type="button"
-                        className="bottom-bar-item"
+                        ariaLabel={t('New')}
+                        label={t('New')}
+                        icon={Plus}
+                        iconClassName="text-primary dark:text-primary-light"
+                    />
+                    <BottomBarButton
+                        ariaLabel={t('Start')}
+                        label={t('Start')}
+                        icon={Play}
+                        iconClassName="text-green-600 dark:text-green-500"
                         disabled={selectedTasks.length < 1}
-                        title={t('Start')}
-                        aria-label={t('Start')}
                         onClick={() => void changeTasksState('start')}
-                    >
-                        <Play className="h-4 w-4 text-green-600 dark:text-green-500" aria-hidden="true" />
-                        <span className="hidden md:inline">{t('Start')}</span>
-                    </button>
-                    <button
-                        type="button"
-                        className="bottom-bar-item"
+                    />
+                    <BottomBarButton
+                        ariaLabel={t('Pause')}
+                        label={t('Pause')}
+                        icon={Pause}
+                        iconClassName="text-amber-600 dark:text-amber-400"
                         disabled={selectedTasks.length < 1}
-                        title={t('Pause')}
-                        aria-label={t('Pause')}
                         onClick={() => void changeTasksState('pause')}
-                    >
-                        <Pause className="h-4 w-4 text-amber-600 dark:text-amber-400" aria-hidden="true" />
-                        <span className="hidden md:inline">{t('Pause')}</span>
-                    </button>
-                    <button
-                        type="button"
-                        className="bottom-bar-item"
+                    />
+                    <BottomBarButton
+                        ariaLabel={t('Delete')}
+                        label={t('Delete')}
+                        icon={Trash2}
+                        iconClassName="text-red-600 dark:text-red-400"
                         disabled={selectedTasks.length < 1}
-                        title={t('Delete')}
-                        aria-label={t('Delete')}
                         onClick={() => void removeTasks()}
-                    >
-                        <Trash2 className="h-4 w-4 text-red-600 dark:text-red-400" aria-hidden="true" />
-                        <span className="hidden md:inline">{t('Delete')}</span>
-                    </button>
-                    <button
-                        type="button"
-                        className="bottom-bar-item"
+                    />
+                    <BottomBarButton
+                        ariaLabel={t('Select All')}
+                        label={t('Select All')}
+                        icon={CheckSquare}
+                        iconClassName="text-primary dark:text-primary-light"
                         disabled={tasks.length < 1}
-                        title={t('Select All')}
-                        aria-label={t('Select All')}
                         onClick={() => selectAll()}
-                    >
-                        <CheckSquare className="h-4 w-4 text-primary dark:text-primary-light" aria-hidden="true" />
-                        <span className="hidden md:inline">{t('Select All')}</span>
-                    </button>
+                    />
                 </>
             }
             trailing={
                 <div className="relative">
-                    <button
-                        type="button"
-                        className="bottom-bar-item h-10 w-10 p-0"
-                        title={t('Search')}
-                        aria-label={t('Search')}
-                        aria-expanded={searchVisible}
+                    <BottomBarButton
+                        ariaLabel={t('Search')}
+                        icon={Search}
+                        iconClassName="text-primary dark:text-primary-light"
+                        ariaExpanded={searchVisible}
+                        className="h-10 w-10 p-0"
                         onClick={openSearch}
-                    >
-                        <Search className="h-4 w-4 text-primary dark:text-primary-light" aria-hidden="true" />
-                    </button>
+                    />
                     <div
                         className={
                             'absolute right-0 bottom-full mb-3 w-64 max-w-[80vw] transition-opacity duration-300 ' +

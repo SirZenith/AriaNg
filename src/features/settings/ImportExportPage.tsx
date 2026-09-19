@@ -21,13 +21,7 @@ export default function ImportExportPage() {
         <SettingsPage>
             <SettingsSection title={title}>
                 <div className="p-4">
-                    <ImportExportSection />
-
-                    <div className="mt-6">
-                        <button type="button" className="btn btn-danger btn-sm" onClick={resetAll}>
-                            {t('Reset Settings')}
-                        </button>
-                    </div>
+                    <ImportExportSection onReset={resetAll} />
                 </div>
             </SettingsSection>
         </SettingsPage>

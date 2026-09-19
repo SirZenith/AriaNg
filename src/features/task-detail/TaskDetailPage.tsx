@@ -15,6 +15,7 @@ import {
 import { type ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
+import BottomBarButton from '@/components/BottomBarButton';
 import PieceBar from '@/components/PieceBar';
 import PieceMap from '@/components/PieceMap';
 import SplitBottomBar from '@/components/SplitBottomBar';
@@ -207,70 +208,53 @@ export default function TaskDetailPage() {
                 leading={
                     <>
                         {task.status === 'active' ? (
-                            <button
-                                type="button"
-                                className="bottom-bar-item"
-                                title={t('Pause')}
-                                aria-label={t('Pause')}
+                            <BottomBarButton
+                                ariaLabel={t('Pause')}
+                                label={t('Pause')}
+                                icon={Pause}
+                                iconClassName="text-amber-600 dark:text-amber-400"
                                 onClick={() => void changeTaskState('pause')}
-                            >
-                                <Pause className="h-4 w-4 text-amber-600 dark:text-amber-400" aria-hidden="true" />
-                                <span className="hidden md:inline">{t('Pause')}</span>
-                            </button>
+                            />
                         ) : null}
 
                         {task.status === 'waiting' || task.status === 'paused' ? (
-                            <button
-                                type="button"
-                                className="bottom-bar-item bottom-bar-item-active"
-                                title={t('Start')}
-                                aria-label={t('Start')}
+                            <BottomBarButton
+                                ariaLabel={t('Start')}
+                                label={t('Start')}
+                                icon={Play}
+                                iconClassName="text-green-600 dark:text-green-500"
+                                className="bottom-bar-item-active"
                                 onClick={() => void changeTaskState('start')}
-                            >
-                                <Play className="h-4 w-4 text-green-600 dark:text-green-500" aria-hidden="true" />
-                                <span className="hidden md:inline">{t('Start')}</span>
-                            </button>
+                            />
                         ) : null}
 
                         {isTaskRetryable(task) ? (
-                            <button
-                                type="button"
-                                className="bottom-bar-item"
-                                title={t('Retry')}
-                                aria-label={t('Retry')}
+                            <BottomBarButton
+                                ariaLabel={t('Retry')}
+                                label={t('Retry')}
+                                icon={RotateCcw}
+                                iconClassName="text-primary dark:text-primary-light"
                                 onClick={() => void retryTask(task)}
-                            >
-                                <RotateCcw
-                                    className="h-4 w-4 text-primary dark:text-primary-light"
-                                    aria-hidden="true"
-                                />
-                                <span className="hidden md:inline">{t('Retry')}</span>
-                            </button>
+                            />
                         ) : null}
 
-                        <button
-                            type="button"
-                            className="bottom-bar-item"
-                            title={t('Copy Download Url')}
-                            aria-label={t('Copy Download Url')}
+                        <BottomBarButton
+                            ariaLabel={t('Copy Download Url')}
+                            label={t('Copy Download Url')}
+                            icon={Copy}
+                            iconClassName="text-primary dark:text-primary-light"
                             onClick={() => void copyTaskLink()}
-                        >
-                            <Copy className="h-4 w-4 text-primary dark:text-primary-light" aria-hidden="true" />
-                            <span className="hidden md:inline">{t('Copy Download Url')}</span>
-                        </button>
+                        />
                     </>
                 }
                 trailing={
-                    <button
-                        type="button"
-                        className="bottom-bar-item text-red-600 dark:text-red-400"
-                        title={t('Delete')}
-                        aria-label={t('Delete')}
+                    <BottomBarButton
+                        ariaLabel={t('Delete')}
+                        label={t('Delete')}
+                        icon={Trash2}
+                        className="text-red-600 dark:text-red-400"
                         onClick={() => void removeTask(task)}
-                    >
-                        <Trash2 className="h-4 w-4" aria-hidden="true" />
-                        <span className="hidden md:inline">{t('Delete')}</span>
-                    </button>
+                    />
                 }
             />
         </TaskDetailPanel>

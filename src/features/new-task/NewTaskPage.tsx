@@ -9,6 +9,7 @@ import { parseUrlsFromOriginInput } from '@/utils/common';
 import TopBar from '@/components/TopBar';
 import TopBarTabs from '@/components/TopBarTabs';
 import ReturnToolbar from '@/components/ReturnToolbar';
+import BottomBarButton from '@/components/BottomBarButton';
 import SplitBottomBar from '@/components/SplitBottomBar';
 import { useNewTaskStore, type TaskType } from '@/stores/newTaskStore';
 
@@ -205,41 +206,32 @@ export default function NewTaskPage() {
 
             <SplitBottomBar
                 leading={
-                    <button
-                        type="button"
-                        className="bottom-bar-item"
-                        title={t('Task Settings')}
-                        aria-label={t('Task Settings')}
+                    <BottomBarButton
+                        ariaLabel={t('Task Settings')}
+                        label={t('Task Settings')}
+                        icon={Settings2}
+                        iconClassName="text-primary dark:text-primary-light"
                         onClick={() => navigate('/new/settings', { state: { from } })}
-                    >
-                        <Settings2 className="h-4 w-4 text-primary dark:text-primary-light" aria-hidden="true" />
-                        <span className="hidden md:inline">{t('Task Settings')}</span>
-                    </button>
+                    />
                 }
                 trailing={
                     <>
-                        <button
-                            type="button"
+                        <BottomBarButton
+                            ariaLabel={t('Pause')}
+                            label={t('Pause')}
+                            icon={Pause}
+                            iconClassName="text-amber-600 dark:text-amber-400"
                             disabled={submitting}
-                            className="bottom-bar-item"
-                            title={t('Pause')}
-                            aria-label={t('Pause')}
                             onClick={() => void startDownload(true)}
-                        >
-                            <Pause className="h-4 w-4 text-amber-600 dark:text-amber-400" aria-hidden="true" />
-                            <span className="hidden md:inline">{t('Pause')}</span>
-                        </button>
-                        <button
-                            type="button"
+                        />
+                        <BottomBarButton
+                            ariaLabel={t('Start')}
+                            label={t('Start')}
+                            icon={Play}
+                            iconClassName="text-green-600 dark:text-green-500"
                             disabled={submitting}
-                            className="bottom-bar-item"
-                            title={t('Start')}
-                            aria-label={t('Start')}
                             onClick={() => void startDownload(false)}
-                        >
-                            <Play className="h-4 w-4 text-green-600 dark:text-green-500" aria-hidden="true" />
-                            <span className="hidden md:inline">{t('Start')}</span>
-                        </button>
+                        />
                     </>
                 }
             />
