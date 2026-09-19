@@ -112,15 +112,19 @@
     }
 
     .bottom-nav {
-        @apply shrink-0 px-4 mb-2 mx-auto min-w-100 max-w-200 rounded-full shadow-md border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800;
+        @apply pointer-events-auto shrink-0 px-4 mb-2 mx-auto min-w-100 max-w-200 rounded-full shadow-md border-gray-200 bg-white/80 dark:border-gray-700 backdrop-blur-md;
     }
 
     .bottom-bar-container {
-        @apply w-full flex items-center justify-center bg-transparent;
+        @apply w-full flex items-center justify-center bg-transparent pointer-events-none;
     }
 
     .bottom-bar {
-        @apply border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800;
+        @apply pointer-events-auto border-gray-200 bg-transparent dark:border-gray-700;
+    }
+
+    .app-scroll-container {
+        padding-bottom: calc(var(--bottom-bar-height, 0px) + 1rem);
     }
 
     .modal-panel {

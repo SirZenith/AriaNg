@@ -27,12 +27,12 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
     return (
         <PanelBarProvider>
-            <div className="flex h-full flex-col">
+            <div className="relative flex h-full flex-col">
                 <BarHost slot="top" />
 
                 <main
                     data-scroll-container
-                    className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-4 pt-0 pb-4 scrollbar-gutter-both"
+                    className="app-scroll-container min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-4 pt-0 scrollbar-gutter-both"
                 >
                     <div className="mx-auto w-full max-w-250">{children}</div>
                 </main>
