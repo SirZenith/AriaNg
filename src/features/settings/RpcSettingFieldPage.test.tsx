@@ -1,7 +1,8 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { useRpcDraftStore } from '@/stores/rpcDraftStore';
+import { renderWithPanelBars } from '@/test-utils/renderWithPanelBars';
 import RpcSettingFieldPage from './RpcSettingFieldPage';
 
 afterEach(() => {
@@ -11,7 +12,7 @@ afterEach(() => {
 
 describe('RpcSettingFieldPage', () => {
     it('stores the selected value into the rpc draft', () => {
-        render(
+        renderWithPanelBars(
             <MemoryRouter>
                 <RpcSettingFieldPage rpcItem="0" field="protocol" />
             </MemoryRouter>,

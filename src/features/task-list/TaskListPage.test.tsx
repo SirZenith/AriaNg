@@ -1,7 +1,8 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { useTaskStore } from '@/stores/taskStore';
+import { renderWithPanelBars } from '@/test-utils/renderWithPanelBars';
 import type { Aria2Task } from '@/types/aria2';
 import { formatVolume } from '@/utils/format';
 import TaskListPage from './TaskListPage';
@@ -38,7 +39,7 @@ function createTask(overrides: Partial<Aria2Task> = {}): Aria2Task {
 }
 
 function renderPage() {
-    return render(
+    return renderWithPanelBars(
         <MemoryRouter initialEntries={['/downloading']}>
             <TaskListPage location="downloading" />
         </MemoryRouter>,

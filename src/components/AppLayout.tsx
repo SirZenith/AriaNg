@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import BottomNav from './BottomNav';
 import NotificationContainer from './NotificationContainer';
+import { BarHost, PanelBarProvider } from './PanelBar';
 import {
     useBrowserNotificationEvents,
     useDynamicTitle,
@@ -25,24 +26,33 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     const debugMode = isEnableDebugMode();
 
     return (
-        <div className="flex h-full flex-col">
-            <main
-                data-scroll-container
-                className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-4 pt-0 pb-4 scrollbar-gutter-both"
-            >
-                <div className="mx-auto w-full max-w-250">{children}</div>
-            </main>
+        <PanelBarProvider>
+            <div className="flex h-full flex-col">
+                <BarHost slot="top" />
 
-            <BottomNav
-                counts={{
-                    active: globalStat.numActive,
-                    waiting: globalStat.numWaiting,
-                    stopped: globalStat.numStopped,
-                }}
-                debugMode={debugMode}
-            />
+                <main
+                    data-scroll-container
+                    className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-4 pt-0 pb-4 scrollbar-gutter-both"
+                >
+                    <div className="mx-auto w-full max-w-250">{children}</div>
+                </main>
 
-            <NotificationContainer />
-        </div>
+                <BarHost
+                    slot="bottom"
+                    fallback={
+                        <BottomNav
+                            counts={{
+                                active: globalStat.numActive,
+                                waiting: globalStat.numWaiting,
+                                stopped: globalStat.numStopped,
+                            }}
+                            debugMode={debugMode}
+                        />
+                    }
+                />
+
+                <NotificationContainer />
+            </div>
+        </PanelBarProvider>
     );
 }

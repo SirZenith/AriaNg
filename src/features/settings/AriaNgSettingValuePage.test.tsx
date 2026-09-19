@@ -1,8 +1,9 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { ariaNgDefaultOptions } from '@/config/constants';
 import { useSettingStore } from '@/stores/settingStore';
+import { renderWithPanelBars } from '@/test-utils/renderWithPanelBars';
 import AriaNgSettingValuePage from './AriaNgSettingValuePage';
 
 afterEach(() => {
@@ -11,7 +12,7 @@ afterEach(() => {
 });
 
 function renderPage() {
-    return render(
+    return renderWithPanelBars(
         <MemoryRouter>
             <AriaNgSettingValuePage settingKey="theme" />
         </MemoryRouter>,

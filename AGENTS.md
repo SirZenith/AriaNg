@@ -39,7 +39,7 @@ src/
   App.tsx  main.tsx            # 路由入口（HashRouter）
   styles/index.css             # Tailwind 入口、主题变量、dark 变体声明
   styles/components.css        # 公共组件样式类（btn/card/chip/input 等，@layer components）
-  components/                  # 通用组件（AppLayout、工具栏、settings/ 通用设置组件、PieceBar/PieceMap 等）
+  components/                  # 通用组件（AppLayout、PanelBar、工具栏、settings/ 通用设置组件、PieceBar/PieceMap 等）
   features/                    # 按功能划分：task-list / new-task / task-detail / settings / status / debug / command
   hooks/                       # useAria2（轮询/主题/标题/快捷键）、useScrollRestoration、useTaskDetail 等
   services/                    # rpc/（http、websocket、index）、taskService、aria2SettingService、settingService、notification、log、monitor
@@ -56,7 +56,8 @@ tools/convert-langs.mjs        # 语言 txt -> i18next JSON 转换脚本
 ## 架构要点
 
 - **路由**：`src/App.tsx` 集中定义（HashRouter）。兼容旧式 `#!/` 路径与 `#!/new/:url`、`#!/settings/rpc/set/...` 命令行链接。设置页前缀为 `/settings`，每个路由对应 `features/settings/` 的独立页面（`BasicSettingsPage`/`ProtocolSettingsPage`/`AriaNgSettingsPage`/`RpcSettingsListPage`/`StatusPage` 等），共用 `SettingsPage` 外壳；协议分类直链（如 `/settings/bt`）重定向到 `/settings/protocol`，该页把所有协议分类合并为 `SettingsSection` 列表。
-- **全局布局**：`src/components/AppLayout.tsx` 只提供主滚动容器 `<main data-scroll-container>`、`BottomNav` 与通知容器，不再集中映射顶栏/底栏。顶栏由各页面自行渲染：`TaskListPage` → `TaskListToolbar`、`TaskDetailPage` → `TaskDetailToolbar`、设置页 → `SettingsPage`（内部渲染 `SettingsToolbar`）。
+- **全局布局**：`src/components/AppLayout.tsx` 提供主滚动容器 `<main data-scroll-container>`、顶/底栏插槽（`PanelBarProvider` + `BarHost`）与通知容器。页面用 `<TopBar>`/`<BottomBar>` 声明栏内容，内容会 portal 到布局层（React 树仍在页面内，页面局部状态可直接驱动栏内容）；有页面底栏时替换全局 `BottomNav`，顶栏槽位无 fallback。顶栏内容示例：`TaskListPage` → `TaskListToolbar`、`TaskDetailPage` → `TaskDetailToolbar`、设置页 → `SettingsPage`（内部渲染 `SettingsToolbar`）；任务详情页底栏提供开始/暂停、重试、删除操作。
+  - `TopBar`/`BottomBar` 必须在 `PanelBarProvider` 内使用，否则抛错；页面级测试用 `src/test-utils/renderWithPanelBars.tsx` 包裹。
   - `useScrollRestoration` 依赖 `<main data-scroll-container>` 属性（列表页返回时恢复滚动位置）。
 - **响应式**：断点使用 Tailwind 默认（`sm` 640、`lg` 1024 等）。设置页不区分尺寸，统一为分级列表：`features/settings/` 中的 `SettingsMenu`、`RpcSettingsMenu` 用通用条目组件渲染入口，点击进入选项子页（`SettingsChoiceList`，选择后停留并显示选中态）；字符串/数值输入使用 `SettingsInputModal` 弹窗，布尔项用 `Switch`。设置页层级路由为 `/settings/:type/:sub/:item`（RPC 字段子页多一段 `/:field`），标题与返回目标由 `SettingsToolbar` 的 `resolveSettingsLocation` 解析。
 - **状态**：zustand。`settingStore`（`AriaNgOptions`，持久化 localStorage）、`taskStore`（任务列表、选中、RPC 状态、全局统计）、`taskDetailStore`（当前详情任务标题，由 `useTaskDetail` 写入，供 `TaskDetailToolbar` 展示）、`rpcDraftStore`（RPC 编辑草稿，按 `item` 键控，编辑页与字段子页共享，保存/移除后清理）。

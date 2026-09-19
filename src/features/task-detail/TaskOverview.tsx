@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import PieceBar from '@/components/PieceBar';
 import SpeedChart from '@/components/SpeedChart';
-import { useMonitorStore } from '@/services/monitor';
+import { useMonitorStore, type StatPoint } from '@/services/monitor';
 import type { Aria2Task } from '@/types/aria2';
 import { formatDuration, formatLongDate, formatPercent, formatVolume } from '@/utils/format';
 import { getTaskStatusKey } from '@/utils/task';
@@ -11,6 +11,8 @@ interface TaskOverviewProps {
     healthPercent: number;
     showPiecesInfo: boolean;
 }
+
+const emptyStats: StatPoint[] = [];
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
     return (
@@ -23,7 +25,7 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 
 export default function TaskOverview({ task, healthPercent, showPiecesInfo }: TaskOverviewProps) {
     const { t } = useTranslation();
-    const stats = useMonitorStore((state) => state.taskStats[task.gid] || []);
+    const stats = useMonitorStore((state) => state.taskStats[task.gid] || emptyStats);
     const numPieces = Number(task.numPieces || 0);
     const isActive = task.status === 'active';
 

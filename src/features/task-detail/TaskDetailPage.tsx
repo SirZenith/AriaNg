@@ -1,15 +1,33 @@
-import { FileText, LayoutDashboard, LayoutGrid, Radio, Settings, Users, type LucideIcon } from 'lucide-react';
+import {
+    FileText,
+    LayoutDashboard,
+    LayoutGrid,
+    Pause,
+    Play,
+    Radio,
+    RotateCcw,
+    Settings,
+    Trash2,
+    Users,
+    type LucideIcon,
+} from 'lucide-react';
 import { type ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import BottomBar from '@/components/BottomBar';
 import PieceBar from '@/components/PieceBar';
 import PieceMap from '@/components/PieceMap';
 import TaskDetailToolbar from '@/components/TaskDetailToolbar';
 import TopBar from '@/components/TopBar';
 import { useTaskDetail } from '@/hooks/useTaskDetail';
-import { getShowPiecesInfoInTaskDetailPage } from '@/services/settingService';
+import {
+    getAfterRetryingTask,
+    getConfirmTaskRemoval,
+    getShowPiecesInfoInTaskDetailPage,
+} from '@/services/settingService';
+import { aria2TaskService } from '@/services/taskService';
 import type { Aria2Task } from '@/types/aria2';
-import { estimateHealthPercentFromPeers } from '@/utils/task';
+import { estimateHealthPercentFromPeers, isTaskRetryable } from '@/utils/task';
 import TaskFileList from './TaskFileList';
 import TaskOptionSettings from './TaskOptionSettings';
 import TaskOverview from './TaskOverview';
@@ -50,6 +68,7 @@ function TaskDetailPanel({ children }: { children: ReactNode }) {
 export default function TaskDetailPage() {
     const { t } = useTranslation();
     const { gid } = useParams();
+    const navigate = useNavigate();
     const { task, peers, loading } = useTaskDetail(gid);
     const [currentTab, setCurrentTab] = useState('overview');
     const [refreshKey, setRefreshKey] = useState(0);
@@ -87,6 +106,34 @@ export default function TaskDetailPage() {
     }
 
     const showTrackers = !!task.bittorrent?.announceList?.length;
+
+    const changeTaskState = async (state: 'start' | 'pause') => {
+        if (state === 'start') {
+            await aria2TaskService.startTasks([task.gid]);
+        } else {
+            await aria2TaskService.pauseTasks([task.gid]);
+        }
+    };
+
+    const retryTask = async (target: Aria2Task) => {
+        const response = await aria2TaskService.retryTask(target.gid);
+        const afterRetrying = getAfterRetryingTask();
+
+        if (afterRetrying === 'task-detail' && response.success && typeof response.data === 'string') {
+            navigate('/task/detail/' + response.data);
+        } else if (afterRetrying === 'task-list-downloading') {
+            navigate('/downloading');
+        }
+    };
+
+    const removeTask = async (target: Aria2Task) => {
+        if (getConfirmTaskRemoval() && !window.confirm(t('Are you sure you want to remove the selected tasks?'))) {
+            return;
+        }
+
+        await aria2TaskService.removeTasks([target]);
+        navigate('/downloading');
+    };
 
     const tabs: { key: string; label: string; icon: LucideIcon }[] = [
         { key: 'overview', label: 'Overview', icon: LayoutDashboard },
@@ -148,6 +195,52 @@ export default function TaskDetailPage() {
 
                 {currentTab === 'settings' ? <TaskOptionSettings task={task} /> : null}
             </section>
+
+            <BottomBar>
+                <div className="mx-auto flex w-full max-w-[1000px] items-center gap-2">
+                    {task.status === 'active' ? (
+                        <button
+                            type="button"
+                            className="btn btn-secondary btn-sm"
+                            onClick={() => void changeTaskState('pause')}
+                        >
+                            <Pause className="h-4 w-4" aria-hidden="true" />
+                            <span>{t('Pause')}</span>
+                        </button>
+                    ) : null}
+
+                    {task.status === 'waiting' || task.status === 'paused' ? (
+                        <button
+                            type="button"
+                            className="btn btn-primary btn-sm"
+                            onClick={() => void changeTaskState('start')}
+                        >
+                            <Play className="h-4 w-4" aria-hidden="true" />
+                            <span>{t('Start')}</span>
+                        </button>
+                    ) : null}
+
+                    {isTaskRetryable(task) ? (
+                        <button
+                            type="button"
+                            className="btn btn-secondary btn-sm"
+                            onClick={() => void retryTask(task)}
+                        >
+                            <RotateCcw className="h-4 w-4" aria-hidden="true" />
+                            <span>{t('Retry')}</span>
+                        </button>
+                    ) : null}
+
+                    <button
+                        type="button"
+                        className="btn btn-danger btn-sm ml-auto"
+                        onClick={() => void removeTask(task)}
+                    >
+                        <Trash2 className="h-4 w-4" aria-hidden="true" />
+                        <span>{t('Delete')}</span>
+                    </button>
+                </div>
+            </BottomBar>
         </TaskDetailPanel>
     );
 }
