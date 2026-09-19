@@ -63,9 +63,22 @@ export function useTaskListPolling(location: string): void {
 
             const taskList = response.data as Aria2Task[];
             const current = useTaskStore.getState().tasks;
+            const lengthChanged = current.length !== taskList.length;
+            const orderChanged = !lengthChanged && !extendArray(taskList, current, 'gid');
+            const structureChanged = lengthChanged || orderChanged;
 
-            if (needRequestWholeInfo || current.length !== taskList.length || !extendArray(taskList, current, 'gid')) {
-                setTasks(taskList.map((task) => processDownloadTask(task)));
+            if (needRequestWholeInfo || structureChanged) {
+                let list = taskList;
+
+                if (structureChanged && !needRequestWholeInfo) {
+                    const fullResponse = await aria2TaskService.getTaskList(location, true, undefined, silent);
+
+                    if (!cancelled && fullResponse && fullResponse.success && Array.isArray(fullResponse.data)) {
+                        list = fullResponse.data as Aria2Task[];
+                    }
+                }
+
+                setTasks(list.map((task) => processDownloadTask(task)));
                 needRequestWholeInfo = false;
             } else {
                 setTasks([...current]);
