@@ -256,7 +256,7 @@ export default function TaskListPage({ location }: { location: string; }) {
     ));
 
     return (
-        <section className="space-y-3">
+        <>
             <TopBar>
                 <ReturnToolbar title={t('Tasks')} to="/home"></ReturnToolbar>
 
@@ -277,7 +277,7 @@ export default function TaskListPage({ location }: { location: string; }) {
                                     }
                                 >
                                     <Icon className="h-4 w-4" aria-hidden="true" />
-                                    <span>{t(tab.label)}</span>
+                                    <span className="text-xs md:text-md">{t(tab.label)}</span>
                                     <span className="rounded-full bg-black/10 px-1.5 text-[10px] dark:bg-white/15">
                                         {taskCounts[tab.key] ?? 0}
                                     </span>
@@ -315,37 +315,40 @@ export default function TaskListPage({ location }: { location: string; }) {
                 </div>
             </TopBar>
 
-            {visibleTasks.length > 0 ? (
-                isDraggable ? (
-                    <DndContext
-                        sensors={sensors}
-                        collisionDetection={closestCenter}
-                        onDragStart={handleDragStart}
-                        onDragEnd={(event) => void handleDragEnd(event)}
-                    >
-                        <SortableContext items={visibleTasks.map((task) => task.gid)} strategy={rectSortingStrategy}>
-                            <div className={cardGridClass}>{taskCards}</div>
-                        </SortableContext>
-                    </DndContext>
+            <section className="space-y-3">
+                {visibleTasks.length > 0 ? (
+                    isDraggable ? (
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={closestCenter}
+                            onDragStart={handleDragStart}
+                            onDragEnd={(event) => void handleDragEnd(event)}
+                        >
+                            <SortableContext items={visibleTasks.map((task) => task.gid)} strategy={rectSortingStrategy}>
+                                <div className={cardGridClass}>{taskCards}</div>
+                            </SortableContext>
+                        </DndContext>
+                    ) : (
+                        <div className={cardGridClass}>{taskCards}</div>
+                    )
                 ) : (
-                    <div className={cardGridClass}>{taskCards}</div>
-                )
-            ) : (
-                <div className="panel p-8 text-center text-sm text-gray-500 dark:text-gray-400">
-                    {t('There is no task')}
-                </div>
-            )}
+                    <div className="panel p-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                        {t('There is no task')}
+                    </div>
+                )}
 
-            {contextMenu ? (
-                <ContextMenu
-                    x={contextMenu.x}
-                    y={contextMenu.y}
-                    items={contextMenuItems}
-                    onClose={() => setContextMenu(null)}
-                />
-            ) : null}
+                {contextMenu ? (
+                    <ContextMenu
+                        x={contextMenu.x}
+                        y={contextMenu.y}
+                        items={contextMenuItems}
+                        onClose={() => setContextMenu(null)}
+                    />
+                ) : null}
+
+            </section>
 
             <TaskListToolbar />
-        </section>
+        </>
     );
 }
