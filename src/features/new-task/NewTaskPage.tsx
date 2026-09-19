@@ -7,6 +7,7 @@ import { notifyInPage } from '@/services/notification';
 import { addSettingHistory, getAfterCreatingNewTask } from '@/services/settingService';
 import { parseUrlsFromOriginInput } from '@/utils/common';
 import TopBar from '@/components/TopBar';
+import TopBarTabs from '@/components/TopBarTabs';
 import ReturnToolbar from '@/components/ReturnToolbar';
 import SplitBottomBar from '@/components/SplitBottomBar';
 import { useNewTaskStore, type TaskType } from '@/stores/newTaskStore';
@@ -155,27 +156,18 @@ export default function NewTaskPage() {
         <>
             <TopBar>
                 <ReturnToolbar title={t('New')} to={from}></ReturnToolbar>
+
+                <TopBarTabs
+                    tabs={(['urls', 'torrent', 'metalink'] as TaskType[]).map((type) => ({
+                        key: type,
+                        label: type === 'urls' ? 'URLs' : type === 'torrent' ? 'Torrent' : 'Metalink',
+                        onClick: () => setTaskType(type),
+                    }))}
+                    activeKey={taskType}
+                />
             </TopBar>
 
             <section className="panel mt-4 p-4 sm:p-5">
-                <div className="mb-5 flex items-center gap-1 rounded-xl bg-black/5 p-1 dark:bg-white/10">
-                    {(['urls', 'torrent', 'metalink'] as TaskType[]).map((type) => (
-                        <button
-                            key={type}
-                            type="button"
-                            className={
-                                'flex-1 rounded-lg px-3 py-1.5 text-sm transition-colors ' +
-                                (taskType === type
-                                    ? 'bg-white font-medium text-primary shadow-sm dark:bg-gray-700 dark:text-primary-light'
-                                    : 'text-gray-600 hover:bg-white/60 dark:text-gray-300 dark:hover:bg-white/10')
-                            }
-                            onClick={() => setTaskType(type)}
-                        >
-                            {type === 'urls' ? 'URLs' : type === 'torrent' ? 'Torrent' : 'Metalink'}
-                        </button>
-                    ))}
-                </div>
-
                 {taskType === 'urls' ? (
                     <div>
                         <label className="mb-1.5 block text-sm font-medium">{t('Download Links')}</label>

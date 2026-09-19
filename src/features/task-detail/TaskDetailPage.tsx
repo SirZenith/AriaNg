@@ -20,6 +20,7 @@ import PieceMap from '@/components/PieceMap';
 import SplitBottomBar from '@/components/SplitBottomBar';
 import TaskDetailToolbar from '@/components/TaskDetailToolbar';
 import TopBar from '@/components/TopBar';
+import TopBarTabs from '@/components/TopBarTabs';
 import { useTaskDetail } from '@/hooks/useTaskDetail';
 import {
     getAfterRetryingTask,
@@ -104,28 +105,16 @@ export default function TaskDetailPage() {
     ];
 
     const tabList = (
-        <div className="mx-auto mt-1 flex w-full max-w-[1000px] flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700">
-            {tabs.map((item) => {
-                const Icon = item.icon;
-
-                return (
-                    <button
-                        key={item.key}
-                        type="button"
-                        className={
-                            'flex items-center gap-1 px-3 py-2 text-sm ' +
-                            (currentTab === item.key
-                                ? 'border-b-2 border-primary text-primary'
-                                : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300')
-                        }
-                        onClick={() => setCurrentTab(item.key)}
-                    >
-                        <Icon className="h-4 w-4" aria-hidden="true" />
-                        <span className="hidden md:inline">{t(item.label)}</span>
-                    </button>
-                );
-            })}
-        </div>
+        <TopBarTabs
+            tabs={tabs.map((item) => ({
+                key: item.key,
+                label: t(item.label),
+                icon: item.icon,
+                onClick: () => setCurrentTab(item.key),
+            }))}
+            activeKey={currentTab}
+            hideLabelsOnMobile
+        />
     );
 
     if (loading && !task) {
