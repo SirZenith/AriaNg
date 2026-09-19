@@ -264,13 +264,13 @@ describe('App', () => {
 
     it('keeps other rpc settings when saving', () => {
         addNewRpcSetting();
-        updateRpcSetting(0, 'rpcAlias', 'Server A');
-        updateRpcSetting(0, 'rpcHost', '10.0.0.2');
+        updateRpcSetting(1, 'rpcAlias', 'Server A');
+        updateRpcSetting(1, 'rpcHost', '10.0.0.2');
         addNewRpcSetting();
-        updateRpcSetting(1, 'rpcAlias', 'Server B');
-        updateRpcSetting(1, 'rpcHost', '10.0.0.3');
+        updateRpcSetting(2, 'rpcAlias', 'Server B');
+        updateRpcSetting(2, 'rpcHost', '10.0.0.3');
 
-        window.location.hash = '#/ariang/rpc/0';
+        window.location.hash = '#/ariang/rpc/1';
         render(<App />);
 
         fireEvent.change(screen.getByDisplayValue('10.0.0.2'), { target: { value: '192.168.1.2' } });
@@ -281,6 +281,23 @@ describe('App', () => {
         expect(settings.find((item) => item.isDefault)?.rpcHost).toBe('192.168.1.2');
         expect(settings.some((item) => item.rpcHost === '10.0.0.3')).toBe(true);
         expect(getOptions().rpcHost).toBe('192.168.1.2');
+    });
+
+    it('stores rpc settings sorted by name after saving', () => {
+        addNewRpcSetting();
+        updateRpcSetting(1, 'rpcAlias', 'Zulu');
+        addNewRpcSetting();
+        updateRpcSetting(2, 'rpcAlias', 'alpha');
+
+        window.location.hash = '#/ariang/rpc/2';
+        render(<App />);
+
+        fireEvent.click(screen.getByText('Save'));
+
+        expect(getOptions().extendRpcServers.map((item) => item.rpcAlias || item.rpcHost + ':' + item.rpcPort)).toEqual(
+            ['localhost:6800', 'Zulu'],
+        );
+        expect(getOptions().rpcAlias).toBe('alpha');
     });
 
     it('navigates the settings hierarchy and back', async () => {

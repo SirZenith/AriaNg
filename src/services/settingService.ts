@@ -94,7 +94,7 @@ export function getCurrentRpcSetting(): AriaNgRpcSetting {
 export function getAllRpcSettings(): AriaNgRpcSetting[] {
     const options = getOptions();
     const current = getCurrentRpcSetting();
-    const result: AriaNgRpcSetting[] = [];
+    const result: AriaNgRpcSetting[] = [{ ...current, isDefault: true }];
 
     for (const server of options.extendRpcServers) {
         if (!server.rpcHost) {
@@ -107,8 +107,6 @@ export function getAllRpcSettings(): AriaNgRpcSetting[] {
 
         result.push(server);
     }
-
-    result.push({ ...current, isDefault: true });
 
     return result;
 }
@@ -132,30 +130,44 @@ export function addNewRpcSetting(): number {
     options.extendRpcServers.push(createRpcSetting());
     setOptions(options);
 
-    return options.extendRpcServers.length - 1;
+    return options.extendRpcServers.length;
 }
 
 export function updateRpcSetting(index: number, field: keyof AriaNgRpcSetting, value: string): void {
     const options = getOptions();
 
-    if (index >= 0 && index < options.extendRpcServers.length) {
-        (options.extendRpcServers[index] as unknown as Record<string, unknown>)[field] = value;
-        setOptions(options);
+    if (index === 0) {
+        setOptions({ ...options, [field]: value });
         return;
     }
 
-    if (index === options.extendRpcServers.length) {
-        setOptions({ ...options, [field]: value });
+    if (index > 0 && index <= options.extendRpcServers.length) {
+        (options.extendRpcServers[index - 1] as unknown as Record<string, unknown>)[field] = value;
+        setOptions(options);
     }
 }
 
 export function removeRpcSetting(index: number): void {
     const options = getOptions();
 
-    if (index >= 0 && index < options.extendRpcServers.length) {
-        options.extendRpcServers.splice(index, 1);
+    if (index > 0 && index <= options.extendRpcServers.length) {
+        options.extendRpcServers.splice(index - 1, 1);
         setOptions(options);
     }
+}
+
+function getRpcSettingName(setting: AriaNgRpcSetting): string {
+    return setting.rpcAlias || setting.rpcHost + ':' + setting.rpcPort;
+}
+
+export function sortRpcSettingsByName(): void {
+    const options = getOptions();
+
+    options.extendRpcServers.sort((a, b) =>
+        getRpcSettingName(a).localeCompare(getRpcSettingName(b), undefined, { sensitivity: 'base' }),
+    );
+
+    setOptions(options);
 }
 
 export function exportAllOptions(): AriaNgOptions {
@@ -172,15 +184,15 @@ export function importAllOptions(settings: Partial<AriaNgOptions>): void {
 export function setDefaultRpcSettingByIndex(index: number): void {
     const options = getOptions();
 
-    if (index < 0 || index >= options.extendRpcServers.length) {
+    if (index <= 0 || index > options.extendRpcServers.length) {
         return;
     }
 
-    const setting = options.extendRpcServers[index];
+    const setting = options.extendRpcServers[index - 1];
     const oldDefault = getCurrentRpcSetting();
     const servers = [...options.extendRpcServers];
 
-    servers.splice(index, 1);
+    servers.splice(index - 1, 1);
     servers.push(oldDefault);
 
     setOptions({

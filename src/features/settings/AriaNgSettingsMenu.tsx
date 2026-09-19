@@ -8,7 +8,7 @@ export default function AriaNgSettingsMenu() {
 
     return (
         <SettingsCard>
-            {settingsSubItems['ariang'].map((item) => (
+            {settingsSubItems.ariang.map((item) => (
                 <SettingsItem
                     key={item.key}
                     icon={item.icon}

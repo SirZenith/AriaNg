@@ -8,6 +8,7 @@ import {
     getAllRpcSettings,
     removeRpcSetting,
     setDefaultRpcSettingByIndex,
+    sortRpcSettingsByName,
     updateRpcSetting,
 } from '@/services/settingService';
 import { createRpcDraft, useRpcDraftStore } from '@/stores/rpcDraftStore';
@@ -25,7 +26,7 @@ const rpcSettingFields: (keyof AriaNgRpcSetting)[] = [
     'secret',
 ];
 
-export default function RpcSettingsEditor({ item }: { item: string }) {
+export default function RpcSettingsEditor({ item }: { item: string; }) {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const isNew = item === 'new';
@@ -52,6 +53,7 @@ export default function RpcSettingsEditor({ item }: { item: string }) {
             }
 
             setDefaultRpcSettingByIndex(newIndex);
+            sortRpcSettingsByName();
             clearDraft(item);
             reloadPage();
             return;
@@ -71,6 +73,7 @@ export default function RpcSettingsEditor({ item }: { item: string }) {
             setDefaultRpcSettingByIndex(index);
         }
 
+        sortRpcSettingsByName();
         clearDraft(item);
         reloadPage();
     };
