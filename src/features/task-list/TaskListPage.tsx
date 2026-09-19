@@ -305,7 +305,7 @@ export default function TaskListPage({ location }: { location: string; }) {
                     {location === 'stopped' ? (
                         <button
                             type="button"
-                            className="mx-auto btn btn-danger-soft btn-sm"
+                            className="ml-auto btn btn-danger-soft btn-sm"
                             onClick={() => void clearStoppedTasks()}
                         >
                             <span className="hidden md:inline">{t('Clear Stopped Tasks')}</span>
