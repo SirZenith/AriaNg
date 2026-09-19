@@ -2,6 +2,7 @@ import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
 import CommandHandler from '@/features/command/CommandHandler';
 import DebugPage from '@/features/debug/DebugPage';
+import HomePage from '@/features/home/HomePage';
 import NewTaskPage from '@/features/new-task/NewTaskPage';
 import AdvancedOptionValuePage from '@/features/settings/AdvancedOptionValuePage';
 import AdvancedSettingsPage from '@/features/settings/AdvancedSettingsPage';
@@ -28,6 +29,7 @@ export default function App() {
         <HashRouter>
             <AppLayout>
                 <Routes>
+                    <Route path="/home" element={<HomePage />} />
                     <Route path="/tasks/downloading" element={<TaskListPage location="downloading" />} />
                     <Route path="/tasks/waiting" element={<TaskListPage location="waiting" />} />
                     <Route path="/tasks/stopped" element={<TaskListPage location="stopped" />} />
@@ -61,7 +63,7 @@ export default function App() {
                     <Route path="/status" element={<Navigate to="/settings/status" replace />} />
                     <Route path="/debug" element={<DebugPage />} />
                     <Route path="/settings/*" element={<Navigate to="/settings" replace />} />
-                    <Route path="*" element={<Navigate to="/tasks/downloading" replace />} />
+                    <Route path="*" element={<Navigate to="/home" replace />} />
                 </Routes>
             </AppLayout>
         </HashRouter>

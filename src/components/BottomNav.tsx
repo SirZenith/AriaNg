@@ -1,4 +1,4 @@
-import { ListTodo, Plus, SlidersHorizontal, Wrench, type LucideIcon } from 'lucide-react';
+import { Home, ListTodo, Plus, SlidersHorizontal, Wrench, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, useLocation } from 'react-router-dom';
 
@@ -30,6 +30,7 @@ export default function BottomNav({ counts, debugMode }: BottomNavProps) {
     const location = useLocation();
 
     const items: NavItem[] = [
+        { to: '/home', icon: Home, label: t('Home') },
         {
             to: '/tasks/downloading',
             icon: ListTodo,

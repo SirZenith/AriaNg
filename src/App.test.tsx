@@ -5,6 +5,8 @@ import { ariaNgDefaultOptions } from './config/constants';
 import { addNewRpcSetting, getAllRpcSettings, getOptions, updateRpcSetting } from './services/settingService';
 import { useRpcDraftStore } from './stores/rpcDraftStore';
 import { useSettingStore } from './stores/settingStore';
+import { useTaskStore } from './stores/taskStore';
+import type { Aria2Task } from './types/aria2';
 import { reloadPage } from './utils/navigation';
 
 vi.mock('./utils/navigation', () => ({ reloadPage: vi.fn() }));
@@ -42,16 +44,16 @@ afterEach(() => {
     window.location.hash = '';
     useSettingStore.setState({ options: ariaNgDefaultOptions });
     useRpcDraftStore.setState({ drafts: {} });
+    useTaskStore.setState({ tasks: [] });
 });
 
 describe('App', () => {
     it('renders the application layout', () => {
         render(<App />);
 
-        expect(screen.getByPlaceholderText('Search')).toBeTruthy();
+        expect(screen.getByText('Add New RPC Setting')).toBeTruthy();
+        expect(screen.getByText('Home')).toBeTruthy();
         expect(screen.getByText('Tasks')).toBeTruthy();
-        expect(screen.getByText('Downloading')).toBeTruthy();
-        expect(screen.getByText('Waiting')).toBeTruthy();
         expect(screen.getAllByText('Aria2 Settings').length).toBeGreaterThan(0);
     });
 
@@ -106,7 +108,7 @@ describe('App', () => {
 
         fireEvent.click(screen.getByText('Task Settings'));
 
-        expect(screen.getByLabelText('Back')).toBeTruthy();
+        expect(screen.getAllByLabelText('Back').length).toBeGreaterThan(0);
         expect(screen.getByText('Confirm')).toBeTruthy();
 
         fireEvent.click(screen.getByText('Confirm'));
@@ -131,10 +133,29 @@ describe('App', () => {
     });
 
     it('navigates back from the task detail page', async () => {
+        useTaskStore.setState({
+            tasks: [
+                {
+                    gid: 'gid123',
+                    status: 'active',
+                    taskName: 'ubuntu.iso',
+                    totalLength: 1000,
+                    completedLength: 500,
+                    completePercent: 50,
+                    downloadSpeed: 0,
+                    uploadSpeed: 0,
+                    numPieces: 0,
+                    bitfield: '',
+                    files: [],
+                    connections: 0,
+                    remainTime: -1,
+                } as unknown as Aria2Task,
+            ],
+        });
         window.location.hash = '#/tasks/downloading';
         render(<App />);
 
-        window.location.hash = '#/task/detail/gid123';
+        fireEvent.click(screen.getByLabelText('Click to view task detail'));
 
         await screen.findByLabelText('Back');
         fireEvent.click(screen.getByLabelText('Back'));
