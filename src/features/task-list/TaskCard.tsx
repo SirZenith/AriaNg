@@ -7,7 +7,7 @@ import { ArrowDown, ArrowUp, Eye, Files, Network } from 'lucide-react';
 import { useTaskStore } from '@/stores/taskStore';
 import type { Aria2Task } from '@/types/aria2';
 import { formatDuration, formatPercent, formatVolume } from '@/utils/format';
-import { getTaskStatusIcon, isTaskRetryable } from '@/utils/task';
+import { getTaskStatusBgClass, getTaskStatusColorClass, getTaskStatusIcon, isTaskRetryable } from '@/utils/task';
 
 interface TaskCardProps {
     task: Aria2Task;
@@ -25,26 +25,16 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
     const StatusIcon = getTaskStatusIcon(task);
     const isActive = task.status === 'active';
     const isError = task.status === 'error';
-    const isComplete = task.status === 'complete';
-    const isSeeding = isActive && (task.seeder === true || task.seeder === 'true');
     const showRemainTime = isActive && task.remainTime !== undefined && task.remainTime >= 0 && task.remainTime < 86400;
 
-    const statusIconClass = isError
-        ? 'text-red-500'
-        : isActive
-          ? 'text-primary'
-          : task.status === 'complete'
-            ? 'text-green-600 dark:text-green-500'
-            : task.status === 'paused'
-              ? 'text-amber-500'
-              : 'text-gray-400 dark:text-gray-500';
+    const statusBgClass = getTaskStatusBgClass(task);
+    const statusTextClass = getTaskStatusColorClass(task);
 
-    const progressBarClass = isError ? 'bg-red-500' : isComplete || isSeeding ? 'bg-green-500' : 'bg-primary';
-    const progressTextClass = isError
-        ? 'text-red-500'
-        : isComplete || isSeeding
-          ? 'text-green-600 dark:text-green-500'
-          : 'text-primary';
+    const statusIconClass = statusTextClass;
+    const statusIconBgClass = statusBgClass;
+
+    const progressTextClass = statusTextClass;
+    const progressBarClass = statusBgClass;
 
     return (
         <SortableTaskRow task={task} isDraggable={isDraggable}>
@@ -60,7 +50,7 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
                         onContextMenu(event, task);
                     }}
                 >
-                    <div className="flex shrink-0 items-center">
+                    <div className={`${statusIconBgClass} flex shrink-0 items-center rounded`}>
                         {StatusIcon ? <StatusIcon className={'h-6 w-6 ' + statusIconClass} aria-hidden="true" /> : null}
                     </div>
 

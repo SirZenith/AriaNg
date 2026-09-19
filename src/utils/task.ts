@@ -445,6 +445,68 @@ export function getTaskCardStatus(task: Aria2Task): TaskCardStatus | null {
     }
 }
 
+export function getTaskStatusBgClass(task: Aria2Task): string {
+    if (!task) {
+        return 'bg-inherit'
+    }
+
+    const status = getTaskCardStatus(task);
+
+    switch (status) {
+    case 'verify_integrity_pending':
+        return 'bg-orange-300';
+    case 'verified_length':
+        return 'bg-yellow-300';
+    case 'seeding':
+        return 'bg-green-600';
+    case 'downloading':
+        return 'bg-blue-500';
+    case 'waiting':
+        return 'bg-blue-200';
+    case 'paused':
+        return 'bg-indigo-700';
+    case 'complete':
+        return 'bg-green-600';
+    case 'error':
+        return 'bg-red-500';
+    case 'removed':
+        return 'bg-red-200';
+    default:
+        return 'bg-inherit'
+    }
+}
+
+export function getTaskStatusColorClass(task: Aria2Task): string {
+    if (!task) {
+        return 'text-inherit'
+    }
+
+    const status = getTaskCardStatus(task);
+
+    switch (status) {
+    case 'verify_integrity_pending':
+        return 'text-orange-300';
+    case 'verified_length':
+        return 'text-yellow-300';
+    case 'seeding':
+        return 'text-green-600';
+    case 'downloading':
+        return 'text-blue-500';
+    case 'waiting':
+        return 'text-blue-200';
+    case 'paused':
+        return 'text-indigo-700';
+    case 'complete':
+        return 'text-green-600';
+    case 'error':
+        return 'text-red-500';
+    case 'removed':
+        return 'text-red-200';
+    default:
+        return 'text-inherit'
+    }
+}
+
 export function getTaskStatusIcon(task: Aria2Task, simplify?: boolean): LucideIcon | null {
     if (!task) {
         return null;
