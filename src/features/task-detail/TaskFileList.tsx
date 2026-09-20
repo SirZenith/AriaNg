@@ -14,6 +14,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import BottomBarButton from '@/components/BottomBarButton';
 import CenteredBottomBar from '@/components/CenteredBottomBar';
+import TopBar from '@/components/TopBar';
 import { ariaNgFileTypes } from '@/config/fileTypes';
 import { aria2TaskService } from '@/services/taskService';
 import type { Aria2File, Aria2Task } from '@/types/aria2';
@@ -109,7 +110,8 @@ export default function TaskFileList({ task, onChanged, onChoosingChange }: Task
     const isMultiDir = !!task.multiDir;
     const totalFileCount = useMemo(() => files.filter((file) => !file.isDir).length, [files]);
     const selectedFileCount = useMemo(
-        () => files.filter((file) => !file.isDir && (choosing ? !!selected[String(file.index)] : !!file.selected)).length,
+        () =>
+            files.filter((file) => !file.isDir && (choosing ? !!selected[String(file.index)] : !!file.selected)).length,
         [files, choosing, selected],
     );
 
@@ -421,67 +423,73 @@ export default function TaskFileList({ task, onChanged, onChoosingChange }: Task
             </div>
 
             {choosing ? (
-                <div className="mb-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 dark:border-gray-700 dark:bg-gray-900/60">
-                    <div className="flex flex-wrap items-center gap-2">
-                        <FileToolbarButton
-                            label={t('Select All')}
-                            icon={CheckSquare}
-                            iconClassName="text-green-600 dark:text-green-500"
-                            onClick={() => selectAll(true)}
-                        />
-                        <FileToolbarButton
-                            label={t('Select None')}
-                            icon={Square}
-                            iconClassName="text-gray-500 dark:text-gray-400"
-                            onClick={() => selectAll(false)}
-                        />
-                        <FileToolbarButton
-                            label={t('Select Invert')}
-                            icon={ArrowLeftRight}
-                            iconClassName="text-amber-600 dark:text-amber-400"
-                            onClick={invertSelection}
-                        />
-
-                        <FileToolbarButton
-                            className="ml-auto sm:hidden"
-                            label={t('Filter')}
-                            icon={SlidersHorizontal}
-                            iconClassName="text-primary dark:text-primary-light"
-                            ariaExpanded={filterVisible}
-                            onClick={() => setFilterVisible((value) => !value)}
-                        />
-
-                        <div
-                            className={
-                                (filterVisible ? 'flex' : 'hidden') +
-                                ' w-full flex-wrap items-center gap-2 sm:flex sm:w-auto sm:flex-1'
-                            }
-                        >
-                            <select
-                                className="input w-auto"
-                                value=""
-                                onChange={(event) => applyTypeSelection(event.target.value)}
-                            >
-                                <option value="">{t('Select Files by Type')}</option>
-                                {Object.keys(ariaNgFileTypes).map((type) => (
-                                    <option key={type} value={type}>
-                                        {t(ariaNgFileTypes[type].name)}
-                                    </option>
-                                ))}
-                            </select>
-                            <input
-                                type="text"
-                                className="input min-w-0 flex-1 sm:max-w-48"
-                                placeholder=".mkv,.mp4"
-                                value={customExtensions}
-                                onChange={(event) => setCustomExtensions(event.target.value)}
+                <TopBar>
+                    <div className="mx-auto mt-2 w-full max-w-250">
+                        <div className="flex flex-wrap items-center gap-1 rounded-xl bg-black/5 p-1 dark:bg-white/10">
+                            <FileToolbarButton
+                                label={t('Select All')}
+                                icon={CheckSquare}
+                                iconClassName="text-green-600 dark:text-green-500"
+                                onClick={() => selectAll(true)}
                             />
-                            <button type="button" className="btn btn-secondary btn-sm" onClick={applyCustomExtensions}>
-                                {t('Apply')}
-                            </button>
+                            <FileToolbarButton
+                                label={t('Select None')}
+                                icon={Square}
+                                iconClassName="text-gray-500 dark:text-gray-400"
+                                onClick={() => selectAll(false)}
+                            />
+                            <FileToolbarButton
+                                label={t('Select Invert')}
+                                icon={ArrowLeftRight}
+                                iconClassName="text-amber-600 dark:text-amber-400"
+                                onClick={invertSelection}
+                            />
+
+                            <FileToolbarButton
+                                className="ml-auto sm:hidden"
+                                label={t('Filter')}
+                                icon={SlidersHorizontal}
+                                iconClassName="text-primary dark:text-primary-light"
+                                ariaExpanded={filterVisible}
+                                onClick={() => setFilterVisible((value) => !value)}
+                            />
+
+                            <div
+                                className={
+                                    (filterVisible ? 'flex' : 'hidden') +
+                                    ' w-full flex-wrap items-center gap-2 sm:flex sm:w-auto sm:flex-1'
+                                }
+                            >
+                                <select
+                                    className="input w-auto"
+                                    value=""
+                                    onChange={(event) => applyTypeSelection(event.target.value)}
+                                >
+                                    <option value="">{t('Select Files by Type')}</option>
+                                    {Object.keys(ariaNgFileTypes).map((type) => (
+                                        <option key={type} value={type}>
+                                            {t(ariaNgFileTypes[type].name)}
+                                        </option>
+                                    ))}
+                                </select>
+                                <input
+                                    type="text"
+                                    className="input min-w-0 flex-1 sm:max-w-48"
+                                    placeholder=".mkv,.mp4"
+                                    value={customExtensions}
+                                    onChange={(event) => setCustomExtensions(event.target.value)}
+                                />
+                                <button
+                                    type="button"
+                                    className="btn btn-secondary btn-sm"
+                                    onClick={applyCustomExtensions}
+                                >
+                                    {t('Apply')}
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </TopBar>
             ) : null}
 
             <div className="rounded border border-gray-200 dark:border-gray-700">

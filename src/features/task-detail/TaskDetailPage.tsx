@@ -59,7 +59,7 @@ function isShowPiecesInfo(task: Aria2Task | null): boolean {
     return true;
 }
 
-function TaskDetailPanel({ children, tabs }: { children: ReactNode; tabs?: ReactNode; }) {
+function TaskDetailPanel({ children, tabs }: { children: ReactNode; tabs?: ReactNode }) {
     return (
         <div className="space-y-3">
             <TopBar>
@@ -97,7 +97,7 @@ export default function TaskDetailPage() {
         return Number(task.completePercent || 0);
     }, [task, peers]);
 
-    const tabs: { key: string; label: string; icon: LucideIcon; }[] = [
+    const tabs: { key: string; label: string; icon: LucideIcon }[] = [
         { key: 'overview', label: 'Overview', icon: LayoutDashboard },
         ...(showPiecesInfo ? [{ key: 'pieces', label: 'Pieces', icon: LayoutGrid }] : []),
         { key: 'filelist', label: 'Files', icon: FileText },
@@ -177,7 +177,7 @@ export default function TaskDetailPage() {
     };
 
     return (
-        <TaskDetailPanel tabs={tabList}>
+        <TaskDetailPanel tabs={fileChoosing ? null : tabList}>
             <section className="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
                 {currentTab === 'overview' ? (
                     <TaskOverview task={task} healthPercent={healthPercent} showPiecesInfo={showPiecesInfo} />

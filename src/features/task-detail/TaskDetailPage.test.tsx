@@ -179,14 +179,23 @@ describe('TaskDetailPage bottom bar', () => {
         renderPage();
 
         fireEvent.click(screen.getByText('Files'));
+
+        expect(screen.getByText('Overview')).toBeTruthy();
+
         fireEvent.click(screen.getByText('(Choose Files)'));
 
+        expect(screen.queryByText('Overview')).toBeNull();
+        expect(screen.queryByText('Files')).toBeNull();
+        expect(screen.getByRole('button', { name: 'Select All' })).toBeTruthy();
         expect(screen.getByRole('button', { name: 'Save' })).toBeTruthy();
         expect(screen.getByRole('button', { name: 'Cancel' })).toBeTruthy();
         expect(screen.queryByRole('button', { name: 'Start' })).toBeNull();
 
         fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
 
+        expect(screen.getByText('Files')).toBeTruthy();
+        expect(screen.getByText('Overview')).toBeTruthy();
+        expect(screen.queryByRole('button', { name: 'Select All' })).toBeNull();
         expect(screen.queryByRole('button', { name: 'Save' })).toBeNull();
         expect(screen.getByRole('button', { name: 'Start' })).toBeTruthy();
     });

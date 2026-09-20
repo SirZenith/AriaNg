@@ -217,4 +217,14 @@ describe('TaskFileList', () => {
         expect(filterGroup.className).not.toContain('hidden');
         expect(filterGroup.className).toContain('flex');
     });
+
+    it('renders the selection toolbar into the top bar slot', () => {
+        renderWithPanelBars(<TaskFileList task={createTask({ status: 'waiting' })} onChanged={vi.fn()} />);
+
+        fireEvent.click(screen.getByText('(Choose Files)'));
+
+        const selectAllButton = screen.getByRole('button', { name: 'Select All' });
+
+        expect(selectAllButton.closest('.bg-page')).not.toBeNull();
+    });
 });
