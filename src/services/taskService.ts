@@ -82,48 +82,39 @@ export const aria2TaskService = {
     ) {
         return this.setTaskOption(gid, 'select-file', selectedFileIndexArr.join(','), callback, silent);
     },
-    getTaskStatusAndBtPeers(
+    async getTaskStatusAndBtPeers(
         gid: string,
         callback?: (response: TaskResponse & { task?: Aria2Task; peers?: Aria2Peer[] }) => void,
         silent?: boolean,
         requirePeers?: boolean,
         includeLocalPeer?: boolean,
         addVirtualFileNode?: boolean,
-    ) {
+    ): Promise<TaskResponse & { task?: Aria2Task; peers?: Aria2Peer[] }> {
         const methods = [aria2RpcService.buildMethodCall('tellStatus', gid)];
 
         if (requirePeers) {
             methods.push(aria2RpcService.buildMethodCall('getPeers', gid));
         }
 
-        return aria2RpcService.multicall({
-            methods,
-            silent: !!silent,
-            callback: (response) => {
-                const result: TaskResponse & { task?: Aria2Task; peers?: Aria2Peer[] } = { ...response };
-                const data = Array.isArray(response.data) ? (response.data as unknown[][]) : [];
+        const response = await aria2RpcService.multicall({ methods, silent: !!silent });
+        const result: TaskResponse & { task?: Aria2Task; peers?: Aria2Peer[] } = { ...response };
+        const data = Array.isArray(response.data) ? (response.data as unknown[][]) : [];
 
-                if (response.success && data.length > 0 && data[0].length > 0) {
-                    const task = data[0][0] as Aria2Task;
-                    processDownloadTask(task, addVirtualFileNode);
-                    result.task = task;
-                }
+        if (response.success && data.length > 0 && data[0].length > 0) {
+            const task = data[0][0] as Aria2Task;
+            processDownloadTask(task, addVirtualFileNode);
+            result.task = task;
+        }
 
-                if (
-                    response.success &&
-                    result.task &&
-                    result.task.bittorrent &&
-                    data.length > 1 &&
-                    data[1].length > 0
-                ) {
-                    const peers = data[1][0] as Aria2Peer[];
-                    processBtPeers(peers, result.task, includeLocalPeer);
-                    result.peers = peers;
-                }
+        if (response.success && result.task && result.task.bittorrent && data.length > 1 && data[1].length > 0) {
+            const peers = data[1][0] as Aria2Peer[];
+            processBtPeers(peers, result.task, includeLocalPeer);
+            result.peers = peers;
+        }
 
-                callback?.(result);
-            },
-        }) as Promise<TaskResponse & { task?: Aria2Task; peers?: Aria2Peer[] }>;
+        callback?.(result);
+
+        return result;
     },
     getBtTaskPeers(task: Aria2Task, callback?: TaskCallback, silent?: boolean, includeLocalPeer?: boolean) {
         return aria2RpcService.getPeers({

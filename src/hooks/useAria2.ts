@@ -64,6 +64,14 @@ export function useTaskListPolling(location: string): void {
             const taskList = response.data as Aria2Task[];
             const current = useTaskStore.getState().tasks;
             const lengthChanged = current.length !== taskList.length;
+
+            if (!lengthChanged && !needRequestWholeInfo) {
+                for (const task of current) {
+                    delete task.verifiedLength;
+                    delete task.verifyIntegrityPending;
+                }
+            }
+
             const orderChanged = !lengthChanged && !extendArray(taskList, current, 'gid');
             const structureChanged = lengthChanged || orderChanged;
 
@@ -81,7 +89,7 @@ export function useTaskListPolling(location: string): void {
                 setTasks(list.map((task) => processDownloadTask(task)));
                 needRequestWholeInfo = false;
             } else {
-                setTasks([...current]);
+                setTasks(current.map((task) => processDownloadTask(task)));
             }
         };
 

@@ -215,6 +215,7 @@ export const aria2RpcService = {
             'gid',
             'totalLength',
             'completedLength',
+            'uploadLength',
             'uploadSpeed',
             'downloadSpeed',
             'connections',
