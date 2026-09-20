@@ -42,6 +42,10 @@
         @apply text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700;
     }
 
+    .btn-outline {
+        @apply border border-gray-300 bg-white text-gray-700 hover:border-gray-400 hover:bg-gray-100 hover:text-primary active:scale-95 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-gray-700 dark:hover:text-primary-light;
+    }
+
     .btn-secondary {
         @apply bg-gray-500 text-white hover:bg-gray-600;
     }

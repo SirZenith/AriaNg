@@ -78,6 +78,7 @@ export default function TaskDetailPage() {
     const { task, peers, loading } = useTaskDetail(gid);
     const [currentTab, setCurrentTab] = useState('overview');
     const [refreshKey, setRefreshKey] = useState(0);
+    const [fileChoosing, setFileChoosing] = useState(false);
 
     const showPiecesInfo = useMemo(() => isShowPiecesInfo(task), [task]);
     const showPeers = !!task && !!task.bittorrent && task.status === 'active';
@@ -192,7 +193,12 @@ export default function TaskDetailPage() {
                 ) : null}
 
                 {currentTab === 'filelist' ? (
-                    <TaskFileList key={refreshKey} task={task} onChanged={() => setRefreshKey((value) => value + 1)} />
+                    <TaskFileList
+                        key={refreshKey}
+                        task={task}
+                        onChoosingChange={setFileChoosing}
+                        onChanged={() => setRefreshKey((value) => value + 1)}
+                    />
                 ) : null}
 
                 {currentTab === 'btpeers' ? (
@@ -204,58 +210,60 @@ export default function TaskDetailPage() {
                 {currentTab === 'settings' ? <TaskOptionSettings task={task} /> : null}
             </section>
 
-            <SplitBottomBar
-                leading={
-                    <>
-                        {task.status === 'active' ? (
-                            <BottomBarButton
-                                ariaLabel={t('Pause')}
-                                label={t('Pause')}
-                                icon={Pause}
-                                iconClassName="text-amber-600 dark:text-amber-400"
-                                onClick={() => void changeTaskState('pause')}
-                            />
-                        ) : null}
+            {fileChoosing ? null : (
+                <SplitBottomBar
+                    leading={
+                        <>
+                            {task.status === 'active' ? (
+                                <BottomBarButton
+                                    ariaLabel={t('Pause')}
+                                    label={t('Pause')}
+                                    icon={Pause}
+                                    iconClassName="text-amber-600 dark:text-amber-400"
+                                    onClick={() => void changeTaskState('pause')}
+                                />
+                            ) : null}
 
-                        {task.status === 'waiting' || task.status === 'paused' ? (
-                            <BottomBarButton
-                                ariaLabel={t('Start')}
-                                label={t('Start')}
-                                icon={Play}
-                                iconClassName="text-green-600 dark:text-green-500"
-                                onClick={() => void changeTaskState('start')}
-                            />
-                        ) : null}
+                            {task.status === 'waiting' || task.status === 'paused' ? (
+                                <BottomBarButton
+                                    ariaLabel={t('Start')}
+                                    label={t('Start')}
+                                    icon={Play}
+                                    iconClassName="text-green-600 dark:text-green-500"
+                                    onClick={() => void changeTaskState('start')}
+                                />
+                            ) : null}
 
-                        {isTaskRetryable(task) ? (
+                            {isTaskRetryable(task) ? (
+                                <BottomBarButton
+                                    ariaLabel={t('Retry')}
+                                    label={t('Retry')}
+                                    icon={RotateCcw}
+                                    iconClassName="text-primary dark:text-primary-light"
+                                    onClick={() => void retryTask(task)}
+                                />
+                            ) : null}
+
                             <BottomBarButton
-                                ariaLabel={t('Retry')}
-                                label={t('Retry')}
-                                icon={RotateCcw}
+                                ariaLabel={t('Copy Download Url')}
+                                label={t('Copy Download Url')}
+                                icon={Copy}
                                 iconClassName="text-primary dark:text-primary-light"
-                                onClick={() => void retryTask(task)}
+                                onClick={() => void copyTaskLink()}
                             />
-                        ) : null}
-
+                        </>
+                    }
+                    trailing={
                         <BottomBarButton
-                            ariaLabel={t('Copy Download Url')}
-                            label={t('Copy Download Url')}
-                            icon={Copy}
-                            iconClassName="text-primary dark:text-primary-light"
-                            onClick={() => void copyTaskLink()}
+                            ariaLabel={t('Delete')}
+                            label={t('Delete')}
+                            icon={Trash2}
+                            className="text-red-600 dark:text-red-400"
+                            onClick={() => void removeTask(task)}
                         />
-                    </>
-                }
-                trailing={
-                    <BottomBarButton
-                        ariaLabel={t('Delete')}
-                        label={t('Delete')}
-                        icon={Trash2}
-                        className="text-red-600 dark:text-red-400"
-                        onClick={() => void removeTask(task)}
-                    />
-                }
-            />
+                    }
+                />
+            )}
         </TaskDetailPanel>
     );
 }

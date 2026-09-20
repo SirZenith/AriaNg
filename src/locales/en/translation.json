@@ -733,6 +733,9 @@
   "This browser does not support registering a magnet handler": "This browser does not support registering a magnet handler",
   "Failed to register a magnet handler": "Failed to register a magnet handler",
   "Magnet handler registration requested": "Magnet handler registration requested",
+  "Apply": "Apply",
+  "Select Files by Type": "Select Files by Type",
+  "Filter": "Filter",
   "Register as Magnet Handler": "Register as Magnet Handler",
   "Register": "Register"
 }

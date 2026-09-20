@@ -18,6 +18,7 @@ vi.mock('@/services/taskService', () => ({
         pauseTasks: vi.fn(),
         retryTask: vi.fn(),
         removeTasks: vi.fn(),
+        selectTaskFile: vi.fn(),
     },
 }));
 
@@ -142,5 +143,51 @@ describe('TaskDetailPage bottom bar', () => {
         await waitFor(() => {
             expect(copyText).toHaveBeenCalledWith('https://example.com/a.iso');
         });
+    });
+
+    it('switches the bottom bar to file choosing actions', () => {
+        useTaskDetailMock.mockReturnValue({
+            task: createTask({
+                status: 'paused',
+                files: [
+                    {
+                        index: '1',
+                        isDir: false,
+                        fileName: 'a.mkv',
+                        path: '/a.mkv',
+                        length: '1',
+                        completedLength: '0',
+                        completePercent: 0,
+                        selected: 'true',
+                    },
+                    {
+                        index: '2',
+                        isDir: false,
+                        fileName: 'b.mkv',
+                        path: '/b.mkv',
+                        length: '1',
+                        completedLength: '0',
+                        completePercent: 0,
+                        selected: 'false',
+                    },
+                ] as unknown as Aria2Task['files'],
+            }),
+            peers: [],
+            loading: false,
+        });
+
+        renderPage();
+
+        fireEvent.click(screen.getByText('Files'));
+        fireEvent.click(screen.getByText('(Choose Files)'));
+
+        expect(screen.getByRole('button', { name: 'Save' })).toBeTruthy();
+        expect(screen.getByRole('button', { name: 'Cancel' })).toBeTruthy();
+        expect(screen.queryByRole('button', { name: 'Start' })).toBeNull();
+
+        fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+
+        expect(screen.queryByRole('button', { name: 'Save' })).toBeNull();
+        expect(screen.getByRole('button', { name: 'Start' })).toBeTruthy();
     });
 });

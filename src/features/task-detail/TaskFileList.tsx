@@ -1,5 +1,19 @@
-import { useCallback, useMemo, useState } from 'react';
+import {
+    ArrowLeftRight,
+    Check,
+    CheckSquare,
+    ChevronsDown,
+    ChevronsUp,
+    ListChecks,
+    SlidersHorizontal,
+    Square,
+    X,
+    type LucideIcon,
+} from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import BottomBarButton from '@/components/BottomBarButton';
+import CenteredBottomBar from '@/components/CenteredBottomBar';
 import { ariaNgFileTypes } from '@/config/fileTypes';
 import { aria2TaskService } from '@/services/taskService';
 import type { Aria2File, Aria2Task } from '@/types/aria2';
@@ -7,9 +21,42 @@ import { getFileExtension } from '@/utils/common';
 import { formatDuration } from '@/utils/format';
 import TaskFileRow from './TaskFileRow';
 
+interface FileToolbarButtonProps {
+    label: string;
+    icon: LucideIcon;
+    iconClassName?: string;
+    className?: string;
+    ariaExpanded?: boolean;
+    onClick: () => void;
+}
+
+function FileToolbarButton({
+    label,
+    icon: Icon,
+    iconClassName,
+    className,
+    ariaExpanded,
+    onClick,
+}: FileToolbarButtonProps) {
+    return (
+        <button
+            type="button"
+            className={'btn btn-outline btn-sm' + (className ? ' ' + className : '')}
+            title={label}
+            aria-label={label}
+            aria-expanded={ariaExpanded}
+            onClick={onClick}
+        >
+            <Icon className={'h-4 w-4 shrink-0' + (iconClassName ? ' ' + iconClassName : '')} aria-hidden="true" />
+            <span className="hidden md:inline">{label}</span>
+        </button>
+    );
+}
+
 interface TaskFileListProps {
     task: Aria2Task;
     onChanged: () => void;
+    onChoosingChange?: (choosing: boolean) => void;
 }
 
 function isHiddenByCollapse(node: Aria2File, collapsed: Set<string>): boolean {
@@ -47,7 +94,7 @@ function isUnderDir(file: Aria2File, dirPath: string): boolean {
     return parentPath === dirPath || parentPath.indexOf(dirPath + '/') === 0;
 }
 
-export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
+export default function TaskFileList({ task, onChanged, onChoosingChange }: TaskFileListProps) {
     const { t } = useTranslation();
     const [orderType, setOrderType] = useState('default:asc');
     const [choosing, setChoosing] = useState(false);
@@ -55,10 +102,20 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
     const [collapsedState, setCollapsedState] = useState<Set<string> | null>(null);
     const [saving, setSaving] = useState(false);
     const [customExtensions, setCustomExtensions] = useState('');
+    const [filterVisible, setFilterVisible] = useState(false);
 
     const files = useMemo(() => task.files || [], [task.files]);
     const canChoose = files.length > 1 && (task.status === 'waiting' || task.status === 'paused');
     const isMultiDir = !!task.multiDir;
+    const totalFileCount = useMemo(() => files.filter((file) => !file.isDir).length, [files]);
+    const selectedFileCount = useMemo(
+        () => files.filter((file) => !file.isDir && (choosing ? !!selected[String(file.index)] : !!file.selected)).length,
+        [files, choosing, selected],
+    );
+
+    useEffect(() => {
+        return () => onChoosingChange?.(false);
+    }, [onChoosingChange]);
 
     const defaultCollapsed = useMemo(
         () => new Set(files.filter((file) => file.isDir).map((file) => file.nodePath || '')),
@@ -98,11 +155,14 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
         }
 
         setSelected(next);
+        setFilterVisible(false);
         setChoosing(true);
+        onChoosingChange?.(true);
     };
 
     const cancelChoosing = () => {
         setChoosing(false);
+        onChoosingChange?.(false);
     };
 
     const expandAll = () => {
@@ -123,6 +183,20 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
         }
 
         setSelected(next);
+    };
+
+    const invertSelection = () => {
+        setSelected((current) => {
+            const next = { ...current };
+
+            for (const file of files) {
+                if (!file.isDir) {
+                    next[String(file.index)] = !next[String(file.index)];
+                }
+            }
+
+            return next;
+        });
     };
 
     const toggleCollapse = useCallback(
@@ -222,14 +296,18 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
     };
 
     const saveChoosing = async () => {
+        const indexes = files.filter((file) => !file.isDir && selected[String(file.index)]).map((file) => file.index);
+
+        if (indexes.length < 1) {
+            return;
+        }
+
         setSaving(true);
 
         try {
-            const indexes = files
-                .filter((file) => !file.isDir && selected[String(file.index)])
-                .map((file) => file.index);
             await aria2TaskService.selectTaskFile(task.gid, indexes);
             setChoosing(false);
+            onChoosingChange?.(false);
             onChanged();
         } finally {
             setSaving(false);
@@ -299,22 +377,22 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
 
                 {isMultiDir ? (
                     <>
-                        <button type="button" className="btn btn-primary btn-sm" onClick={expandAll}>
-                            {t('Expand All')}
-                        </button>
-                        <button
-                            type="button"
-                            className="rounded bg-gray-500 px-3 py-1.5 text-sm text-white hover:bg-gray-600"
+                        <FileToolbarButton
+                            label={t('Expand All')}
+                            icon={ChevronsDown}
+                            iconClassName="text-primary dark:text-primary-light"
+                            onClick={expandAll}
+                        />
+                        <FileToolbarButton
+                            label={t('Collapse All')}
+                            icon={ChevronsUp}
+                            iconClassName="text-primary dark:text-primary-light"
                             onClick={collapseAll}
-                        >
-                            {t('Collapse All')}
-                        </button>
+                        />
                     </>
-                ) : null}
-
-                {!isMultiDir ? (
+                ) : (
                     <select
-                        className="rounded border border-gray-300 bg-white px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800"
+                        className="input w-auto"
                         value={orderType}
                         onChange={(event) => setOrderType(event.target.value)}
                     >
@@ -323,78 +401,88 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
                         <option value="percent:desc">{t('By Progress')}</option>
                         <option value="size:asc">{t('By File Size')}</option>
                     </select>
-                ) : null}
+                )}
 
                 {canChoose && !choosing ? (
-                    <button
-                        type="button"
-                        className="ml-auto text-sm text-blue-600 hover:underline"
+                    <FileToolbarButton
+                        className="ml-auto"
+                        label={t('(Choose Files)')}
+                        icon={ListChecks}
+                        iconClassName="text-primary dark:text-primary-light"
                         onClick={startChoosing}
-                    >
-                        {t('(Choose Files)')}
-                    </button>
+                    />
                 ) : null}
 
                 {choosing ? (
-                    <div className="ml-auto flex flex-wrap items-center gap-2">
-                        <button
-                            type="button"
-                            className="text-sm text-blue-600 hover:underline"
-                            onClick={() => selectAll(true)}
-                        >
-                            {t('Select All')}
-                        </button>
-                        <button
-                            type="button"
-                            className="text-sm text-blue-600 hover:underline"
-                            onClick={() => selectAll(false)}
-                        >
-                            {t('Select None')}
-                        </button>
-                        <select
-                            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800"
-                            value=""
-                            onChange={(event) => applyTypeSelection(event.target.value)}
-                        >
-                            <option value="">{t('Select Files by Type')}</option>
-                            {Object.keys(ariaNgFileTypes).map((type) => (
-                                <option key={type} value={type}>
-                                    {t(ariaNgFileTypes[type].name)}
-                                </option>
-                            ))}
-                        </select>
-                        <input
-                            type="text"
-                            className="w-40 rounded border border-gray-300 bg-white px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800"
-                            placeholder=".mkv,.mp4"
-                            value={customExtensions}
-                            onChange={(event) => setCustomExtensions(event.target.value)}
-                        />
-                        <button
-                            type="button"
-                            className="rounded bg-gray-500 px-2 py-1 text-sm text-white"
-                            onClick={applyCustomExtensions}
-                        >
-                            {t('Apply')}
-                        </button>
-                        <button
-                            type="button"
-                            disabled={saving}
-                            className="btn btn-primary btn-sm"
-                            onClick={() => void saveChoosing()}
-                        >
-                            {t('Save')}
-                        </button>
-                        <button
-                            type="button"
-                            className="rounded bg-gray-400 px-3 py-1 text-sm text-white"
-                            onClick={cancelChoosing}
-                        >
-                            {t('Cancel')}
-                        </button>
-                    </div>
+                    <span className="ml-auto text-xs text-gray-500 tabular-nums dark:text-gray-400">
+                        {selectedFileCount} / {totalFileCount}
+                    </span>
                 ) : null}
             </div>
+
+            {choosing ? (
+                <div className="mb-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 dark:border-gray-700 dark:bg-gray-900/60">
+                    <div className="flex flex-wrap items-center gap-2">
+                        <FileToolbarButton
+                            label={t('Select All')}
+                            icon={CheckSquare}
+                            iconClassName="text-green-600 dark:text-green-500"
+                            onClick={() => selectAll(true)}
+                        />
+                        <FileToolbarButton
+                            label={t('Select None')}
+                            icon={Square}
+                            iconClassName="text-gray-500 dark:text-gray-400"
+                            onClick={() => selectAll(false)}
+                        />
+                        <FileToolbarButton
+                            label={t('Select Invert')}
+                            icon={ArrowLeftRight}
+                            iconClassName="text-amber-600 dark:text-amber-400"
+                            onClick={invertSelection}
+                        />
+
+                        <FileToolbarButton
+                            className="ml-auto sm:hidden"
+                            label={t('Filter')}
+                            icon={SlidersHorizontal}
+                            iconClassName="text-primary dark:text-primary-light"
+                            ariaExpanded={filterVisible}
+                            onClick={() => setFilterVisible((value) => !value)}
+                        />
+
+                        <div
+                            className={
+                                (filterVisible ? 'flex' : 'hidden') +
+                                ' w-full flex-wrap items-center gap-2 sm:flex sm:w-auto sm:flex-1'
+                            }
+                        >
+                            <select
+                                className="input w-auto"
+                                value=""
+                                onChange={(event) => applyTypeSelection(event.target.value)}
+                            >
+                                <option value="">{t('Select Files by Type')}</option>
+                                {Object.keys(ariaNgFileTypes).map((type) => (
+                                    <option key={type} value={type}>
+                                        {t(ariaNgFileTypes[type].name)}
+                                    </option>
+                                ))}
+                            </select>
+                            <input
+                                type="text"
+                                className="input min-w-0 flex-1 sm:max-w-48"
+                                placeholder=".mkv,.mp4"
+                                value={customExtensions}
+                                onChange={(event) => setCustomExtensions(event.target.value)}
+                            />
+                            <button type="button" className="btn btn-secondary btn-sm" onClick={applyCustomExtensions}>
+                                {t('Apply')}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            ) : null}
 
             <div className="rounded border border-gray-200 dark:border-gray-700">
                 <div className="hidden grid-cols-12 gap-2 border-b border-gray-200 bg-gray-50 px-2 py-1 text-xs font-semibold sm:grid dark:border-gray-700 dark:bg-gray-900">
@@ -435,6 +523,26 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
                 <div className="mt-2 text-xs text-gray-500">
                     {formatDuration(Number(task.remainTime || 0), 'HH:mm:ss')}
                 </div>
+            ) : null}
+
+            {choosing ? (
+                <CenteredBottomBar>
+                    <BottomBarButton
+                        ariaLabel={t('Cancel')}
+                        label={t('Cancel')}
+                        icon={X}
+                        hideLabelOnMobile={false}
+                        onClick={cancelChoosing}
+                    />
+                    <BottomBarButton
+                        ariaLabel={t('Save')}
+                        label={t('Save')}
+                        icon={Check}
+                        hideLabelOnMobile={false}
+                        disabled={saving || selectedFileCount < 1}
+                        onClick={() => void saveChoosing()}
+                    />
+                </CenteredBottomBar>
             ) : null}
         </div>
     );
