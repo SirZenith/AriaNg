@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import type { Aria2File, Aria2Task } from '@/types/aria2';
 import TaskFileList from './TaskFileList';
 
-function createTask(): Aria2Task {
+function createTask(overrides: Partial<Aria2Task> = {}): Aria2Task {
     return {
         gid: 'gid',
         status: 'active',
@@ -15,29 +15,30 @@ function createTask(): Aria2Task {
         numPieces: '0',
         bitfield: '',
         files: [
-            { isDir: true, nodePath: 'Media', nodeName: 'Media', level: 0, relativePath: '' },
+            { isDir: true, nodePath: 'Media', nodeName: 'Media', level: 1, relativePath: '' },
             {
                 isDir: false,
                 index: '1',
                 relativePath: 'Media',
                 fileName: 'movie.mkv',
-                level: 1,
+                level: 2,
                 length: '100',
                 completePercent: 50,
                 selected: true,
             },
-            { isDir: true, nodePath: 'Docs', nodeName: 'Docs', level: 0, relativePath: '' },
+            { isDir: true, nodePath: 'Docs', nodeName: 'Docs', level: 1, relativePath: '' },
             {
                 isDir: false,
                 index: '2',
                 relativePath: 'Docs',
                 fileName: 'manual.pdf',
-                level: 1,
+                level: 2,
                 length: '100',
                 completePercent: 0,
                 selected: false,
             },
         ] as unknown as Aria2File[],
+        ...overrides,
     };
 }
 
@@ -106,5 +107,46 @@ describe('TaskFileList', () => {
         fireEvent.click(screen.getByText('Media'));
 
         expect(screen.queryByText('movie.mkv')).toBeNull();
+    });
+
+    it('toggles the directory when clicking the row while choosing files', () => {
+        render(<TaskFileList task={createTask({ status: 'waiting' })} onChanged={vi.fn()} />);
+
+        fireEvent.click(screen.getByText('(Choose Files)'));
+
+        fireEvent.click(screen.getByText('Media'));
+
+        expect(screen.getByText('movie.mkv')).toBeTruthy();
+
+        fireEvent.click(screen.getByText('Media'));
+
+        expect(screen.queryByText('movie.mkv')).toBeNull();
+    });
+
+    it('does not toggle the directory when clicking its checkbox while choosing files', () => {
+        render(<TaskFileList task={createTask({ status: 'waiting' })} onChanged={vi.fn()} />);
+
+        fireEvent.click(screen.getByText('(Choose Files)'));
+
+        const dirRow = screen.getByText('Media').closest('div[class*="grid-cols-12"]');
+        const checkbox = dirRow?.querySelector('input[type="checkbox"]');
+
+        expect(checkbox).toBeTruthy();
+
+        fireEvent.click(checkbox as HTMLInputElement);
+
+        expect(screen.queryByText('movie.mkv')).toBeNull();
+    });
+
+    it('indents nested files by one level and leaves top level entries unindented', () => {
+        render(<TaskFileList task={createTask()} onChanged={vi.fn()} />);
+
+        const dirContent = screen.getByText('Media').closest('div[class*="grid-cols-12"]')?.firstElementChild;
+        expect((dirContent as HTMLElement).style.paddingLeft).toBe('0px');
+
+        fireEvent.click(screen.getByText('Expand All'));
+
+        const fileContent = screen.getByText('movie.mkv').closest('div[class*="grid-cols-12"]')?.firstElementChild;
+        expect((fileContent as HTMLElement).style.paddingLeft).toBe('16px');
     });
 });

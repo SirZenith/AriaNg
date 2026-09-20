@@ -94,8 +94,7 @@ function TaskFileRow({
 }: TaskFileRowProps) {
     const { t } = useTranslation();
     const percent = Number(file.completePercent || 0);
-    const showDirButton = isMultiDir && !choosing;
-    const clickableDir = showDirButton && !!file.isDir;
+    const clickableDir = isMultiDir && !!file.isDir;
     const selectedCount = dirSelectedCount || 0;
     const totalCount = dirTotalCount || 0;
     const allSelected = totalCount > 0 && selectedCount === totalCount;
@@ -123,21 +122,30 @@ function TaskFileRow({
                 {choosing && !file.isDir ? (
                     <input
                         type="checkbox"
+                        className="h-4 w-4 shrink-0"
                         checked={selected}
                         onChange={(event) => onToggleSelected(file, event.target.checked)}
                     />
-                ) : choosing && file.isDir ? (
+                ) : null}
+
+                {choosing && file.isDir ? (
                     <input
                         type="checkbox"
+                        className="h-4 w-4 shrink-0"
                         checked={allSelected}
                         ref={(element) => {
                             if (element) {
                                 element.indeterminate = selectedCount > 0 && !allSelected;
                             }
                         }}
+                        onClick={(event) => event.stopPropagation()}
                         onChange={(event) => onToggleDir(file, event.target.checked)}
                     />
-                ) : clickableDir ? (
+                ) : null}
+
+                {!choosing ? <span className="h-4 w-4 shrink-0" aria-hidden="true" /> : null}
+
+                {isMultiDir && file.isDir ? (
                     <button
                         type="button"
                         className="flex items-center text-gray-500"
@@ -157,7 +165,7 @@ function TaskFileRow({
 
                 {!file.isDir ? (
                     <FileTypeIcon fileName={file.fileName || ''} />
-                ) : file.isDir && !showDirButton ? (
+                ) : !isMultiDir ? (
                     collapsed ? (
                         <Folder className="h-4 w-4 shrink-0 text-gray-500" aria-hidden="true" />
                     ) : (

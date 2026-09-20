@@ -412,7 +412,7 @@ export default function TaskFileList({ task, onChanged }: TaskFileListProps) {
                         <TaskFileRow
                             key={(file.isDir ? 'dir-' : 'file-') + String(file.nodePath || '') + String(file.index)}
                             file={file}
-                            indent={isMultiDir ? Number(file.level || 0) * 16 : 0}
+                            indent={isMultiDir ? Math.max(0, Number(file.level || 0) - 1) * 16 : 0}
                             isMultiDir={isMultiDir}
                             choosing={choosing}
                             selected={isSelected}
