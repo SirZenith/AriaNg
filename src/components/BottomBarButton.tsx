@@ -35,7 +35,10 @@ export default function BottomBarButton({
     const content = (
         <>
             {Icon ? (
-                <Icon className={'h-3.5 w-3.5 md:h-4 md:w-4 shrink-0' + (iconClassName ? ' ' + iconClassName : '')} aria-hidden="true" />
+                <Icon
+                    className={'h-3.5 w-3.5 md:h-4 md:w-4 shrink-0' + (iconClassName ? ' ' + iconClassName : '')}
+                    aria-hidden="true"
+                />
             ) : null}
             {label ? <span className={hideLabelOnMobile ? 'hidden md:inline' : undefined}>{label}</span> : null}
             {children}
