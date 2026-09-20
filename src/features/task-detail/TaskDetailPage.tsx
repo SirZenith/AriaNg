@@ -262,6 +262,7 @@ export default function TaskDetailPage() {
                             onClick={() => void removeTask(task)}
                         />
                     }
+                    restrictWidth
                 />
             )}
         </TaskDetailPanel>

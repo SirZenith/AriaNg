@@ -166,6 +166,7 @@ export default function ImportExportSection({ onReset }: ImportExportSectionProp
                         onClick={onReset}
                     />
                 }
+                restrictWidth
             />
         </div>
     );

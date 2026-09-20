@@ -123,6 +123,7 @@ export default function StatusSection() {
                         onClick={() => void shutdown()}
                     />
                 }
+                restrictWidth
             />
         </div>
     );

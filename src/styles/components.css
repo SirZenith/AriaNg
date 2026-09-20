@@ -139,7 +139,7 @@
     }
 
     .bottom-bar-split {
-        @apply pointer-events-none mb-2 flex w-full items-center gap-3 px-4;
+        @apply pointer-events-none mb-2 flex w-full items-center gap-3 px-5 md:px-4 lg:px-0;
     }
 
     .bottom-bar-group {
