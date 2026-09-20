@@ -156,6 +156,33 @@ describe('TaskListPage task card', () => {
         expect(screen.queryByRole('tooltip')).toBeNull();
     });
 
+    it('shows the share ratio instead of the remaining time for seeding tasks', () => {
+        useTaskStore.setState({
+            tasks: [createTask({ status: 'active', seeder: true, remainTime: 60, shareRatio: 0.375 })],
+        });
+
+        renderPage();
+
+        expect(screen.queryByText('00:01:00')).toBeNull();
+        expect(screen.getByText(/0\.375/)).toBeTruthy();
+    });
+
+    it('does not show the remaining time for stopped tasks', () => {
+        useTaskStore.setState({ tasks: [createTask({ status: 'complete', remainTime: 60 })] });
+
+        renderPage();
+
+        expect(screen.queryByText('00:01:00')).toBeNull();
+    });
+
+    it('still shows the remaining time for regular downloading tasks', () => {
+        useTaskStore.setState({ tasks: [createTask({ status: 'active', remainTime: 60 })] });
+
+        renderPage();
+
+        expect(screen.getByText('00:01:00')).toBeTruthy();
+    });
+
     it('shows the retry button in place of the connection count for retryable tasks', () => {
         useTaskStore.setState({
             tasks: [createTask({ status: 'error', errorDescription: 'error.unknown', connections: 12 })],

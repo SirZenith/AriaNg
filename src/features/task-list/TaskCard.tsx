@@ -49,7 +49,15 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
 
     const isActive = task.status === 'active';
     const isError = task.status === 'error';
-    const showRemainTime = isActive && task.remainTime !== undefined && task.remainTime >= 0 && task.remainTime < 86400;
+    const isSeedingTask = cardStatus === 'seeding';
+    const showRemainTime =
+        isActive &&
+        !isSeedingTask &&
+        !isStoppedTask(task) &&
+        task.remainTime !== undefined &&
+        task.remainTime >= 0 &&
+        task.remainTime < 86400;
+    const showShareRatio = isSeedingTask;
 
     const showErrorMessage = isError && !!task.errorDescription;
 
@@ -197,7 +205,11 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
                                     ) : null}
                                 </span>
                                 <span className="text-gray-500 dark:text-gray-400">
-                                    {showRemainTime ? formatDuration(Number(task.remainTime), 'HH:mm:ss') : ''}
+                                    {showRemainTime
+                                        ? formatDuration(Number(task.remainTime), 'HH:mm:ss')
+                                        : showShareRatio
+                                          ? `${t('Share Ratio')}: ${Number(task.shareRatio || 0).toFixed(3)}`
+                                          : ''}
                                 </span>
                             </div>
                         </div>

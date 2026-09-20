@@ -15,6 +15,7 @@ import {
     estimateHealthPercentFromPeers,
     getCombinedPieces,
     getPieceStatus,
+    getTaskCardStatus,
     getTaskStatusBgClass,
     getTaskStatusColorClass,
     getTaskStatusColorValue,
@@ -39,6 +40,10 @@ function createTask(overrides: Partial<Aria2Task> = {}): Aria2Task {
         numPieces: '4',
         ...overrides,
     } as Aria2Task;
+}
+
+function statusOf(overrides: Partial<Aria2Task> = {}) {
+    return getTaskCardStatus(createTask(overrides));
 }
 
 describe('processDownloadTask', () => {
@@ -93,53 +98,53 @@ describe('getTaskStatusKey', () => {
 
 describe('getTaskStatusIcon', () => {
     it('returns the icon matching the task status', () => {
-        expect(getTaskStatusIcon(createTask({ status: 'active' }))).toBe(Download);
-        expect(getTaskStatusIcon(createTask({ status: 'active', seeder: true }))).toBe(Upload);
-        expect(getTaskStatusIcon(createTask({ status: 'active', seeder: 'true' }))).toBe(Upload);
-        expect(getTaskStatusIcon(createTask({ status: 'active', verifyIntegrityPending: true }))).toBe(LoaderCircle);
-        expect(getTaskStatusIcon(createTask({ status: 'active', verifiedLength: '100' }))).toBe(ShieldCheck);
-        expect(getTaskStatusIcon(createTask({ status: 'waiting' }))).toBe(Clock);
-        expect(getTaskStatusIcon(createTask({ status: 'paused' }))).toBe(Pause);
-        expect(getTaskStatusIcon(createTask({ status: 'complete' }), false)).toBe(CheckCircle2);
-        expect(getTaskStatusIcon(createTask({ status: 'error' }), false)).toBe(AlertCircle);
-        expect(getTaskStatusIcon(createTask({ status: 'removed' }), false)).toBe(Trash2);
+        expect(getTaskStatusIcon(statusOf({ status: 'active' }))).toBe(Download);
+        expect(getTaskStatusIcon(statusOf({ status: 'active', seeder: true }))).toBe(Upload);
+        expect(getTaskStatusIcon(statusOf({ status: 'active', seeder: 'true' }))).toBe(Upload);
+        expect(getTaskStatusIcon(statusOf({ status: 'active', verifyIntegrityPending: true }))).toBe(LoaderCircle);
+        expect(getTaskStatusIcon(statusOf({ status: 'active', verifiedLength: '100' }))).toBe(ShieldCheck);
+        expect(getTaskStatusIcon(statusOf({ status: 'waiting' }))).toBe(Clock);
+        expect(getTaskStatusIcon(statusOf({ status: 'paused' }))).toBe(Pause);
+        expect(getTaskStatusIcon(statusOf({ status: 'complete' }), false)).toBe(CheckCircle2);
+        expect(getTaskStatusIcon(statusOf({ status: 'error' }), false)).toBe(AlertCircle);
+        expect(getTaskStatusIcon(statusOf({ status: 'removed' }), false)).toBe(Trash2);
     });
 
     it('returns no icon for simplified stopped statuses', () => {
-        expect(getTaskStatusIcon(createTask({ status: 'complete' }), true)).toBeNull();
-        expect(getTaskStatusIcon(createTask({ status: 'error' }), true)).toBeNull();
-        expect(getTaskStatusIcon(createTask({ status: 'removed' }), true)).toBeNull();
+        expect(getTaskStatusIcon(statusOf({ status: 'complete' }), true)).toBeNull();
+        expect(getTaskStatusIcon(statusOf({ status: 'error' }), true)).toBeNull();
+        expect(getTaskStatusIcon(statusOf({ status: 'removed' }), true)).toBeNull();
     });
 });
 
 describe('task status classes', () => {
     it('returns solid background classes for the progress bar', () => {
-        expect(getTaskStatusBgClass(createTask({ status: 'active' }))).toBe('bg-blue-500');
-        expect(getTaskStatusBgClass(createTask({ status: 'active', seeder: true }))).toBe('bg-green-600');
-        expect(getTaskStatusBgClass(createTask({ status: 'complete' }))).toBe('bg-green-600');
-        expect(getTaskStatusBgClass(createTask({ status: 'error' }))).toBe('bg-red-500');
+        expect(getTaskStatusBgClass(statusOf({ status: 'active' }))).toBe('bg-blue-500');
+        expect(getTaskStatusBgClass(statusOf({ status: 'active', seeder: true }))).toBe('bg-green-600');
+        expect(getTaskStatusBgClass(statusOf({ status: 'complete' }))).toBe('bg-green-600');
+        expect(getTaskStatusBgClass(statusOf({ status: 'error' }))).toBe('bg-red-500');
     });
 
     it('returns readable text colors for every status', () => {
-        expect(getTaskStatusColorClass(createTask({ status: 'waiting' }))).toContain('text-blue-500');
-        expect(getTaskStatusColorClass(createTask({ status: 'removed' }))).toContain('text-red-500');
-        expect(getTaskStatusColorClass(createTask({ status: 'active', verifiedLength: '100' }))).toContain(
+        expect(getTaskStatusColorClass(statusOf({ status: 'waiting' }))).toContain('text-blue-500');
+        expect(getTaskStatusColorClass(statusOf({ status: 'removed' }))).toContain('text-red-500');
+        expect(getTaskStatusColorClass(statusOf({ status: 'active', verifiedLength: '100' }))).toContain(
             'text-amber-500',
         );
     });
 
     it('returns tinted background classes for the status icon', () => {
-        expect(getTaskStatusIconBgClass(createTask({ status: 'active' }))).toBe('bg-blue-500/15 dark:bg-blue-500/25');
-        expect(getTaskStatusIconBgClass(createTask({ status: 'active', seeder: true }))).toBe(
+        expect(getTaskStatusIconBgClass(statusOf({ status: 'active' }))).toBe('bg-blue-500/15 dark:bg-blue-500/25');
+        expect(getTaskStatusIconBgClass(statusOf({ status: 'active', seeder: true }))).toBe(
             'bg-green-600/15 dark:bg-green-500/25',
         );
-        expect(getTaskStatusIconBgClass(createTask({ status: 'error' }))).toBe('bg-red-500/15 dark:bg-red-500/25');
+        expect(getTaskStatusIconBgClass(statusOf({ status: 'error' }))).toBe('bg-red-500/15 dark:bg-red-500/25');
     });
 
     it('returns the status color value for the selected card', () => {
-        expect(getTaskStatusColorValue(createTask({ status: 'active' }))).toBe('var(--color-blue-500)');
-        expect(getTaskStatusColorValue(createTask({ status: 'complete' }))).toBe('var(--color-green-600)');
-        expect(getTaskStatusColorValue(createTask({ status: 'error' }))).toBe('var(--color-red-500)');
+        expect(getTaskStatusColorValue(statusOf({ status: 'active' }))).toBe('var(--color-blue-500)');
+        expect(getTaskStatusColorValue(statusOf({ status: 'complete' }))).toBe('var(--color-green-600)');
+        expect(getTaskStatusColorValue(statusOf({ status: 'error' }))).toBe('var(--color-red-500)');
     });
 });
 
