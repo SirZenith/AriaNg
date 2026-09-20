@@ -9,6 +9,7 @@ import { useTaskStore } from '@/stores/taskStore';
 import type { Aria2Task } from '@/types/aria2';
 import { formatDuration, formatPercent, formatVolume } from '@/utils/format';
 import {
+    getTaskCardStatus,
     getTaskStatusBgClass,
     getTaskStatusColorClass,
     getTaskStatusColorValue,
@@ -31,13 +32,25 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
     const toggleSelected = useTaskStore((state) => state.toggleSelected);
 
     const completePercent = Number(task.completePercent || 0);
-    const StatusIcon = getTaskStatusIcon(task);
+    const cardStatus = getTaskCardStatus(task);
+
+    const [showErrorTooltip, setShowErrorTooltip] = useState(false);
+    const longPressTimer = useRef<number | null>(null);
+
+    const StatusIcon = getTaskStatusIcon(cardStatus);
+    const statusBgClass = getTaskStatusBgClass(cardStatus);
+    const statusTextClass = getTaskStatusColorClass(cardStatus);
+
+    const statusIconClass = statusTextClass;
+    const statusIconBgClass = getTaskStatusIconBgClass(cardStatus);
+
+    const progressTextClass = statusTextClass;
+    const progressBarClass = statusBgClass;
+
     const isActive = task.status === 'active';
     const isError = task.status === 'error';
     const showRemainTime = isActive && task.remainTime !== undefined && task.remainTime >= 0 && task.remainTime < 86400;
 
-    const [showErrorTooltip, setShowErrorTooltip] = useState(false);
-    const longPressTimer = useRef<number | null>(null);
     const showErrorMessage = isError && !!task.errorDescription;
 
     useEffect(() => {
@@ -88,15 +101,6 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
         setShowErrorTooltip(true);
     };
 
-    const statusBgClass = getTaskStatusBgClass(task);
-    const statusTextClass = getTaskStatusColorClass(task);
-
-    const statusIconClass = statusTextClass;
-    const statusIconBgClass = getTaskStatusIconBgClass(task);
-
-    const progressTextClass = statusTextClass;
-    const progressBarClass = statusBgClass;
-
     return (
         <SortableTaskRow task={task} isDraggable={isDraggable}>
             {({ handleProps }) => (
@@ -105,7 +109,7 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
                         'card flex h-full cursor-pointer items-stretch gap-3 p-3 text-sm ' +
                         (isSelected ? 'card-selected' : 'card-interactive')
                     }
-                    style={{ '--task-status-color': getTaskStatusColorValue(task) } as CSSProperties}
+                    style={{ '--task-status-color': getTaskStatusColorValue(cardStatus) } as CSSProperties}
                     onClick={() => toggleSelected(task.gid)}
                     onContextMenu={(event) => {
                         event.preventDefault();

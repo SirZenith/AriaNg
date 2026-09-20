@@ -520,53 +520,23 @@ const taskStatusStyles: Record<TaskCardStatus, TaskStatusStyle> = {
     },
 };
 
-export function getTaskStatusBgClass(task: Aria2Task): string {
-    if (!task) {
-        return 'bg-inherit';
-    }
-
-    const status = getTaskCardStatus(task);
-
+export function getTaskStatusBgClass(status: TaskCardStatus | null): string {
     return status ? taskStatusStyles[status].bgClass : 'bg-inherit';
 }
 
-export function getTaskStatusColorClass(task: Aria2Task): string {
-    if (!task) {
-        return 'text-inherit';
-    }
-
-    const status = getTaskCardStatus(task);
-
+export function getTaskStatusColorClass(status: TaskCardStatus | null): string {
     return status ? taskStatusStyles[status].textClass : 'text-inherit';
 }
 
-export function getTaskStatusIconBgClass(task: Aria2Task): string {
-    if (!task) {
-        return 'bg-transparent';
-    }
-
-    const status = getTaskCardStatus(task);
-
+export function getTaskStatusIconBgClass(status: TaskCardStatus | null): string {
     return status ? taskStatusStyles[status].iconBgClass : 'bg-transparent';
 }
 
-export function getTaskStatusColorValue(task: Aria2Task): string {
-    if (!task) {
-        return 'var(--color-primary)';
-    }
-
-    const status = getTaskCardStatus(task);
-
+export function getTaskStatusColorValue(status: TaskCardStatus | null): string {
     return status ? taskStatusStyles[status].colorValue : 'var(--color-primary)';
 }
 
-export function getTaskStatusIcon(task: Aria2Task, simplify?: boolean): LucideIcon | null {
-    if (!task) {
-        return null;
-    }
-
-    const status = getTaskCardStatus(task);
-
+export function getTaskStatusIcon(status: TaskCardStatus | null, simplify?: boolean): LucideIcon | null {
     if (status === 'verify_integrity_pending') {
         return LoaderCircle;
     } else if (status === 'verified_length') {
