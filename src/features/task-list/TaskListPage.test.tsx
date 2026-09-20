@@ -1,6 +1,7 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
+import { setOption } from '@/services/settingService';
 import { aria2TaskService } from '@/services/taskService';
 import { useTaskStore } from '@/stores/taskStore';
 import { renderWithPanelBars } from '@/test-utils/renderWithPanelBars';
@@ -47,8 +48,17 @@ function renderPage() {
     );
 }
 
+function renderWaitingPage() {
+    return renderWithPanelBars(
+        <MemoryRouter initialEntries={['/tasks/waiting']}>
+            <TaskListPage location="waiting" />
+        </MemoryRouter>,
+    );
+}
+
 afterEach(() => {
     useTaskStore.setState({ tasks: [], selected: {}, searchKeyword: '' });
+    setOption('dragAndDropTasks', true);
 });
 
 describe('TaskListPage task card', () => {
@@ -345,5 +355,82 @@ describe('TaskListPage task card', () => {
         expect(inactiveTab.className).toContain('flex-1');
         expect(inactiveTab.className).toContain('border-black/5');
         expect(inactiveTab.className).toContain('bg-white/50');
+    });
+});
+
+describe('TaskListPage drag handle', () => {
+    it('renders a full-height drag handle with a large touch target', () => {
+        useTaskStore.setState({ tasks: [createTask()] });
+
+        renderWaitingPage();
+
+        const handle = screen.getByLabelText('Change Tasks Order by Drag-and-drop');
+        const card = screen.getByText('ubuntu.iso').closest('div.cursor-pointer');
+
+        expect(handle.className).toContain('w-11');
+        expect(handle.className).toContain('-my-3');
+        expect(handle.className).toContain('touch-none');
+        expect(handle.className).toContain('cursor-grab');
+        expect(card?.lastElementChild).toBe(handle);
+        expect(handle.querySelector('svg.lucide-grip-vertical')).toBeTruthy();
+    });
+
+    it('does not render the drag handle outside the waiting list', () => {
+        useTaskStore.setState({ tasks: [createTask()] });
+
+        renderPage();
+
+        expect(screen.queryByLabelText('Change Tasks Order by Drag-and-drop')).toBeNull();
+    });
+
+    it('hides the drag handle when drag-and-drop is disabled', () => {
+        useTaskStore.setState({ tasks: [createTask()] });
+        setOption('dragAndDropTasks', false);
+
+        renderWaitingPage();
+
+        expect(screen.queryByLabelText('Change Tasks Order by Drag-and-drop')).toBeNull();
+    });
+
+    it('does not select the task when pressing the drag handle', () => {
+        useTaskStore.setState({ tasks: [createTask()] });
+
+        renderWaitingPage();
+
+        fireEvent.click(screen.getByLabelText('Change Tasks Order by Drag-and-drop'));
+
+        expect(useTaskStore.getState().selected['gid123']).toBeFalsy();
+    });
+});
+
+describe('TaskListPage speed and connection visibility', () => {
+    it.each<Aria2Task['status']>(['waiting', 'paused', 'complete', 'error', 'removed'])(
+        'hides the speed chips for %s tasks',
+        (status) => {
+            useTaskStore.setState({ tasks: [createTask({ status })] });
+
+            renderPage();
+
+            expect(document.querySelector('.chip-download')).toBeNull();
+            expect(document.querySelector('.chip-upload')).toBeNull();
+        },
+    );
+
+    it.each<Aria2Task['status']>(['waiting', 'paused'])('hides the connection count for %s tasks', (status) => {
+        useTaskStore.setState({ tasks: [createTask({ status, connections: 12 })] });
+
+        renderPage();
+
+        expect(screen.queryByTitle('Connections')).toBeNull();
+    });
+
+    it('shows the speed chips and connection count for active tasks', () => {
+        useTaskStore.setState({ tasks: [createTask({ connections: 12 })] });
+
+        renderPage();
+
+        expect(document.querySelector('.chip-download')).toBeTruthy();
+        expect(document.querySelector('.chip-upload')).toBeTruthy();
+        expect(screen.getByTitle('Connections')).toBeTruthy();
     });
 });

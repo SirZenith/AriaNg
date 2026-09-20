@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ArrowDown, ArrowUp, Maximize2, Files, Network, RotateCcw } from 'lucide-react';
+import { ArrowDown, ArrowUp, GripVertical, Maximize2, Files, Network, RotateCcw } from 'lucide-react';
 import { ariaNgConstants } from '@/config/constants';
 import { useTaskStore } from '@/stores/taskStore';
 import type { Aria2Task } from '@/types/aria2';
@@ -165,16 +165,6 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
                             >
                                 <Maximize2 className="h-4 w-4" aria-hidden="true" />
                             </Link>
-
-                            {isDraggable ? (
-                                <span
-                                    className="cursor-grab touch-none select-none text-gray-400 hover:text-gray-600"
-                                    title={t('Change Tasks Order by Drag-and-drop')}
-                                    {...handleProps}
-                                >
-                                    &#8942;&#8942;
-                                </span>
-                            ) : null}
                         </div>
 
                         <div>
@@ -214,48 +204,64 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
                             </div>
                         </div>
 
-                        <div className="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
-                            <div className="flex items-center gap-0.5">
-                                <span className="chip chip-download bg-transparent pl-0 dark:bg-transparent">
-                                    <ArrowDown className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                    <span className="w-15 whitespace-nowrap">
-                                        {isActive ? formatVolume(Number(task.downloadSpeed)) + '/s' : '-'}
-                                    </span>
-                                </span>
-                                <span className="chip chip-upload bg-transparent pl-0 dark:bg-transparent">
-                                    <ArrowUp className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                    <span className="w-15 whitespace-nowrap">
-                                        {isActive ? formatVolume(Number(task.uploadSpeed)) + '/s' : '-'}
-                                    </span>
-                                </span>
-                            </div>
-                            <div className="flex flex-1 flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400" />
-                            {isStoppedTask(task) ? (
-                                isTaskRetryable(task) ? (
-                                    <button
-                                        type="button"
-                                        className="btn btn-primary btn-xs shrink-0"
-                                        title={t('Retry')}
-                                        aria-label={t('Retry')}
-                                        onClick={(event) => {
-                                            event.stopPropagation();
-                                            onRetry(task);
-                                        }}
+                        {isActive || (isStoppedTask(task) && isTaskRetryable(task)) ? (
+                            <div className="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
+                                {isActive ? (
+                                    <div className="flex items-center gap-0.5">
+                                        <span className="chip chip-download bg-transparent pl-0 dark:bg-transparent">
+                                            <ArrowDown className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                            <span className="w-15 whitespace-nowrap">
+                                                {formatVolume(Number(task.downloadSpeed)) + '/s'}
+                                            </span>
+                                        </span>
+                                        <span className="chip chip-upload bg-transparent pl-0 dark:bg-transparent">
+                                            <ArrowUp className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                            <span className="w-15 whitespace-nowrap">
+                                                {formatVolume(Number(task.uploadSpeed)) + '/s'}
+                                            </span>
+                                        </span>
+                                    </div>
+                                ) : null}
+                                <div className="flex flex-1 flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400" />
+                                {isStoppedTask(task) ? (
+                                    isTaskRetryable(task) ? (
+                                        <button
+                                            type="button"
+                                            className="btn btn-primary btn-xs shrink-0"
+                                            title={t('Retry')}
+                                            aria-label={t('Retry')}
+                                            onClick={(event) => {
+                                                event.stopPropagation();
+                                                onRetry(task);
+                                            }}
+                                        >
+                                            <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
+                                        </button>
+                                    ) : null
+                                ) : (
+                                    <span
+                                        className="flex shrink-0 items-center gap-1 text-gray-500 dark:text-gray-400"
+                                        title={t('Connections')}
                                     >
-                                        <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
-                                    </button>
-                                ) : null
-                            ) : (
-                                <span
-                                    className="flex shrink-0 items-center gap-1 text-gray-500 dark:text-gray-400"
-                                    title={t('Connections')}
-                                >
-                                    <Network className="h-3.5 w-3.5" aria-hidden="true" />
-                                    {`${task.connections ?? 0}/${task.numSeeders ?? 0}`}
-                                </span>
-                            )}
-                        </div>
+                                        <Network className="h-3.5 w-3.5" aria-hidden="true" />
+                                        {`${task.connections ?? 0}/${task.numSeeders ?? 0}`}
+                                    </span>
+                                )}
+                            </div>
+                        ) : null}
                     </div>
+
+                    {isDraggable ? (
+                        <span
+                            className="-my-3 -mr-3 flex w-11 shrink-0 cursor-grab touch-none items-center justify-center rounded-r-xl border-l border-gray-100 text-gray-300 select-none hover:bg-gray-100 hover:text-gray-500 active:cursor-grabbing md:w-6 dark:border-gray-700/60 dark:text-gray-600 dark:hover:bg-gray-700/50 dark:hover:text-gray-300"
+                            title={t('Change Tasks Order by Drag-and-drop')}
+                            aria-label={t('Change Tasks Order by Drag-and-drop')}
+                            onClick={(event) => event.stopPropagation()}
+                            {...handleProps}
+                        >
+                            <GripVertical className="h-6 w-6 md:h-5 md:w-5" aria-hidden="true" />
+                        </span>
+                    ) : null}
                 </div>
             )}
         </SortableTaskRow>
