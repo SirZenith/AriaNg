@@ -125,7 +125,7 @@ export default function TaskListToolbar() {
                         icon={Search}
                         iconClassName="text-primary dark:text-primary-light"
                         ariaExpanded={searchVisible}
-                        className="h-10 w-10 p-0"
+                        className="h-7 w-7 md:h-10 md:w-10 p-0"
                         onClick={openSearch}
                     />
                     <div
