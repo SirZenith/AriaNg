@@ -142,8 +142,8 @@ describe('TaskListPage task card', () => {
         const download = screen.getByText(downloadText);
         const upload = screen.getByText(uploadText);
 
-        expect(download.className).toContain('w-22');
-        expect(upload.className).toContain('w-22');
+        expect(download.className).toContain('w-20');
+        expect(upload.className).toContain('w-20');
 
         expect(download.parentElement?.className).toContain('chip-download');
         expect(download.parentElement?.className).toContain('bg-transparent');

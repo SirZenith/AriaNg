@@ -125,16 +125,16 @@ export default function TaskCard({ task, isDraggable, onRetry, onContextMenu }: 
                         </div>
 
                         <div className="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
-                            <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-0.5">
                                 <span className="chip chip-download bg-transparent pl-0 dark:bg-transparent">
-                                    <ArrowDown className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                                    <span className="w-22 whitespace-nowrap">
+                                    <ArrowDown className="h-3 w-3 shrink-0" aria-hidden="true" />
+                                    <span className="w-15 whitespace-nowrap">
                                         {isActive ? formatVolume(Number(task.downloadSpeed)) + '/s' : '-'}
                                     </span>
                                 </span>
                                 <span className="chip chip-upload bg-transparent pl-0 dark:bg-transparent">
-                                    <ArrowUp className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                                    <span className="w-22 whitespace-nowrap">
+                                    <ArrowUp className="h-3 w-3 shrink-0" aria-hidden="true" />
+                                    <span className="w-15 whitespace-nowrap">
                                         {isActive ? formatVolume(Number(task.uploadSpeed)) + '/s' : '-'}
                                     </span>
                                 </span>

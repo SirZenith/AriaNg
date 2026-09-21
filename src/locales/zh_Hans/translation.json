@@ -369,7 +369,7 @@
   "format.time.hour": "{{value}} 小时",
   "format.time.hours": "{{value}} 小时",
   "format.requires.aria2-version": "需要 aria2 v{{version}} 或更高版本",
-  "format.task.new.download-links": "下载链接 ({{count}} 个链接):",
+  "format.task.new.download-links": "下载链接 ({{count}} 个链接)",
   "format.task.pieceinfo": "已完成: {{completed}}, 共计: {{total}} 块",
   "format.task.error-occurred": "发生错误 ({{errorcode}})",
   "format.task.verifying-percent": "正在验证 ({{verifiedPercent}}%)",

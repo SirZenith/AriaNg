@@ -367,7 +367,7 @@
   "format.time.hour": "{{value}} hodina",
   "format.time.hours": "{{value}} hodin",
   "format.requires.aria2-version": "Vyžaduje Aria2 v{{version}} nebo vyšší",
-  "format.task.new.download-links": "Odkazy ke stažení ({{count}} odkazů):",
+  "format.task.new.download-links": "Odkazy ke stažení ({{count}} odkazů)",
   "format.task.pieceinfo": "Dokončeno: {{completed}}, Celkem: {{total}}",
   "format.task.error-occurred": "Došlo k chybě ({{errorcode}})",
   "format.task.verifying-percent": "Ověřování ({{verifiedPercent}}%)",

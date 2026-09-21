@@ -367,7 +367,7 @@
   "format.time.hour": "{{value}} Godzina",
   "format.time.hours": "{{value}} Godziny",
   "format.requires.aria2-version": "Wymaga aria2 w wersji {{version}} lub wyższej",
-  "format.task.new.download-links": "Linki do pobrania ({{count}} linków):",
+  "format.task.new.download-links": "Linki do pobrania ({{count}} linków)",
   "format.task.pieceinfo": "Ukończono: {{completed}}, Łącznie: {{total}}",
   "format.task.error-occurred": "Wystąpił błąd ({{errorcode}})",
   "format.task.verifying-percent": "Weryfikacja ({{verifiedPercent}}%)",

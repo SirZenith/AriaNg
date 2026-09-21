@@ -367,7 +367,7 @@
   "format.time.hour": "{{value}} час",
   "format.time.hours": "{{value}} часов",
   "format.requires.aria2-version": "Требуется версия {{version}} aria2",
-  "format.task.new.download-links": "Ссылки для загрузки ({{count}} ссылки):",
+  "format.task.new.download-links": "Ссылки для загрузки ({{count}} ссылки)",
   "format.task.pieceinfo": "Завершено: {{completed}}, Всего: {{total}} блоков",
   "format.task.error-occurred": "Произошла ошибка ({{errorcode}})",
   "format.task.verifying-percent": "Верификация в процессе ({{verifiedPercent}}%)",

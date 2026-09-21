@@ -356,7 +356,7 @@
   "format.time.hour": "{{value}} Hour",
   "format.time.hours": "{{value}} Hours",
   "format.requires.aria2-version": "Requires aria2 v{{version}} or higher",
-  "format.task.new.download-links": "Download Links ({{count}} Links):",
+  "format.task.new.download-links": "Download Links ({{count}} Links)",
   "format.task.pieceinfo": "Completed: {{completed}}, Total: {{total}}",
   "format.task.error-occurred": "Error Occurred ({{errorcode}})",
   "format.task.verifying-percent": "Verifying ({{verifiedPercent}}%)",

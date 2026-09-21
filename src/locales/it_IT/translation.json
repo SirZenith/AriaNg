@@ -245,7 +245,7 @@
   "format.time.hour": "{{value}} ora",
   "format.time.hours": "{{value}} ore",
   "format.requires.aria2-version": "Richiede la versione {{version}} di aria2",
-  "format.task.new.download-links": "Collegamenti per il download ({{count}} collegamenti):",
+  "format.task.new.download-links": "Collegamenti per il download ({{count}} collegamenti)",
   "format.task.pieceinfo": "Completati: {{completed}}, Totale: {{total}} blocchi",
   "format.task.error-occurred": "Si è verificato un errore ({{errorcode}})",
   "format.task.verifying-percent": "Verifica in corso ({{verifiedPercent}}%)",

@@ -151,26 +151,23 @@ export default function NewTaskPage() {
         }
     };
 
-    const inputClass =
-        'w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800';
-
     return (
         <>
             <TopBar>
                 <ReturnToolbar title={t('New')} to={from}></ReturnToolbar>
             </TopBar>
 
-            <section className="mt-4 rounded-xl bg-white p-4 shadow dark:bg-gray-800">
-                <div className="mb-4 flex gap-2 border-b border-gray-200 dark:border-gray-700">
+            <section className="panel mt-4 p-4 sm:p-5">
+                <div className="mb-5 flex items-center gap-1 rounded-xl bg-black/5 p-1 dark:bg-white/10">
                     {(['urls', 'torrent', 'metalink'] as TaskType[]).map((type) => (
                         <button
                             key={type}
                             type="button"
                             className={
-                                'px-3 py-2 text-sm ' +
+                                'flex-1 rounded-lg px-3 py-1.5 text-sm transition-colors ' +
                                 (taskType === type
-                                    ? 'border-b-2 border-primary text-primary'
-                                    : 'text-gray-500 hover:text-gray-700')
+                                    ? 'bg-white font-medium text-primary shadow-sm dark:bg-gray-700 dark:text-primary-light'
+                                    : 'text-gray-600 hover:bg-white/60 dark:text-gray-300 dark:hover:bg-white/10')
                             }
                             onClick={() => setTaskType(type)}
                         >
@@ -179,39 +176,39 @@ export default function NewTaskPage() {
                     ))}
                 </div>
 
-                <div className="mb-4">
-                    {taskType === 'urls' ? (
-                        <div>
-                            <label className="mb-1 block text-sm font-medium">{t('Download Links')}</label>
-                            <textarea
-                                className={inputClass + ' h-32'}
-                                value={urls}
-                                placeholder={'http://example.org/file\nmagnet:?xt=...'}
-                                onChange={(event) => setUrls(event.target.value)}
+                {taskType === 'urls' ? (
+                    <div>
+                        <label className="mb-1.5 block text-sm font-medium">{t('Download Links')}</label>
+                        <textarea
+                            className="input h-32 resize-y"
+                            value={urls}
+                            placeholder={'http://example.org/file\nmagnet:?xt=...'}
+                            onChange={(event) => setUrls(event.target.value)}
+                        />
+                        <div className="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                            {t('format.task.new.download-links', { count: parseUrlsFromOriginInput(urls).length })}
+                        </div>
+                    </div>
+                ) : (
+                    <div>
+                        <label className="mb-1.5 block text-sm font-medium">
+                            {t(taskType === 'torrent' ? 'Torrent File' : 'Metalink File')}
+                        </label>
+                        <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-gray-300 px-4 py-8 text-sm text-gray-500 transition-colors hover:border-primary hover:text-primary dark:border-gray-600 dark:text-gray-400 dark:hover:border-primary-light dark:hover:text-primary-light">
+                            <FileUp className="h-6 w-6" aria-hidden="true" />
+                            <span>{t('Select File')}</span>
+                            <input
+                                type="file"
+                                accept={taskType === 'torrent' ? '.torrent' : '.meta4,.metalink'}
+                                className="hidden"
+                                onChange={(event) => void openFile(taskType, event.target.files?.[0])}
                             />
-                            <div className="mt-1 text-xs text-gray-500">
-                                {t('format.task.new.download-links', { count: parseUrlsFromOriginInput(urls).length })}
-                            </div>
-                        </div>
-                    ) : (
-                        <div>
-                            <label className="mb-1 block text-sm font-medium">
-                                {t(taskType === 'torrent' ? 'Torrent File' : 'Metalink File')}
-                            </label>
-                            <label className="btn btn-primary btn-sm cursor-pointer">
-                                <FileUp className="h-4 w-4" aria-hidden="true" />
-                                {t('Select File')}
-                                <input
-                                    type="file"
-                                    accept={taskType === 'torrent' ? '.torrent' : '.meta4,.metalink'}
-                                    className="hidden"
-                                    onChange={(event) => void openFile(taskType, event.target.files?.[0])}
-                                />
-                            </label>
-                            {fileName ? <div className="mt-1 text-xs text-gray-500">{fileName}</div> : null}
-                        </div>
-                    )}
-                </div>
+                        </label>
+                        {fileName ? (
+                            <div className="mt-2 text-center text-xs text-gray-500 dark:text-gray-400">{fileName}</div>
+                        ) : null}
+                    </div>
+                )}
             </section>
 
             <SplitBottomBar
