@@ -138,7 +138,7 @@ export default function TaskListToolbar() {
                             ref={searchInputRef}
                             type="text"
                             tabIndex={searchVisible ? 0 : -1}
-                            className="input bg-white/90 shadow-lg backdrop-blur dark:bg-gray-800/90"
+                            className="input bg-white/90 shadow-[0_2px_6px_rgba(46,52,64,0.08),0_16px_40px_-12px_rgba(46,52,64,0.35)] backdrop-blur-xl dark:bg-gray-800/90"
                             placeholder={t('Search')}
                             value={searchKeyword}
                             onBlur={() => {
